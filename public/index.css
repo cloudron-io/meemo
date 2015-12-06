@@ -1,0 +1,24 @@
+
+.main {
+	margin-top: 50px;
+}
+
+.filter {
+	width: 100%;
+}
+
+.well {
+	position: relative;
+}
+
+.thing-title {
+	width: auto;
+	position: absolute;
+	right: 20px;
+	top: 15px;
+}
+
+.thing-title-date {
+	font-size: 12px;
+	text-align: right;
+}

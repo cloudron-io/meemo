@@ -1,0 +1,24 @@
+{
+  "name": "holyguacamoly",
+  "description": "",
+  "main": "index.js",
+  "authors": [
+    "Johannes Zellner <johannes@nebulon.de>"
+  ],
+  "license": "ISC",
+  "moduleType": [],
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.4.8",
+    "bootstrap": "~3.3.6",
+    "bootstrap-material-design": "~0.5.2",
+    "angular-markdown-directive": "~0.3.1"
+  }
+}

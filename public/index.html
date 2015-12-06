@@ -1,0 +1,81 @@
+<html ng-app="app">
+<head>
+
+<title> Holy Guacamoly </title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.min.css"/>
+<link rel="stylesheet" href="/bootstrap-material-design/dist/css/bootstrap-material-design.min.css"/>
+<link rel="stylesheet" href="/bootstrap-material-design/dist/css/ripples.min.css"/>
+
+<script type="text/javascript" src="/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="/bootstrap/dist/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/bootstrap-material-design/dist/js/material.min.js"></script>
+<script type="text/javascript" src="/bootstrap-material-design/dist/js/ripples.min.js"></script>
+
+<script type="text/javascript" src="/angular/angular.min.js"></script>
+<script type="text/javascript" src="/angular-sanitize/angular-sanitize.min.js"></script>
+<script type="text/javascript" src="/showdown/compressed/Showdown.min.js"></script>
+<script type="text/javascript" src="/angular-markdown-directive/markdown.js"></script>
+
+<link rel="stylesheet" href="/index.css"/>
+<script type="text/javascript" src="/index.js"></script>
+
+</head>
+
+<body ng-controller="MainController">
+
+<div class="modal fade" id="modalAdd">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close">×</button>
+        <h4 class="modal-title">Add something</h4>
+      </div>
+      <div class="modal-body">
+        <p>
+          <textarea class="form-control" rows="5" ng-model="addFormData.content" autofocus></textarea>
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" ng-click="addThing()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container main">
+  <div class="row">
+    <div class="col-md-2 col-md-offset-5">
+        <button class="btn btn-raised btn-block btn-success" data-toggle="modal" data-target="#modalAdd">Add</button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6 col-md-offset-3">
+      <div class="form-group has-success">
+        <label class="control-label" for="inputFilter">Filter</label>
+        <input class="form-control" id="inputFilter" type="text" ng-model="filter"/>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="well thing" ng-repeat="thing in things">
+        <div class="container thing-title">
+          <div class="row">
+            <div class="col-md-12 thing-title-date">{{thing.createdAt | prettyDateOffset}}</div>
+          </div>
+          <div class="row">
+            <div class="col-md-1 col-md-offset-11"><button class="btn btn-xs btn-block btn-default" ng-click="deleteThing(thing._id)">delete</button></div>
+          </div>
+        </div>
+        <div btf-markdown="thing.content"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
