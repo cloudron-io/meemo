@@ -18,6 +18,30 @@ exports = module.exports = {
 var databaseUrl = process.env.MONGODB_URL || 'mongodb://127.0.0.1:27017/guacamoly';
 var g_db, g_things;
 
+function sanitize(data) {
+    data = data.replace(/##/g, data);
+    return data;
+}
+
+function facelift(data, tags) {
+    tags.forEach(function (tag) {
+        data = data.replace(tag, '[' + tag + '](' + tag + ')', 'g');
+    });
+
+    return data;
+}
+
+function extractTags(data) {
+    var lines = data.split('\n');
+    var tags = [];
+
+    lines.forEach(function (line) {
+        tags = tags.concat(line.match(/\B#([^ ]+)/g));
+    });
+
+    return tags;
+}
+
 function init(callback) {
     MongoClient.connect(databaseUrl, function (error, db) {
         if (error) return callback(error);
@@ -60,15 +84,11 @@ function get(req, res, next) {
 function add(req, res, next) {
     console.log('add', req.body);
 
-    var lines = req.body.content.split('\n');
-    var tags = [];
-
-    lines.forEach(function (line) {
-        tags = tags.concat(line.match(/\B#([^ ]+)/g));
-    });
+    var data = sanitize(req.body.content);
+    var tags = extractTags(data);
 
     var doc = {
-        content: req.body.content,
+        content: facelift(data, tags),
         createdAt: new Date(),
         tags: tags
     };
