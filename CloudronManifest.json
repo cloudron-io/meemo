@@ -8,12 +8,12 @@
   "healthCheckPath": "/",
   "httpPort": 3000,
   "addons": {
-    "localstorage": {}
+    "mongodb": {}
   },
   "minBoxVersion": "0.0.72",
   "targetBoxVersion": "0.0.72",
   "manifestVersion": 1,
-  "website": "",
+  "website": "http://nebulon.de",
   "contactEmail": "johannes@nebulon.de",
   "icon": "",
   "mediaLinks": [ ]

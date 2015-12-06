@@ -2,4 +2,4 @@
 .gitignore
 .dockerignore
 node_modules
-
+bower_components
