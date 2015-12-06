@@ -43,7 +43,13 @@ app.controller('MainController', function ($scope, $http, $timeout) {
     };
 
     $scope.fetchThings = function () {
-        $http.get('/api/things', {}).then(function (result) {
+        var url = '/api/things';
+
+        if ($scope.filter) {
+            url += '?filter=' + encodeURIComponent($scope.filter);
+        }
+
+        $http.get(url, {}).then(function (result) {
             angular.copy(result.data.things, $scope.things);
         }, function (result) {
             console.error('error:', result);
@@ -103,3 +109,16 @@ app.filter('prettyDate', function () {
     };
 });
 
+app.directive('ngEnter', function () {
+    return function (scope, element, attrs) {
+        element.bind('keydown keypress', function (event) {
+            if(event.which === 13) {
+                scope.$apply(function (){
+                    scope.$eval(attrs.ngEnter);
+                });
+
+                event.preventDefault();
+            }
+        });
+    };
+});

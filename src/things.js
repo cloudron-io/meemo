@@ -30,7 +30,15 @@ function init(callback) {
 }
 
 function getAll(req, res, next) {
-    g_things.find({}).sort({ createdAt: -1 }).toArray(function (error, result) {
+    var query = {};
+
+    if (req.query && req.query.filter) {
+        query = {
+            tags: { $in: req.query.filter.split(' ') }
+        };
+    }
+
+    g_things.find(query).sort({ createdAt: -1 }).toArray(function (error, result) {
         if (error || !result) return next(new HttpError(500, error));
 
         console.log('done', result);
@@ -52,9 +60,13 @@ function get(req, res, next) {
 function add(req, res, next) {
     console.log('add', req.body);
 
+    var tags = req.body.content.match(/\B#([^ ]+)/g);
+    if (tags === null) tags = [];
+
     var doc = {
         content: req.body.content,
-        createdAt: new Date()
+        createdAt: new Date(),
+        tags: tags
     };
 
     g_things.insertMany([doc], function (error, result) {
