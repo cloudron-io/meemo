@@ -60,8 +60,12 @@ function get(req, res, next) {
 function add(req, res, next) {
     console.log('add', req.body);
 
-    var tags = req.body.content.match(/\B#([^ ]+)/g);
-    if (tags === null) tags = [];
+    var lines = req.body.content.split('\n');
+    var tags = [];
+
+    lines.forEach(function (line) {
+        tags = tags.concat(line.match(/\B#([^ ]+)/g));
+    });
 
     var doc = {
         content: req.body.content,

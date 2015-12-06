@@ -15,9 +15,8 @@
 <script type="text/javascript" src="/bootstrap-material-design/dist/js/ripples.min.js"></script>
 
 <script type="text/javascript" src="/angular/angular.min.js"></script>
-<script type="text/javascript" src="/angular-sanitize/angular-sanitize.min.js"></script>
-<script type="text/javascript" src="/showdown/compressed/Showdown.min.js"></script>
-<script type="text/javascript" src="/angular-markdown-directive/markdown.js"></script>
+<script type="text/javascript" src="/marked/marked.min.js"></script>
+<script type="text/javascript" src="/angular-marked/dist/angular-marked.min.js"></script>
 
 <link rel="stylesheet" href="/index.css"/>
 <script type="text/javascript" src="/index.js"></script>
@@ -62,16 +61,16 @@
   </div>
   <div class="row">
     <div class="col-md-12">
-      <div class="well thing" ng-repeat="thing in things">
+      <div class="well well-sm thing" ng-repeat="thing in things">
         <div class="container thing-title">
           <div class="row">
-            <div class="col-md-12 thing-title-date">{{thing.createdAt | prettyDateOffset}}</div>
-          </div>
-          <div class="row">
-            <div class="col-md-1 col-md-offset-11"><button class="btn btn-xs btn-block btn-default" ng-click="deleteThing(thing._id)">delete</button></div>
+            <div class="col-md-12 thing-title-date">
+              {{thing.createdAt | prettyDateOffset}}
+              <button class="btn btn-xs btn-default" ng-click="deleteThing(thing._id)">delete</button>
+            </div>
           </div>
         </div>
-        <div btf-markdown="thing.content"></div>
+        <div marked="thing.content"></div>
       </div>
     </div>
   </div>

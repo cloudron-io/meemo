@@ -5,9 +5,12 @@
 'use strict';
 
 var app = angular.module('app', [
-    'ngSanitize',
-    'btford.markdown'
+    'hc.marked'
 ]);
+
+app.config(['markedProvider', function (markedProvider) {
+    markedProvider.setOptions({gfm: true});
+}]);
 
 app.controller('MainController', function ($scope, $http, $timeout) {
 
