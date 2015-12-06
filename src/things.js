@@ -15,7 +15,7 @@ exports = module.exports = {
     del: del
 };
 
-var databaseUrl = 'mongodb://127.0.0.1:27017/guacamoly';
+var databaseUrl = process.env.MONGODB_URL || 'mongodb://127.0.0.1:27017/guacamoly';
 var g_db, g_things;
 
 function init(callback) {
