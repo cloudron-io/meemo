@@ -63,13 +63,11 @@
     </div>
     <div class="col-md-8">
       <div class="well well-sm thing" ng-repeat="thing in things">
-        <div class="row">
           <div class="col-md-12 thing-title-date">
             {{thing.createdAt | prettyDateOffset}}
             <button class="btn btn-xs btn-default" ng-click="deleteThing(thing._id)">delete</button>
-          </div>
         </div>
-        <div marked="thing.content"></div>
+        <div class="content" marked="thing.content"></div>
       </div>
     </div>
   </div>

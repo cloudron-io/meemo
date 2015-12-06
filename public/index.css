@@ -23,3 +23,8 @@
 .modal-content .modal-body {
     padding-top: 0;
 }
+
+.content {
+    width: 100%;
+    overflow-x: auto;
+}
