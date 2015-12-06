@@ -5,6 +5,7 @@
 var MongoClient = require('mongodb').MongoClient,
     ObjectId = require('mongodb').ObjectID,
     async = require('async'),
+    superagent = require('superagent'),
     HttpError = require('connect-lastmile').HttpError,
     HttpSuccess = require('connect-lastmile').HttpSuccess;
 
@@ -25,12 +26,27 @@ function sanitize(data) {
     return data;
 }
 
-function facelift(data, tags) {
-    tags.forEach(function (tag) {
-        data = data.replace(tag, '[' + tag.slice(1) + '](#' + tag.slice(1) + ')', 'g');
-    });
+function facelift(data, tags, callback) {
+    var geturl = new RegExp('(^|[ \t\r\n])((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){2,}(#([a-zA-Z0-9][a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))', 'g');
+    var urls  = data.match(geturl);
 
-    return data;
+    async.each(urls, function (url, callback) {
+        superagent.get(url).end(function (error, result) {
+            if (error) return callback(null);
+
+            if (result.type === 'image/png') {
+                data = data.replace(url, '![' + url + '](' + url + ')');
+            }
+
+            callback(null);
+        });
+    }, function () {
+        tags.forEach(function (tag) {
+            data = data.replace(tag, '[' + tag.slice(1) + '](#' + tag.slice(1) + ')', 'g');
+        });
+
+        callback(data);
+    });
 }
 
 function extractTags(data) {
@@ -38,7 +54,8 @@ function extractTags(data) {
     var tags = [];
 
     lines.forEach(function (line) {
-        tags = tags.concat(line.match(/\B#([^ ]+)/g));
+        var tmp = line.match(/\B#([^ ]+)/g);
+        if (tmp !== null) tags = tags.concat();
     });
 
     return tags;
@@ -67,9 +84,6 @@ function getAll(req, res, next) {
 
     g_things.find(query).sort({ createdAt: -1 }).toArray(function (error, result) {
         if (error || !result) return next(new HttpError(500, error));
-
-        console.log('done', result);
-
         next(new HttpSuccess(200, { things: result }));
     });
 }
@@ -90,28 +104,30 @@ function add(req, res, next) {
     var data = sanitize(req.body.content);
     var tags = extractTags(data);
 
-    var doc = {
-        content: facelift(data, tags),
-        createdAt: new Date(),
-        tags: tags
-    };
+    facelift(data, tags, function (data) {
+        var doc = {
+            content: data,
+            createdAt: new Date(),
+            tags: tags
+        };
 
-    async.eachSeries(tags, function (tag, callback) {
-        g_tags.update({ name: tag.slice(1) }, {
-            $inc: { usage: 1 },
-            $set: {
-                name: tag.slice(1)
-            }
-        }, { upsert:true }, callback);
-    }, function (error) {
-        if (error) return next(new HttpError(500, error));
+        async.eachSeries(tags, function (tag, callback) {
+            g_tags.update({ name: tag.slice(1) }, {
+                $inc: { usage: 1 },
+                $set: {
+                    name: tag.slice(1)
+                }
+            }, { upsert:true }, callback);
+        }, function (error) {
+            if (error) return next(new HttpError(500, error));
 
-        g_things.insertMany([doc], function (error, result) {
-            if (error || !result) return next(new HttpError(500, error));
+            g_things.insertMany([doc], function (error, result) {
+                if (error || !result) return next(new HttpError(500, error));
 
-            console.log('done', result);
+                console.log('done', result);
 
-            next(new HttpSuccess(201, { id: result._id }));
+                next(new HttpSuccess(201, { id: result._id }));
+            });
         });
     });
 }
