@@ -15,6 +15,6 @@
   "manifestVersion": 1,
   "website": "http://nebulon.de",
   "contactEmail": "johannes@nebulon.de",
-  "icon": "",
+  "icon": "logo.png",
   "mediaLinks": [ ]
 }
