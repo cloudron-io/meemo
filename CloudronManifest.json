@@ -1,0 +1,20 @@
+{
+  "id": "de.nebulon.guacamoly",
+  "title": "Guacamoly",
+  "author": "Johannes Zellner",
+  "description": "file://DESCRIPTION.md",
+  "tagline": "Your personal data store",
+  "version": "0.0.1",
+  "healthCheckPath": "/",
+  "httpPort": 3000,
+  "addons": {
+    "localstorage": {}
+  },
+  "minBoxVersion": "0.0.72",
+  "targetBoxVersion": "0.0.72",
+  "manifestVersion": 1,
+  "website": "",
+  "contactEmail": "johannes@nebulon.de",
+  "icon": "",
+  "mediaLinks": [ ]
+}
