@@ -15,10 +15,23 @@ app.config(['markedProvider', function (markedProvider) {
 app.controller('MainController', function ($scope, $http, $timeout) {
 
     $scope.things = [];
+    $scope.tags = [];
     $scope.filter = '';
     $scope.addFormData = {
         busy: true,
         content: ''
+    };
+
+    $scope.addFilterTag = function (tag) {
+        var hashed = '#' + tag.name;
+
+        if ($scope.filter.indexOf(hashed) === -1)  {
+            $scope.filter = $scope.filter + ' ' + hashed;
+        } else {
+            $scope.filter = $scope.filter.replace(hashed, '');
+        }
+
+        $scope.fetchThings();
     };
 
     $scope.addThing = function () {
@@ -59,11 +72,24 @@ app.controller('MainController', function ($scope, $http, $timeout) {
         });
     };
 
+    $scope.fetchTags = function () {
+        $http.get('/api/tags', {}).then(function (result) {
+            angular.copy(result.data.tags, $scope.tags);
+        }, function (result) {
+            console.error('error:', result);
+        });
+    };
+
 
     $scope.fetchThings();
+    $scope.fetchTags();
 
     $timeout(function () {
         $.material.init();
+
+        $('#modalAdd').on('shown.bs.modal', function () {
+            $('#inputContent').focus();
+        });
     });
 });
 

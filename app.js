@@ -20,6 +20,8 @@ router.get ('/api/things', things.getAll);
 router.get ('/api/things/:id', things.get);
 router.del ('/api/things/:id', things.del);
 
+router.get ('/api/tags', things.getTags);
+
 app
     .use(json({ strict: true })) // only parse objects and arrays
     .use(serveStatic(__dirname + '/public'))

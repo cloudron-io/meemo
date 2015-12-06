@@ -33,13 +33,11 @@
         <h4 class="modal-title">Add something</h4>
       </div>
       <div class="modal-body">
-        <p>
-          <textarea class="form-control" rows="5" ng-model="addFormData.content" autofocus></textarea>
-        </p>
+        <textarea class="form-control" id="inputContent" rows="5" ng-model="addFormData.content" autofocus></textarea>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" ng-click="addThing()">Save</button>
+        <button type="button" class="btn btn-success" ng-click="addThing()">Save</button>
       </div>
     </div>
   </div>
@@ -60,14 +58,15 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-2">
+      <button class="btn btn-primary btn-sm" ng-repeat="tag in tags" ng-click="addFilterTag(tag)">{{tag.name}}</button>
+    </div>
+    <div class="col-md-8">
       <div class="well well-sm thing" ng-repeat="thing in things">
-        <div class="container thing-title">
-          <div class="row">
-            <div class="col-md-12 thing-title-date">
-              {{thing.createdAt | prettyDateOffset}}
-              <button class="btn btn-xs btn-default" ng-click="deleteThing(thing._id)">delete</button>
-            </div>
+        <div class="row">
+          <div class="col-md-12 thing-title-date">
+            {{thing.createdAt | prettyDateOffset}}
+            <button class="btn btn-xs btn-default" ng-click="deleteThing(thing._id)">delete</button>
           </div>
         </div>
         <div marked="thing.content"></div>
