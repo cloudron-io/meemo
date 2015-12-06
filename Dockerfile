@@ -6,7 +6,9 @@ EXPOSE 3000
 RUN mkdir -p /app/code
 WORKDIR /app/code
 
-ADD bower.json package.json app.js src start.sh /app/code/
+ADD src/ /app/code/src/
+ADD public/ /app/code/public/
+ADD bower.json package.json app.js start.sh /app/code/
 
 ENV PATH /usr/local/node-4.2.1/bin:$PATH
 
