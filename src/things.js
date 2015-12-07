@@ -76,6 +76,8 @@ function init(callback) {
         g_tags = db.collection('tags');
         g_settings = db.collection('settings');
 
+        g_things.createIndex({ content: 'text' });
+
         callback(null);
     });
 }
@@ -85,7 +87,7 @@ function getAll(req, res, next) {
 
     if (req.query && req.query.filter) {
         query = {
-            tags: { $in: req.query.filter.split(' ') }
+            $text: { $search: req.query.filter }
         };
     }
 
