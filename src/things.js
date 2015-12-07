@@ -42,7 +42,7 @@ function facelift(data, tags, callback) {
         });
     }, function () {
         tags.forEach(function (tag) {
-            data = data.replace(tag, '[' + tag + '](#' + tag + ')', 'g');
+            data = data.replace(new RegExp('#' + tag, 'gmi'), '[#' + tag + '](#' + tag + ')');
         });
 
         callback(data);
@@ -58,7 +58,7 @@ function extractTags(data) {
         if (tmp === null) return;
 
         tags = tmp.map(function (tag) {
-            return tag.slice(1).toUpperCase();
+            return tag.slice(1).toLowerCase();
         }).concat(tags);
     });
 
@@ -116,10 +116,10 @@ function add(req, res, next) {
         };
 
         async.eachSeries(tags, function (tag, callback) {
-            g_tags.update({ name: tag.slice(1) }, {
+            g_tags.update({ name: tag }, {
                 $inc: { usage: 1 },
                 $set: {
-                    name: tag.slice(1)
+                    name: tag
                 }
             }, { upsert:true }, callback);
         }, function (error) {
