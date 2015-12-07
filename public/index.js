@@ -12,7 +12,7 @@ app.config(['markedProvider', function (markedProvider) {
     markedProvider.setOptions({gfm: true});
 }]);
 
-app.controller('MainController', function ($scope, $http, $timeout) {
+app.controller('MainController', function ($scope, $http, $timeout, $document) {
 
     $scope.things = [];
     $scope.tags = [];
@@ -23,6 +23,7 @@ app.controller('MainController', function ($scope, $http, $timeout) {
     };
 
     $scope.settings = {
+        title: 'Holy Guacamoly',
         backgroundUrl: ''
     };
 

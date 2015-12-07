@@ -28,3 +28,10 @@
     width: 100%;
     overflow-x: auto;
 }
+
+.settings-action {
+    display: inline-block;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}

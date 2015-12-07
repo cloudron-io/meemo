@@ -160,10 +160,7 @@ function getTags(req, res, next) {
 }
 
 function settingsSave(req, res, next) {
-
-    console.log('settings', req.body)
-
-    g_settings.update({ type: 'frontend' }, { $set: req.body.settings }, { upsert:true }, function (error) {
+    g_settings.update({ type: 'frontend' }, { type: 'frontend', value: req.body.settings }, { upsert: true }, function (error) {
         if (error) return next(new HttpError(500, error));
         next(new HttpSuccess(202, {}));
     });
@@ -173,6 +170,6 @@ function settingsGet(req, res, next) {
     g_settings.find({ type: 'frontend' }).toArray(function (error, result) {
         console.log(error, result);
         if (error) return next(new HttpError(500, error));
-        next(new HttpSuccess(200, { settings: result[0] || {} }));
+        next(new HttpSuccess(200, { settings: result[0].value || {} }));
     });
 }
