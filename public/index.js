@@ -44,6 +44,7 @@ app.controller('MainController', function ($scope, $http, $timeout) {
             $('#modalAdd').modal('hide');
 
             $scope.fetchThings();
+            $scope.fetchTags();
         }, function (result) {
             console.error('error:', result);
             $scope.addFormData.busy = false;

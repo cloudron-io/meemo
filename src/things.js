@@ -54,7 +54,7 @@ function extractTags(data) {
     var tags = [];
 
     lines.forEach(function (line) {
-        var tmp = line.match(/\B#([^ ]+)/g);
+        var tmp = line.match(/\B#(\w+)/g);
         if (tmp === null) return;
 
         tags = tmp.map(function (tag) {
@@ -88,15 +88,23 @@ function getAll(req, res, next) {
 
     g_things.find(query).sort({ createdAt: -1 }).toArray(function (error, result) {
         if (error || !result) return next(new HttpError(500, error));
-        next(new HttpSuccess(200, { things: result }));
+
+        async.each(result, function (thing, callback) {
+            var tags = extractTags(thing.content);
+            facelift(thing.content, tags, function (data) {
+                thing.content = data;
+
+                callback(null);
+            });
+        }, function () {
+            next(new HttpSuccess(200, { things: result }));
+        });
     });
 }
 
 function get(req, res, next) {
     g_things.find({ _id: req.params.id }).toArray(function (error, result) {
         if (error || !result) return next(new HttpError(500, error));
-
-        console.log('done', result);
 
         next(new HttpSuccess(200, { thing: result }));
     });
@@ -108,41 +116,33 @@ function add(req, res, next) {
     var tags = extractTags(req.body.content);
     var data = sanitize(req.body.content);
 
-    facelift(data, tags, function (data) {
-        var doc = {
-            content: data,
-            createdAt: new Date(),
-            tags: tags
-        };
+    var doc = {
+        content: data,
+        createdAt: new Date(),
+        tags: tags
+    };
 
-        async.eachSeries(tags, function (tag, callback) {
-            g_tags.update({ name: tag }, {
-                $inc: { usage: 1 },
-                $set: {
-                    name: tag
-                }
-            }, { upsert:true }, callback);
-        }, function (error) {
-            if (error) return next(new HttpError(500, error));
+    async.eachSeries(tags, function (tag, callback) {
+        g_tags.update({ name: tag }, {
+            $inc: { usage: 1 },
+            $set: {
+                name: tag
+            }
+        }, { upsert:true }, callback);
+    }, function (error) {
+        if (error) return next(new HttpError(500, error));
 
-            g_things.insertMany([doc], function (error, result) {
-                if (error || !result) return next(new HttpError(500, error));
+        g_things.insertMany([doc], function (error, result) {
+            if (error || !result) return next(new HttpError(500, error));
 
-                console.log('done', result);
-
-                next(new HttpSuccess(201, { id: result._id }));
-            });
+            next(new HttpSuccess(201, { id: result._id }));
         });
     });
 }
 
 function del(req, res, next) {
-    console.log('del', req.params.id);
-
     g_things.deleteOne({ _id: new ObjectId(req.params.id) }, function (error, result) {
         if (error || !result) return next(new HttpError(500, error));
-
-        console.log('done', result.result);
 
         next(new HttpSuccess(200, {}));
     });
@@ -151,8 +151,6 @@ function del(req, res, next) {
 function getTags(req, res, next) {
     g_tags.find({}).sort({ createdAt: -1 }).toArray(function (error, result) {
         if (error || !result) return next(new HttpError(500, error));
-
-        console.log('done', result);
 
         next(new HttpSuccess(200, { tags: result }));
     });
