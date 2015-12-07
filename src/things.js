@@ -42,7 +42,7 @@ function facelift(data, tags, callback) {
         });
     }, function () {
         tags.forEach(function (tag) {
-            data = data.replace(tag, '[' + tag.slice(1) + '](#' + tag.slice(1) + ')', 'g');
+            data = data.replace(tag, '[' + tag + '](#' + tag + ')', 'g');
         });
 
         callback(data);
@@ -55,7 +55,11 @@ function extractTags(data) {
 
     lines.forEach(function (line) {
         var tmp = line.match(/\B#([^ ]+)/g);
-        if (tmp !== null) tags = tags.concat();
+        if (tmp === null) return;
+
+        tags = tmp.map(function (tag) {
+            return tag.slice(1).toUpperCase();
+        }).concat(tags);
     });
 
     return tags;
@@ -101,8 +105,8 @@ function get(req, res, next) {
 function add(req, res, next) {
     console.log('add', req.body);
 
+    var tags = extractTags(req.body.content);
     var data = sanitize(req.body.content);
-    var tags = extractTags(data);
 
     facelift(data, tags, function (data) {
         var doc = {
