@@ -15,11 +15,13 @@ exports = module.exports = {
     get: get,
     add: add,
     del: del,
-    getTags: getTags
+    getTags: getTags,
+    settingsSave: settingsSave,
+    settingsGet: settingsGet
 };
 
 var databaseUrl = process.env.MONGODB_URL || 'mongodb://127.0.0.1:27017/guacamoly';
-var g_db, g_things, g_tags;
+var g_db, g_things, g_tags, g_settings;
 
 function sanitize(data) {
     data = data.replace(/##/g, data);
@@ -72,6 +74,7 @@ function init(callback) {
         g_db = db;
         g_things = db.collection('things');
         g_tags = db.collection('tags');
+        g_settings = db.collection('settings');
 
         callback(null);
     });
@@ -153,5 +156,23 @@ function getTags(req, res, next) {
         if (error || !result) return next(new HttpError(500, error));
 
         next(new HttpSuccess(200, { tags: result }));
+    });
+}
+
+function settingsSave(req, res, next) {
+
+    console.log('settings', req.body)
+
+    g_settings.update({ type: 'frontend' }, { $set: req.body.settings }, { upsert:true }, function (error) {
+        if (error) return next(new HttpError(500, error));
+        next(new HttpSuccess(202, {}));
+    });
+}
+
+function settingsGet(req, res, next) {
+    g_settings.find({ type: 'frontend' }).toArray(function (error, result) {
+        console.log(error, result);
+        if (error) return next(new HttpError(500, error));
+        next(new HttpSuccess(200, { settings: result[0] || {} }));
     });
 }

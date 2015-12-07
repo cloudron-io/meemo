@@ -22,6 +22,9 @@ router.del ('/api/things/:id', things.del);
 
 router.get ('/api/tags', things.getTags);
 
+router.post('/api/settings', things.settingsSave);
+router.get ('/api/settings', things.settingsGet);
+
 app
     .use(json({ strict: true })) // only parse objects and arrays
     .use(serveStatic(__dirname + '/public'))

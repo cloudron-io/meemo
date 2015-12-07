@@ -5,9 +5,12 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
+
 <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.min.css"/>
 <link rel="stylesheet" href="/bootstrap-material-design/dist/css/bootstrap-material-design.min.css"/>
 <link rel="stylesheet" href="/bootstrap-material-design/dist/css/ripples.min.css"/>
+<link rel="stylesheet" href="/mdi/css/materialdesignicons.min.css" media="all" type="text/css"/>
 
 <script type="text/javascript" src="/jquery/dist/jquery.min.js"></script>
 <script type="text/javascript" src="/bootstrap/dist/js/bootstrap.min.js"></script>
@@ -23,7 +26,7 @@
 
 </head>
 
-<body ng-controller="MainController">
+<body ng-controller="MainController" ng-style="{'background-image':'url(' + settings.backgroundUrl + ')'}">
 
 <div class="modal fade" id="modalAdd">
   <div class="modal-dialog">
@@ -43,10 +46,38 @@
   </div>
 </div>
 
+<div class="modal fade" id="modalSettings">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close">×</button>
+        <h4 class="modal-title">Settings</h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal">
+          <div class="form-group">
+            <label for="inputBackgroundImage" class="col-sm-2 control-label">Background</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="inputBackgroundImage" ng-model="settings.backgroundUrl" placeholder="url">
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-success" ng-click="saveSettings()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="container main">
   <div class="row">
     <div class="col-md-2 col-md-offset-5">
         <button class="btn btn-raised btn-block btn-success" data-toggle="modal" data-target="#modalAdd">Add</button>
+    </div>
+    <div class="col-md-1 col-md-offset-3">
+      <button class="btn btn-default btn-fab" data-toggle="modal" data-target="#modalSettings"><i class="mdi mdi-dots-horizontal"></i></button>
     </div>
   </div>
   <div class="row">

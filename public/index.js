@@ -22,6 +22,10 @@ app.controller('MainController', function ($scope, $http, $timeout) {
         content: ''
     };
 
+    $scope.settings = {
+        backgroundUrl: ''
+    };
+
     $scope.addFilterTag = function (tag) {
         var hashed = '#' + tag.name;
 
@@ -81,9 +85,29 @@ app.controller('MainController', function ($scope, $http, $timeout) {
         });
     };
 
+    $('#modalSettings').on('hidden.bs.modal', function () {
+        $scope.fetchSettings();
+    });
+
+    $scope.saveSettings = function () {
+        $http.post('/api/settings', { settings: $scope.settings }, {}).then(function (result) {
+            $('#modalSettings').modal('hide');
+        }, function (result) {
+            console.error('error:', result);
+        });
+    };
+
+    $scope.fetchSettings = function () {
+        $http.get('/api/settings', {}).then(function (result) {
+            angular.extend($scope.settings, result.data.settings);
+        }, function (result) {
+            console.error('error:', result);
+        });
+    };
 
     $scope.fetchThings();
     $scope.fetchTags();
+    $scope.fetchSettings();
 
     $timeout(function () {
         $.material.init();
