@@ -14,6 +14,7 @@ exports = module.exports = {
     getAll: getAll,
     get: get,
     add: add,
+    put: put,
     del: del,
     getTags: getTags,
     settingsSave: settingsSave,
@@ -97,7 +98,7 @@ function getAll(req, res, next) {
         async.each(result, function (thing, callback) {
             var tags = extractTags(thing.content);
             facelift(thing.content, tags, function (data) {
-                thing.content = data;
+                thing.richContent = data;
 
                 callback(null);
             });
@@ -137,7 +138,31 @@ function add(req, res, next) {
     }, function (error) {
         if (error) return next(new HttpError(500, error));
 
-        g_things.insertMany([doc], function (error, result) {
+        g_things.insert(doc, function (error, result) {
+            if (error || !result) return next(new HttpError(500, error));
+
+            next(new HttpSuccess(201, { id: result._id }));
+        });
+    });
+}
+
+function put(req, res, next) {
+    console.log('put', req.body);
+
+    var tags = extractTags(req.body.content);
+    var data = sanitize(req.body.content);
+
+    async.eachSeries(tags, function (tag, callback) {
+        g_tags.update({ name: tag }, {
+            $inc: { usage: 1 },
+            $set: {
+                name: tag
+            }
+        }, { upsert:true }, callback);
+    }, function (error) {
+        if (error) return next(new HttpError(500, error));
+
+        g_things.update({_id: new ObjectId(req.params.id) }, { $set: { content: data, tags: tags, modifiedAt: new Date() } }, function (error, result) {
             if (error || !result) return next(new HttpError(500, error));
 
             next(new HttpSuccess(201, { id: result._id }));

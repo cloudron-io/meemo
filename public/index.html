@@ -46,6 +46,24 @@
   </div>
 </div>
 
+<div class="modal fade" id="modalEdit">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close">×</button>
+        <h4 class="modal-title">Edit</h4>
+      </div>
+      <div class="modal-body">
+        <textarea class="form-control" id="inputContent" rows="5" ng-model="editFormData.content" autofocus></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-success" ng-click="editThing()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="modal fade" id="modalSettings">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -104,8 +122,9 @@
           <div class="col-md-12 thing-title-date">
             {{thing.createdAt | prettyDateOffset}}
             <button class="btn btn-xs btn-default" ng-click="deleteThing(thing._id)">delete</button>
+            <button class="btn btn-xs btn-default" ng-click="showEditThing(thing._id, thing.content)">edit</button>
         </div>
-        <div class="content" marked="thing.content"></div>
+        <div class="content" marked="thing.richContent"></div>
       </div>
     </div>
   </div>

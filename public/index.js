@@ -22,6 +22,12 @@ app.controller('MainController', function ($scope, $http, $timeout, $document) {
         content: ''
     };
 
+    $scope.editFormData = {
+        busy: true,
+        id: '',
+        content: ''
+    };
+
     $scope.settings = {
         title: 'Holy Guacamoly',
         backgroundUrl: ''
@@ -39,6 +45,14 @@ app.controller('MainController', function ($scope, $http, $timeout, $document) {
         $scope.fetchThings();
     };
 
+    $scope.showEditThing = function (id, content) {
+        $scope.editFormData.busy = false;
+        $scope.editFormData.id = id;
+        $scope.editFormData.content = content;
+
+        $('#modalEdit').modal('show');
+    };
+
     $scope.addThing = function () {
         $scope.addFormData.busy = true;
 
@@ -53,6 +67,24 @@ app.controller('MainController', function ($scope, $http, $timeout, $document) {
         }, function (result) {
             console.error('error:', result);
             $scope.addFormData.busy = false;
+        });
+    };
+
+    $scope.editThing = function () {
+        $scope.editFormData.busy = true;
+
+        $http.put('/api/things/' + $scope.editFormData.id, { content: $scope.editFormData.content }, {}).then(function (result) {
+            $scope.editFormData.busy = false;
+            $scope.editFormData.id = '';
+            $scope.editFormData.content = '';
+
+            $('#modalEdit').modal('hide');
+
+            $scope.fetchThings();
+            $scope.fetchTags();
+        }, function (result) {
+            console.error('error:', result);
+            $scope.editFormData.busy = false;
         });
     };
 

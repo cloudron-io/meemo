@@ -18,6 +18,7 @@ router.del = router.delete;
 router.post('/api/things', routes.add);
 router.get ('/api/things', routes.getAll);
 router.get ('/api/things/:id', routes.get);
+router.put ('/api/things/:id', routes.put);
 router.del ('/api/things/:id', routes.del);
 
 router.get ('/api/tags', routes.getTags);
