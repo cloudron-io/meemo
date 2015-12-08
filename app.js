@@ -6,7 +6,7 @@ require('supererror')({ splatchError: true });
 
 var express = require('express'),
     json = require('body-parser').json,
-    things = require('./src/things.js'),
+    routes = require('./src/routes.js'),
     lastmile = require('connect-lastmile'),
     serveStatic = require('serve-static');
 
@@ -15,15 +15,15 @@ var router = new express.Router();
 
 router.del = router.delete;
 
-router.post('/api/things', things.add);
-router.get ('/api/things', things.getAll);
-router.get ('/api/things/:id', things.get);
-router.del ('/api/things/:id', things.del);
+router.post('/api/things', routes.add);
+router.get ('/api/things', routes.getAll);
+router.get ('/api/things/:id', routes.get);
+router.del ('/api/things/:id', routes.del);
 
-router.get ('/api/tags', things.getTags);
+router.get ('/api/tags', routes.getTags);
 
-router.post('/api/settings', things.settingsSave);
-router.get ('/api/settings', things.settingsGet);
+router.post('/api/settings', routes.settingsSave);
+router.get ('/api/settings', routes.settingsGet);
 
 app
     .use(json({ strict: true })) // only parse objects and arrays
@@ -32,7 +32,7 @@ app
     .use(router)
     .use(lastmile());
 
-things.init(function (error) {
+routes.init(function (error) {
     if (error) {
         console.error(error);
         process.exit(1);
