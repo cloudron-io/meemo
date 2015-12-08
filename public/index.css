@@ -35,3 +35,27 @@
     top: 20px;
     right: 20px;
 }
+
+.spinner {
+    background-color: transparent;
+    border: 3px dashed #03a9f4;
+    border-radius: 50%;
+    border-top-color: transparent;
+    border-right-color: transparent;
+    width: 1em;
+    height: 1em;
+    display: inline-block;
+    vertical-align: middle;
+    box-sizing: border-box;
+    animation: spinner-animation 0.65s infinite linear;
+    font-size: 35px;
+}
+
+@keyframes spinner-animation {
+    0% {
+        transform:rotate(0deg)
+    }
+    100% {
+        transform:rotate(360deg)
+    }
+}

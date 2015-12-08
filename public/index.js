@@ -17,6 +17,9 @@ app.controller('MainController', function ($scope, $http, $timeout, $document) {
     $scope.things = [];
     $scope.tags = [];
     $scope.filter = '';
+    $scope.thingsBusy = true;
+    $scope.tagsBusy = true;
+
     $scope.addFormData = {
         busy: true,
         content: ''
@@ -117,6 +120,8 @@ app.controller('MainController', function ($scope, $http, $timeout, $document) {
     };
 
     $scope.fetchThings = function () {
+        $scope.thingsBusy = true;
+
         var url = '/api/things';
 
         if ($scope.filter) {
@@ -125,16 +130,22 @@ app.controller('MainController', function ($scope, $http, $timeout, $document) {
 
         $http.get(url, {}).then(function (result) {
             angular.copy(result.data.things, $scope.things);
+            $scope.thingsBusy = false;
         }, function (result) {
             console.error('error:', result);
+            $scope.thingsBusy = false;
         });
     };
 
     $scope.fetchTags = function () {
+        $scope.tagsBusy = true;
+
         $http.get('/api/tags', {}).then(function (result) {
             angular.copy(result.data.tags, $scope.tags);
+            $scope.tagsBusy = false;
         }, function (result) {
             console.error('error:', result);
+            $scope.tagsBusy = false;
         });
     };
 
