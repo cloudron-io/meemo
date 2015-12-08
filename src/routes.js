@@ -92,7 +92,7 @@ function getAll(req, res, next) {
         };
     }
 
-    g_things.find(query).sort({ createdAt: -1 }).toArray(function (error, result) {
+    g_things.find(query).sort({ modifiedAt: -1 }).toArray(function (error, result) {
         if (error || !result) return next(new HttpError(500, error));
 
         async.each(result, function (thing, callback) {
@@ -125,6 +125,7 @@ function add(req, res, next) {
     var doc = {
         content: data,
         createdAt: new Date(),
+        modifiedAt: new Date(),
         tags: tags
     };
 
