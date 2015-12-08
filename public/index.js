@@ -28,6 +28,11 @@ app.controller('MainController', function ($scope, $http, $timeout, $document) {
         content: ''
     };
 
+    $scope.delFormData = {
+        busy: true,
+        id: ''
+    };
+
     $scope.settings = {
         title: 'Holy Guacamoly',
         backgroundUrl: ''
@@ -51,6 +56,13 @@ app.controller('MainController', function ($scope, $http, $timeout, $document) {
         $scope.editFormData.content = content;
 
         $('#modalEdit').modal('show');
+    };
+
+    $scope.showDelThing = function (id) {
+        $scope.delFormData.busy = false;
+        $scope.delFormData.id = id;
+
+        $('#modalDel').modal('show');
     };
 
     $scope.addThing = function () {
@@ -88,11 +100,19 @@ app.controller('MainController', function ($scope, $http, $timeout, $document) {
         });
     };
 
-    $scope.deleteThing = function (id) {
-        $http.delete('/api/things/' + id, {}).then(function (result) {
+    $scope.delThing = function (id) {
+        $scope.delFormData.busy = true;
+
+        $http.delete('/api/things/' + $scope.delFormData.id, {}).then(function (result) {
+            $scope.delFormData.busy = false;
+            $scope.delFormData.id = '';
+
+            $('#modalDel').modal('hide');
+
             $scope.fetchThings();
         }, function (result) {
             console.error('error:', result);
+            $scope.delFormData.busy = false;
         });
     };
 

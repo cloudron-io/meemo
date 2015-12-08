@@ -64,6 +64,20 @@
   </div>
 </div>
 
+<div class="modal fade" id="modalDel">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Really Delete this Thing?</h4>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-danger" ng-click="delThing()">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="modal fade" id="modalSettings">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -121,7 +135,7 @@
       <div class="well well-sm thing" ng-repeat="thing in things">
           <div class="col-md-12 thing-title-date">
             {{thing.createdAt | prettyDateOffset}}
-            <button class="btn btn-xs btn-default" ng-click="deleteThing(thing._id)">delete</button>
+            <button class="btn btn-xs btn-default" ng-click="showDelThing(thing._id)">delete</button>
             <button class="btn btn-xs btn-default" ng-click="showEditThing(thing._id, thing.content)">edit</button>
         </div>
         <div class="content" marked="thing.richContent"></div>
