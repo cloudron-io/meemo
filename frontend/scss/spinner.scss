@@ -1,44 +1,6 @@
-
-.main {
-    margin-top: 50px;
-}
-
-.filter {
-    width: 100%;
-}
-
-.well {
-    position: relative;
-}
-
-.thing-title-date {
-    font-size: 12px;
-    text-align: right;
-}
-
-.thing-title-date,.btn {
-    margin: 0;
-}
-
-.modal-content .modal-body {
-    padding-top: 0;
-}
-
-.content {
-    width: 100%;
-    overflow-x: auto;
-}
-
-.settings-action {
-    display: inline-block;
-    position: absolute;
-    top: 20px;
-    right: 20px;
-}
-
 .spinner {
     background-color: transparent;
-    border: 3px dashed #03a9f4;
+    border: 3px solid #03a9f4;
     border-radius: 50%;
     border-top-color: transparent;
     border-right-color: transparent;

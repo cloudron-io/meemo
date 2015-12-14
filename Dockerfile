@@ -7,13 +7,13 @@ RUN mkdir -p /app/code
 WORKDIR /app/code
 
 ADD src/ /app/code/src/
-ADD public/ /app/code/public/
-ADD bower.json package.json app.js start.sh /app/code/
+ADD frontend/ /app/code/frontend/
+ADD gulpfile.js package.json app.js start.sh /app/code/
 
 ENV PATH /usr/local/node-4.2.1/bin:$PATH
 
 RUN npm install
-RUN npm install -g bower
-RUN bower install --allow-root
+RUN npm install -g gulp-cli
+RUN gulp default
 
 CMD [ "/app/code/start.sh" ]

@@ -1,0 +1,49 @@
+.settings {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+
+    &.open {
+        z-index: 1000;
+    }
+
+    .action {
+        display: inline-block;
+        position: absolute;
+        top: 20px;
+        right: 20px;
+    }
+
+    .container {
+        position: absolute;
+        top: 0;
+        width: 400px;
+        height: 100%;
+        right: -400px;
+        background-color: white;
+        transition: right 250ms;
+        box-shadow: 0 8px 17px 0 rgba(0,0,0,.2),0 6px 20px 0 rgba(0,0,0,.19);
+        z-index: 2000;
+
+        &.open {
+            right: 0;
+        }
+    }
+
+    .backdrop {
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        transition: background-color 400ms;
+
+        &.open {
+            background-color: rgba(0,0,0,0.3);
+            opacity: 0.5;
+        }
+    }
+}

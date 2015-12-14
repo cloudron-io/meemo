@@ -1,0 +1,39 @@
+/* jslint node:true */
+
+'use strict';
+
+var MongoClient = require('mongodb').MongoClient,
+    config = require('./config.js');
+
+exports = module.exports = {
+    init: init,
+    get: get,
+    put: put
+};
+
+var g_db, g_settings;
+
+function init(callback) {
+    MongoClient.connect(config.databaseUrl, function (error, db) {
+        if (error) return callback(error);
+
+        g_db = db;
+        g_settings = db.collection('settings');
+
+        callback(null);
+    });
+}
+
+function put(settings, callback) {
+    g_settings.update({ type: 'frontend' }, { type: 'frontend', value: settings }, { upsert: true }, function (error) {
+        if (error) return callback(error);
+        callback(null);
+    });
+}
+
+function get(callback) {
+    g_settings.find({ type: 'frontend' }).toArray(function (error, result) {
+        if (error) return callback(error);
+        callback(null, result[0].value || {});
+    });
+}

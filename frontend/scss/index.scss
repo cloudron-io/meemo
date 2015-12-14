@@ -1,0 +1,59 @@
+
+body {
+    background-repeat: no-repeat;
+    background-position: right top;
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+.main {
+    margin-top: 50px;
+}
+
+.filter {
+    width: 100%;
+}
+
+.well {
+    position: relative;
+}
+
+.thing-title-date {
+    font-size: 12px;
+    text-align: right;
+}
+
+.thing-title-date,.btn {
+    margin: 0;
+}
+
+.modal-content .modal-body {
+    padding-top: 0;
+}
+
+.content {
+    width: 100%;
+    overflow-x: auto;
+}
+
+@import 'settings';
+@import 'spinner';
+
+.present-transition {
+    transition: all .3s ease;
+    opacity: 1;
+    transform: scale(1);
+}
+
+.present-enter, .present-leave {
+    transform: scale(0.8);
+    opacity: 0;
+}
+
+.tags {
+    background-color: white;
+}
+
+.emoji {
+  height: 1.2em;
+}
