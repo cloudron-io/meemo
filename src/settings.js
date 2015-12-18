@@ -35,6 +35,8 @@ function put(settings, callback) {
 function get(callback) {
     g_settings.find({ type: 'frontend' }).toArray(function (error, result) {
         if (error) return callback(error);
-        callback(null, result[0] ? result[0].value : {});
+        callback(null, result[0] ? result[0].value : {
+            title: 'Things'
+        });
     });
 }
