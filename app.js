@@ -48,7 +48,7 @@ function welcomeIfNeeded(callback) {
         if (error) return callback(error);
         if (result.length > 0) return callback(null);
 
-        things.imp(require('./things.json'), callback);
+        things.imp(require(__dirname + '/things.json'), callback);
     });
 }
 
