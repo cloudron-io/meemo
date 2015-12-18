@@ -8,7 +8,7 @@ WORKDIR /app/code
 
 ADD src/ /app/code/src/
 ADD frontend/ /app/code/frontend/
-ADD gulpfile.js package.json app.js start.sh /app/code/
+ADD gulpfile.js package.json app.js start.sh things.json /app/code/
 
 ENV PATH /usr/local/node-4.2.1/bin:$PATH
 
