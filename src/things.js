@@ -30,6 +30,7 @@ function init(callback) {
         if (error) return callback(error);
 
         g_db = db;
+        g_db.createCollection('things');
         g_things = db.collection('things');
 
         g_things.createIndex({ content: 'text' }, { default_language: 'none' });

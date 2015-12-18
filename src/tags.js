@@ -18,6 +18,7 @@ function init(callback) {
         if (error) return callback(error);
 
         g_db = db;
+        g_db.createCollection('tags');
         g_tags = db.collection('tags');
 
         callback(null);

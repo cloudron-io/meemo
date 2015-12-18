@@ -18,6 +18,7 @@ function init(callback) {
         if (error) return callback(error);
 
         g_db = db;
+        g_db.createCollection('settings');
         g_settings = db.collection('settings');
 
         callback(null);
@@ -34,6 +35,6 @@ function put(settings, callback) {
 function get(callback) {
     g_settings.find({ type: 'frontend' }).toArray(function (error, result) {
         if (error) return callback(error);
-        callback(null, result[0].value || {});
+        callback(null, result[0] ? result[0].value : {});
     });
 }
