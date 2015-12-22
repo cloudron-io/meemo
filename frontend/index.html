@@ -136,16 +136,12 @@
             <div class="input-group">
               <input id="inputSearch" class="form-control" type="text" v-model="search" v-on:keyup.enter="doSearch">
               <span class="input-group-btn">
-                <button type="button" class="btn btn-xs">
+                <button type="button" class="btn btn-xs" v-on:click="clearSearch()">
                   <i class="fa fa-close"></i>
                 </button>
               </span>
             </div>
           </div>
-          <!-- <div class="form-group has-success">
-            <label class="control-label" for="inputSearch">Search</label>
-            <input class="form-control" id="inputSearch" type="text" v-model="search" v-on:keyup.enter="doSearch"/>
-          </div> -->
         </div>
       </div>
       <div class="row">

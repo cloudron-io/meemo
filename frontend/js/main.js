@@ -33,6 +33,10 @@ var vue = new Vue({
         },
         tagSearch: function (tag) {
             window.location.href = '/#search?#' + encodeURIComponent(tag.name);
+        },
+        clearSearch: function () {
+            vue.search = '';
+            refresh();
         }
     }
 });
@@ -62,6 +66,8 @@ window.addEventListener('hashchange', hashChangeHandler, false);
 
 function refresh(search) {
     vue.busyThings = true;
+
+    window.location.href = '/#search?' + (search ? encodeURIComponent(search) : '');
 
     Core.things.get(search || '', function (error) {
         if (error) return console.error(error);
