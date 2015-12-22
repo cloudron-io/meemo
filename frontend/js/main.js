@@ -1,6 +1,7 @@
+'use strict';
+
 var Vue = require('vue'),
-    Core = require('./core.js').Core,
-    Thing = require('./core.js').Thing;
+    Core = require('./core.js').Core;
 
 require('./filter.js');
 var vueThings = require('./thing.js');
