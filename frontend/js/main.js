@@ -37,6 +37,7 @@ var vue = new Vue({
         clearSearch: function () {
             vue.search = '';
             refresh();
+            $('#inputSearch').focus();
         }
     }
 });
