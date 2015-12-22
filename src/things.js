@@ -39,11 +39,6 @@ function init(callback) {
     });
 }
 
-function sanitize(data) {
-    data = data.replace(/##/g, data);
-    return data;
-}
-
 function facelift(data, tagObjects, callback) {
     var geturl = new RegExp('(^|[ \t\r\n])((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){2,}(#([a-zA-Z0-9][a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))', 'g');
 
@@ -125,7 +120,7 @@ function get(id, callback) {
 
 function add(content, callback) {
     var tagObjects = extractTags(content);
-    var data = sanitize(content);
+    var data = content;
 
     var doc = {
         content: data,
@@ -148,7 +143,7 @@ function add(content, callback) {
 
 function put(id, content, callback) {
     var tagObjects = extractTags(content);
-    var data = sanitize(content);
+    var data = content;
 
     async.eachSeries(tagObjects, tags.update, function (error) {
         if (error) return callback(error);
@@ -189,7 +184,7 @@ function exp(callback) {
 function imp(data, callback) {
     async.eachSeries(data.things, function (thing, next) {
         var tagObjects = extractTags(thing.content);
-        var data = sanitize(thing.content);
+        var data = thing.content;
 
         var doc = {
             content: data,
