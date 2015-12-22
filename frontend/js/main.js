@@ -76,6 +76,8 @@ Core.things.onEdited(refresh);
 Core.things.onDeleted(refresh);
 
 // Main
+$.material.init();
+
 Core.settings.get(function (error) {
     if (error) return console.error(error);
 
