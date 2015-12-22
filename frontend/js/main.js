@@ -43,8 +43,8 @@ var vue = new Vue({
 });
 
 Core.settings.onChanged(function (data) {
-    window.document.title = data.title;
-    window.document.body.style.backgroundImage = 'url("' + data.backgroundUrl + '")';
+    if (data.title) window.document.title = data.title;
+    if (data.backgroundUrl) window.document.body.style.backgroundImage = 'url("' + data.backgroundUrl + '")';
 });
 
 function hashChangeHandler() {
