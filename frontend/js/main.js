@@ -85,6 +85,8 @@ Core.settings.get(function (error) {
 
         vue.busyTags = false;
 
+        $('#inputSearch').focus();
+
         hashChangeHandler();
     });
 });
