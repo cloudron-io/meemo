@@ -51,6 +51,7 @@ gulp.task('3rdparty', function () {
         'node_modules/bootstrap/dist/**/*.min.js*',
         'frontend/3rdparty/**/*.min.css*',
         'frontend/3rdparty/**/*.min.js*',
+        'node_modules/bootstrap-material-design/dist/**/roboto.min.css*',
         'node_modules/font-awesome/**/font-awesome.min.css',
         'node_modules/font-awesome/**/font-awesome.css.map',
         'node_modules/font-awesome/**/*.+(otf|eot|svg|ttf|woff|woff2)'
