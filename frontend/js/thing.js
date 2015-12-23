@@ -1,3 +1,5 @@
+'use strict';
+
 var Vue = require('vue'),
     Core = require('./core.js').Core;
 
@@ -19,7 +21,7 @@ var vueThingAdd = new Vue({
             this.content = '';
             $('#modalAdd').modal('show');
         },
-        save: function (event) {
+        save: function () {
             Core.things.add(this.content, function (error) {
                 if (error) return console.error(error);
 
@@ -48,7 +50,7 @@ var vueThingEdit = new Vue({
             $('#modalEdit').find("[autofocus]:first").focus();
             $('#modalEdit').modal('show');
         },
-        save: function (event) {
+        save: function () {
             Core.things.edit(this.thing, function (error) {
                 if (error) return console.error(error);
 
@@ -71,7 +73,7 @@ var vueThingDelete = new Vue({
             this.thing = thing;
             $('#modalDel').modal('show');
         },
-        del: function (event) {
+        del: function () {
             Core.things.del(this.thing, function (error) {
                 if (error) return console.error(error);
 

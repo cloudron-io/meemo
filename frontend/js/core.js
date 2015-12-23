@@ -1,3 +1,5 @@
+'use strict';
+
 var superagent = require('superagent');
 
 function guid() {

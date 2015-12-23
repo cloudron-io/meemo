@@ -1,8 +1,10 @@
+'use strict';
+
 var Vue = require('vue'),
     MarkdownIt = require('markdown-it'),
     twemoji = require('twemoji');
 
-var md = MarkdownIt({
+var md = new MarkdownIt({
     breaks: true,
     linkify: true
 }).use(require('markdown-it-emoji'))

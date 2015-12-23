@@ -1,3 +1,5 @@
+'use strict';
+
 var Vue = require('vue'),
     Core = require('./core.js').Core;
 
@@ -23,22 +25,19 @@ var vueSettings = new Vue({
                 $('.settings').removeClass('open');
             }, 500);
         },
-        toggleSettings: function (event) {
+        toggleSettings: function () {
             if (this.open) this.hide();
             else this.show();
         },
-        saveSettings: function (event) {
-            var that = this;
-
+        saveSettings: function () {
             Core.settings.set(this.settings);
-
             Core.settings.save(function (error) {
                 if (error) return console.error(error);
 
                 vueSettings.hide();
             });
         },
-        exportThings: function (event) {
+        exportThings: function () {
             Core.things.export();
             vueSettings.hide();
         },
