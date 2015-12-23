@@ -41,6 +41,9 @@ var vueSettings = new Vue({
         exportThings: function (event) {
             Core.things.export();
             vueSettings.hide();
+        },
+        logout: function () {
+            window.location.href = '/auth/logout';
         }
     }
 });

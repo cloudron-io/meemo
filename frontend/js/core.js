@@ -8,6 +8,17 @@ function guid() {
     return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
 }
 
+function errorWrapper(callback) {
+    return function (error, result) {
+        if (error && error.status === 401) {
+            window.location.href = '/auth/login';
+            return;
+        }
+
+        callback(error, result);
+    };
+}
+
 function Thing(id, createdAt, tags, content, richContent) {
     this.id = id;
     this.createdAt = createdAt || 0;
@@ -34,7 +45,7 @@ Things.prototype.get = function (filter, callback) {
 
     if (filter) url += '?filter=' + encodeURIComponent(filter);
 
-    superagent.get(url).end(function (error, result) {
+    superagent.get(url).end(errorWrapper(function (error, result) {
         // ignore this if we moved on
         if (that._operation !== operation) {
             console.log('ignore this call');
@@ -49,14 +60,14 @@ Things.prototype.get = function (filter, callback) {
         });
 
         callback(null, that.data);
-    });
+    }));
 };
 
 Things.prototype.add = function (content, callback) {
     var that = this;
     var url = this._server + '/api/things';
 
-    superagent.post(url).send({ content: content }).end(function (error, result) {
+    superagent.post(url).send({ content: content }).end(errorWrapper(function (error, result) {
         if (error) return callback(error);
         if (result.status !== 201) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
 
@@ -65,14 +76,14 @@ Things.prototype.add = function (content, callback) {
         });
 
         callback(null);
-    });
+    }));
 };
 
 Things.prototype.edit = function (thing, callback) {
     var that = this;
     var url = this._server + '/api/things/' + thing.id;
 
-    superagent.put(url).send({ content: thing.content }).end(function (error, result) {
+    superagent.put(url).send({ content: thing.content }).end(errorWrapper(function (error, result) {
         if (error) return callback(error);
         if (result.status !== 201) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
 
@@ -81,14 +92,14 @@ Things.prototype.edit = function (thing, callback) {
         });
 
         callback(null);
-    });
+    }));
 };
 
 Things.prototype.del = function (thing, callback) {
     var that = this;
     var url = this._server + '/api/things/' + thing.id;
 
-    superagent.del(url).end(function (error, result) {
+    superagent.del(url).end(errorWrapper(function (error, result) {
         if (error) return callback(error);
         if (result.status !== 200) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
 
@@ -97,7 +108,7 @@ Things.prototype.del = function (thing, callback) {
         });
 
         callback(null);
-    });
+    }));
 };
 
 Things.prototype.onAdded = function (callback) {
@@ -128,26 +139,26 @@ function Settings(server) {
 Settings.prototype.save = function (callback) {
     var url = this._server + '/api/settings';
 
-    superagent.post(url).send({ settings: this.data }).end(function (error, result) {
+    superagent.post(url).send({ settings: this.data }).end(errorWrapper(function (error, result) {
         if (error) return callback(error);
         if (result.status !== 202) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
 
         callback(null);
-    });
+    }));
 };
 
 Settings.prototype.get = function (callback) {
     var that = this;
     var url = this._server + '/api/settings';
 
-    superagent.get(url).end(function (error, result) {
+    superagent.get(url).end(errorWrapper(function (error, result) {
         if (error) return callback(error);
         if (result.status !== 200) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
 
         that.set(result.body.settings);
 
         callback(null, result.body.settings);
-    });
+    }));
 };
 
 Settings.prototype.set = function (data) {
@@ -172,12 +183,12 @@ function Tags(server) {
 Tags.prototype.get = function (callback) {
     var url = this._server + '/api/tags';
 
-    superagent.get(url).end(function (error, result) {
+    superagent.get(url).end(errorWrapper(function (error, result) {
         if (error) return callback(error);
         if (result.status !== 200) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
 
         callback(null, result.body.tags);
-    });
+    }));
 };
 
 function Core() {

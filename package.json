@@ -16,9 +16,13 @@
     "async": "^1.5.0",
     "body-parser": "^1.14.1",
     "connect-lastmile": "0.0.13",
+    "cookie-parser": "^1.4.0",
     "cors": "^2.7.1",
     "express": "^4.13.3",
+    "express-session": "^1.12.1",
     "mongodb": "^2.0.49",
+    "passport": "^0.3.2",
+    "passport-cloudron": "^0.3.1",
     "serve-static": "^1.10.0",
     "superagent": "^1.5.0",
     "supererror": "^0.7.1"
