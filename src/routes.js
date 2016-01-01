@@ -62,7 +62,7 @@ function verifyUser(username, password, callback) {
         password: password
     };
 
-    superagent.post(process.env.SIMPLE_AUTH_URL).send(authPayload).end(function (error, result) {
+    superagent.post(process.env.SIMPLE_AUTH_URL + '/api/v1/login').send(authPayload).end(function (error, result) {
         if (error) return callback(error);
         callback(null, result.status === 200);
     });
