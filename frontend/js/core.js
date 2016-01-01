@@ -2,6 +2,9 @@
 
 var superagent = require('superagent');
 
+var g_server = '';
+var g_token = localStorage.token || '';
+
 function guid() {
     function s4() {
         return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
@@ -12,13 +15,14 @@ function guid() {
 
 function errorWrapper(callback) {
     return function (error, result) {
-        if (error && error.status === 401) {
-            window.location.href = '/auth/login';
-            return;
-        }
+        if (error && error.status === 401) return module.exports.loginFailed();
 
         callback(error, result);
     };
+}
+
+function url(path) {
+    return g_server + path + '?token=' + g_token;
 }
 
 function Thing(id, createdAt, tags, content, richContent) {
@@ -29,8 +33,7 @@ function Thing(id, createdAt, tags, content, richContent) {
     this.richContent = richContent;
 }
 
-function Things(server) {
-    this._server = server;
+function ThingsApi() {
     this._addCallbacks = [];
     this._editCallbacks = [];
     this._delCallbacks = [];
@@ -38,16 +41,16 @@ function Things(server) {
     this._operation = '';
 }
 
-Things.prototype.get = function (filter, callback) {
+ThingsApi.prototype.get = function (filter, callback) {
     var that = this;
-    var url = this._server + '/api/things';
+    var u = url('/api/things');
     var operation = guid();
 
     this._operation = operation;
 
-    if (filter) url += '?filter=' + encodeURIComponent(filter);
+    if (filter) u += '&filter=' + encodeURIComponent(filter);
 
-    superagent.get(url).end(errorWrapper(function (error, result) {
+    superagent.get(u).end(errorWrapper(function (error, result) {
         // ignore this if we moved on
         if (that._operation !== operation) {
             console.log('ignore this call');
@@ -65,11 +68,10 @@ Things.prototype.get = function (filter, callback) {
     }));
 };
 
-Things.prototype.add = function (content, callback) {
+ThingsApi.prototype.add = function (content, callback) {
     var that = this;
-    var url = this._server + '/api/things';
 
-    superagent.post(url).send({ content: content }).end(errorWrapper(function (error, result) {
+    superagent.post(url('/api/things')).send({ content: content }).end(errorWrapper(function (error, result) {
         if (error) return callback(error);
         if (result.status !== 201) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
 
@@ -81,11 +83,10 @@ Things.prototype.add = function (content, callback) {
     }));
 };
 
-Things.prototype.edit = function (thing, callback) {
+ThingsApi.prototype.edit = function (thing, callback) {
     var that = this;
-    var url = this._server + '/api/things/' + thing.id;
 
-    superagent.put(url).send({ content: thing.content }).end(errorWrapper(function (error, result) {
+    superagent.put(url('/api/things/' + thing.id)).send({ content: thing.content }).end(errorWrapper(function (error, result) {
         if (error) return callback(error);
         if (result.status !== 201) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
 
@@ -97,11 +98,10 @@ Things.prototype.edit = function (thing, callback) {
     }));
 };
 
-Things.prototype.del = function (thing, callback) {
+ThingsApi.prototype.del = function (thing, callback) {
     var that = this;
-    var url = this._server + '/api/things/' + thing.id;
 
-    superagent.del(url).end(errorWrapper(function (error, result) {
+    superagent.del(url('/api/things/' + thing.id)).end(errorWrapper(function (error, result) {
         if (error) return callback(error);
         if (result.status !== 200) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
 
@@ -113,24 +113,23 @@ Things.prototype.del = function (thing, callback) {
     }));
 };
 
-Things.prototype.onAdded = function (callback) {
+ThingsApi.prototype.onAdded = function (callback) {
     this._addCallbacks.push(callback);
 };
 
-Things.prototype.onEdited = function (callback) {
+ThingsApi.prototype.onEdited = function (callback) {
     this._editCallbacks.push(callback);
 };
 
-Things.prototype.onDeleted = function (callback) {
+ThingsApi.prototype.onDeleted = function (callback) {
     this._delCallbacks.push(callback);
 };
 
-Things.prototype.export = function () {
+ThingsApi.prototype.export = function () {
     window.location.href = this._server + '/api/export';
 };
 
-function Settings(server) {
-    this._server = server;
+function SettingsApi() {
     this._changeCallbacks = [];
     this.data = {
         title: '',
@@ -138,10 +137,8 @@ function Settings(server) {
     };
 }
 
-Settings.prototype.save = function (callback) {
-    var url = this._server + '/api/settings';
-
-    superagent.post(url).send({ settings: this.data }).end(errorWrapper(function (error, result) {
+SettingsApi.prototype.save = function (callback) {
+    superagent.post(url('/api/settings')).send({ settings: this.data }).end(errorWrapper(function (error, result) {
         if (error) return callback(error);
         if (result.status !== 202) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
 
@@ -149,11 +146,10 @@ Settings.prototype.save = function (callback) {
     }));
 };
 
-Settings.prototype.get = function (callback) {
+SettingsApi.prototype.get = function (callback) {
     var that = this;
-    var url = this._server + '/api/settings';
 
-    superagent.get(url).end(errorWrapper(function (error, result) {
+    superagent.get(url('/api/settings')).end(errorWrapper(function (error, result) {
         if (error) return callback(error);
         if (result.status !== 200) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
 
@@ -163,7 +159,7 @@ Settings.prototype.get = function (callback) {
     }));
 };
 
-Settings.prototype.set = function (data) {
+SettingsApi.prototype.set = function (data) {
     var that = this;
 
     this.data.title = data.title;
@@ -174,18 +170,14 @@ Settings.prototype.set = function (data) {
     });
 };
 
-Settings.prototype.onChanged = function (callback) {
+SettingsApi.prototype.onChanged = function (callback) {
     this._changeCallbacks.push(callback);
 };
 
-function Tags(server) {
-    this._server = server;
-}
+function TagsApi() {}
 
-Tags.prototype.get = function (callback) {
-    var url = this._server + '/api/tags';
-
-    superagent.get(url).end(errorWrapper(function (error, result) {
+TagsApi.prototype.get = function (callback) {
+    superagent.get(url('/api/tags')).end(errorWrapper(function (error, result) {
         if (error) return callback(error);
         if (result.status !== 200) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
 
@@ -193,15 +185,38 @@ Tags.prototype.get = function (callback) {
     }));
 };
 
-function Core() {
-    this._server = '';
+function SessionApi() {}
 
-    this.settings = new Settings(this._server);
-    this.things = new Things(this._server);
-    this.tags = new Tags(this._server);
-}
+SessionApi.prototype.login = function (username, password, callback) {
+    superagent.post(g_server + '/api/login').send({ username: username, password: password }).end(function (error, result) {
+        if (error) return callback(error);
+        if (result.status !== 201) return callback(new Error('Login failed. ' + result.status + '. ' + result.text));
+
+        g_token = result.body.token;
+        localStorage.token = g_token;
+
+        callback(null);
+    });
+};
+
+SessionApi.prototype.logout = function () {
+    superagent.get(url('/api/logout')).end(function (error, result) {
+        if (error) console.error(error);
+        if (result.status !== 200) console.error('Logout failed.', result.status, result.text);
+
+        g_token = '';
+        delete localStorage.token;
+
+        module.exports.onLogout();
+    });
+};
 
 module.exports = {
+    loginFailed: function () {},
+    onLogout: function () {},
     Thing: Thing,
-    Core: new Core()
+    session: new SessionApi(),
+    settings: new SettingsApi(),
+    things: new ThingsApi(),
+    tags: new TagsApi()
 };

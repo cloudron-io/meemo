@@ -25,7 +25,8 @@
     "passport-cloudron": "^0.3.1",
     "serve-static": "^1.10.0",
     "superagent": "^1.5.0",
-    "supererror": "^0.7.1"
+    "supererror": "^0.7.1",
+    "uuid": "^2.0.1"
   },
   "devDependencies": {
     "bootstrap": "^3.3.6",

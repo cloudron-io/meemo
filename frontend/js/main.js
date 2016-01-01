@@ -1,7 +1,7 @@
 'use strict';
 
 var Vue = require('vue'),
-    Core = require('./core.js').Core;
+    Core = require('./core.js');
 
 require('./filter.js');
 var vueThings = require('./thing.js');
@@ -16,7 +16,10 @@ var vue = new Vue({
         things: [],
         busyThings: true,
         busyTags: true,
-        search: ''
+        search: '',
+        username: '',
+        password: '',
+        mainView: ''
     },
     methods: {
         showThingAdd: function () {
@@ -27,6 +30,25 @@ var vue = new Vue({
         },
         showThingDel: function (thing) {
             vueThings.del.open(thing);
+        },
+        showLogin: function () {
+            this.mainView = 'login';
+            setTimeout(function () {
+                $('#inputUsername').focus();
+            }, 0);
+        },
+        doLogin: function () {
+            Core.session.login(this.username, this.password, function (error) {
+                if (error) {
+                    vue.username = '';
+                    vue.password = '';
+                    $('#inputUsername').focus();
+
+                    return console.error('Login failed:', error.status ? error.status : error);
+                }
+
+                main();
+            });
         },
         doSearch: function () {
             window.location.href = '/#search?' + encodeURIComponent(this.search);
@@ -65,6 +87,35 @@ function hashChangeHandler() {
 
 window.addEventListener('hashchange', hashChangeHandler, false);
 
+function reset() {
+    vue.mainView = '';
+    vue.things = [];
+    vue.tags = [];
+    vue.search = '';
+    vue.username = '';
+    vue.password = '';
+}
+
+function main() {
+    Core.settings.get(function (error) {
+        if (error) return console.error(error);
+
+        Core.tags.get(function (error, tags) {
+            if (error) return console.error(error);
+
+            vue.tags = tags;
+
+            vue.busyTags = false;
+
+            vue.mainView = 'content';
+
+            $('#inputSearch').focus();
+
+            hashChangeHandler();
+        });
+    });
+}
+
 function refresh(search) {
     vue.busyThings = true;
 
@@ -82,21 +133,13 @@ Core.things.onAdded(refresh);
 Core.things.onEdited(refresh);
 Core.things.onDeleted(refresh);
 
+Core.loginFailed = vue.showLogin;
+Core.onLogout = function () {
+    reset();
+    vue.showLogin();
+};
+
 // Main
 $.material.init();
 
-Core.settings.get(function (error) {
-    if (error) return console.error(error);
-
-    Core.tags.get(function (error, tags) {
-        if (error) return console.error(error);
-
-        vue.tags = tags;
-
-        vue.busyTags = false;
-
-        $('#inputSearch').focus();
-
-        hashChangeHandler();
-    });
-});
+main();

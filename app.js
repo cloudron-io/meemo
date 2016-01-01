@@ -5,74 +5,37 @@
 require('supererror')({ splatchError: true });
 
 var express = require('express'),
-    passport = require('passport'),
     json = require('body-parser').json,
-    cookieParser = require('cookie-parser'),
-    session = require('express-session'),
-    CloudronStrategy = require('passport-cloudron'),
     cors = require('cors'),
     routes = require('./src/routes.js'),
     things = require('./src/things.js'),
     lastmile = require('connect-lastmile'),
     serveStatic = require('serve-static');
 
-passport.serializeUser(function (user, done) {
-    console.log('Now serializeUser', user);
-    done(null, user.id);
-});
-
-passport.deserializeUser(function (id, done) {
-    console.log('Now deserializeUser', id);
-    done(null, { id: id });
-});
-
-passport.use(new CloudronStrategy({
-        callbackURL: 'http://localhost:3000/auth/cloudron/callback'
-    }, function verify(token, tokenSecret, profile, done) {
-        done(null, profile);
-    }
-));
-
-function auth(req, res, next) {
-    if (process.env.NO_AUTH) return next();
-    if (req.isAuthenticated()) return next();
-
-    res.status(401).end();
-}
-
 var app = express();
 var router = new express.Router();
 
 router.del = router.delete;
 
-router.post('/api/things', auth, routes.add);
-router.get ('/api/things', auth, routes.getAll);
-router.get ('/api/things/:id', auth, routes.get);
-router.put ('/api/things/:id', auth, routes.put);
-router.del ('/api/things/:id', auth, routes.del);
+router.post('/api/things', routes.auth, routes.add);
+router.get ('/api/things', routes.auth, routes.getAll);
+router.get ('/api/things/:id', routes.auth, routes.get);
+router.put ('/api/things/:id', routes.auth, routes.put);
+router.del ('/api/things/:id', routes.auth, routes.del);
 
-router.get ('/api/tags', auth, routes.getTags);
+router.get ('/api/tags', routes.auth, routes.getTags);
 
-router.post('/api/settings', auth, routes.settingsSave);
-router.get ('/api/settings', auth, routes.settingsGet);
+router.post('/api/settings', routes.auth, routes.settingsSave);
+router.get ('/api/settings', routes.auth, routes.settingsGet);
 
-router.get ('/api/export', auth, routes.exportThings);
+router.get ('/api/export', routes.auth, routes.exportThings);
 
-router.get ('/auth/cloudron/callback', passport.authenticate('cloudron', { successRedirect: '/', failureRedirect: '/auth/login' }));
-
-router.get ('/auth/login', passport.authenticate('cloudron'));
-router.get ('/auth/logout', function (req, res) {
-    req.logout();
-    res.redirect('/');
-});
+router.post('/api/login', routes.login);
+router.get ('/api/logout', routes.logout);
 
 app.use(serveStatic(__dirname + '/public'));
 app.use(cors());
 app.use(json({ strict: true }));
-app.use(cookieParser());
-app.use(session({ secret: 'holy guacamoly' }));
-app.use(passport.initialize());
-app.use(passport.session());
 app.use(router);
 app.use(lastmile());
 

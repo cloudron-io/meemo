@@ -1,7 +1,7 @@
 'use strict';
 
 var Vue = require('vue'),
-    Core = require('./core.js').Core;
+    Core = require('./core.js');
 
 var vueThingAdd = new Vue({
     el: '#modalAdd',

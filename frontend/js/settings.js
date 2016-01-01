@@ -1,7 +1,7 @@
 'use strict';
 
 var Vue = require('vue'),
-    Core = require('./core.js').Core;
+    Core = require('./core.js');
 
 var vueSettings = new Vue({
     el: '#settings',
@@ -42,7 +42,8 @@ var vueSettings = new Vue({
             vueSettings.hide();
         },
         logout: function () {
-            window.location.href = '/auth/logout';
+            vueSettings.hide();
+            Core.session.logout();
         }
     }
 });

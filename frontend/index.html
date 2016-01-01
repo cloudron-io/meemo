@@ -24,162 +24,195 @@
   </head>
   <body id="application">
 
-    <div class="modal fade" id="modalAdd">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close">×</button>
-            <h4 class="modal-title">Add something</h4>
-          </div>
-          <div class="modal-body">
-            <textarea class="form-control" id="inputContent" rows="8" v-model="content" autofocus></textarea>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-success" v-on:click="save">Save</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="modal fade" id="modalEdit">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close">×</button>
-            <h4 class="modal-title">Edit</h4>
-          </div>
-          <div class="modal-body">
-            <textarea class="form-control" id="inputContent" rows="8" v-model="thing.content" autofocus></textarea>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-success" v-on:click="save">Save</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="modal fade" id="modalDel">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h4 class="modal-title">Really Delete this Thing?</h4>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-danger" v-on:click="del">Delete</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="settings" id="settings">
-      <div class="backdrop hide" v-on:click="toggleSettings" v-bind:class="{ 'open': open }"></div>
-      <div class="action">
-        <button class="btn btn-default btn-fab" v-on:click="toggleSettings"><i class="fa fa-cog"></i></button>
-      </div>
-      <div class="container" v-bind:class="{ 'open': open }">
+    <div v-show="mainView === 'login'" v-cloak>
+      <div class="container" id="loginView">
         <div class="row">
-          <div class="col-md-12">
-            <h4>Interface</h4>
+          <div class="col-md-4 col-md-offset-4">
+            <h4 class="modal-title">Login</h4>
+          </div>
+        </div>
+        <form v-on:submit.prevent="doLogin">
+          <div class="row">
+            <div class="col-md-4 col-md-offset-4">
+              <div class="form-group label-floating">
+                <label class="control-label" for="inputUsername">Username</label>
+                <input type="text" class="form-control" id="inputUsername" v-model="username" autofocus />
+              </div>
+            </div>
+            <div class="col-md-4 col-md-offset-4">
+              <div class="form-group label-floating">
+                <label class="control-label" for="inputPassword">Password</label>
+                <input type="password" class="form-control" id="inputPassword" v-model="password" autofocus />
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4 col-md-offset-4">
+              <button type="submit" class="btn btn-success pull-right">Login</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div v-show="mainView === 'content'" v-cloak>
+      <div class="modal fade" id="modalAdd">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close">×</button>
+              <h4 class="modal-title">Add something</h4>
+            </div>
+            <div class="modal-body">
+              <textarea class="form-control" id="inputContent" rows="8" v-model="content" autofocus></textarea>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-success" v-on:click="save">Save</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal fade" id="modalEdit">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close">×</button>
+              <h4 class="modal-title">Edit</h4>
+            </div>
+            <div class="modal-body">
+              <textarea class="form-control" id="inputContent" rows="8" v-model="thing.content" autofocus></textarea>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-success" v-on:click="save">Save</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal fade" id="modalDel">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Really Delete this Thing?</h4>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-danger" v-on:click="del">Delete</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings" id="settings">
+        <div class="backdrop hide" v-on:click="toggleSettings" v-bind:class="{ 'open': open }"></div>
+        <div class="action">
+          <button class="btn btn-default btn-fab" v-on:click="toggleSettings"><i class="fa fa-cog"></i></button>
+        </div>
+        <div class="container" v-bind:class="{ 'open': open }">
+          <div class="row">
+            <div class="col-md-12">
+              <h4>Interface</h4>
+            </div>
+          </div>
+          <div class="row">
+            <form class="form-horizontal">
+              <div class="form-group">
+                <label htmlFor="inputTitle" class="col-sm-4 control-label">Title</label>
+                <div class="col-sm-7">
+                  <input type="text" class="form-control" id="inputTitle" v-model="settings.title" placeholder="Title" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label htmlFor="inputBackgroundImage" class="col-sm-4 control-label">Background</label>
+                <div class="col-sm-7">
+                  <input type="text" class="form-control" id="inputBackgroundImage" v-model="settings.backgroundUrl" placeholder="url" />
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="row">
+            <div class="col-md-offset-1 col-md-5">
+              <button class="btn btn-default" v-on:click="toggleSettings">Cancel</button>
+            </div>
+            <div class="col-md-5">
+              <button class="btn btn-success pull-right" v-on:click="saveSettings">Save</button>
+            </div>
+          </div>
+          <br/>
+          <div class="row">
+            <div class="col-md-12">
+              <h4>Content</h4>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-offset-1 col-md-10">
+              <button class="btn btn-primary pull-right" v-on:click="exportThings">Export</button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-offset-1 col-md-10">
+              <button class="btn btn-danger pull-right" v-on:click="logout">Logout</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="container main">
+        <div class="row">
+          <div class="col-md-2 col-md-offset-5">
+              <button class="btn btn-raised btn-block btn-success" v-on:click="showThingAdd">Add</button>
           </div>
         </div>
         <div class="row">
-          <form class="form-horizontal">
+          <div class="col-md-6 col-md-offset-3">
             <div class="form-group">
-              <label htmlFor="inputTitle" class="col-sm-4 control-label">Title</label>
-              <div class="col-sm-7">
-                <input type="text" class="form-control" id="inputTitle" v-model="settings.title" placeholder="Title" />
+              <div class="input-group">
+                <input id="inputSearch" class="form-control" type="text" v-model="search" placeholder="Search" v-on:keyup.enter="doSearch">
+                <span class="input-group-btn">
+                  <button type="button" class="btn btn-default" v-on:click="clearSearch()">
+                    <i class="fa fa-close"></i>
+                  </button>
+                </span>
               </div>
             </div>
-            <div class="form-group">
-              <label htmlFor="inputBackgroundImage" class="col-sm-4 control-label">Background</label>
-              <div class="col-sm-7">
-                <input type="text" class="form-control" id="inputBackgroundImage" v-model="settings.backgroundUrl" placeholder="url" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-2 tags">
+            <div v-show="!busyTags">
+              <h5>Tags</h5>
+              <div v-for="tag in tags | orderBy 'usage' -1">
+                <a href="{{'/#search?#' + tag.name}}" v-on:click="tagSearch(tag)" transition="present">#{{ tag.name }}</a>
+              </div>
+              <br/>
+            </div>
+            <div v-show="busyTags">
+              <br/>
+              <br/>
+              <br/>
+              <center><i class="spinner"></i></center>
+            </div>
+          </div>
+          <div class="col-md-8">
+            <div v-show="!busyThings">
+              <div class="well well-sm thing" v-for="thing in things">
+                  <div class="col-md-12 thing-title-date">
+                    {{ thing.createdAt | prettyDateOffset }}
+                    <button class="btn btn-xs btn-default" v-on:click="showThingDel(thing)">delete</button>
+                    <button class="btn btn-xs btn-default" v-on:click="showThingEdit(thing)">edit</button>
+                </div>
+                <div class="content">{{{ thing.richContent | markdown }}}</div>
               </div>
             </div>
-          </form>
-        </div>
-        <div class="row">
-          <div class="col-md-offset-1 col-md-5">
-            <button class="btn btn-default" v-on:click="toggleSettings">Cancel</button>
-          </div>
-          <div class="col-md-5">
-            <button class="btn btn-success pull-right" v-on:click="saveSettings">Save</button>
-          </div>
-        </div>
-        <br/>
-        <div class="row">
-          <div class="col-md-12">
-            <h4>Content</h4>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-offset-1 col-md-10">
-            <button class="btn btn-primary pull-right" v-on:click="exportThings">Export</button>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-offset-1 col-md-10">
-            <button class="btn btn-danger pull-right" v-on:click="logout">Logout</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="container main">
-      <div class="row">
-        <div class="col-md-2 col-md-offset-5">
-            <button class="btn btn-raised btn-block btn-success" v-on:click="showThingAdd">Add</button>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-6 col-md-offset-3">
-          <div class="form-group">
-            <div class="input-group">
-              <input id="inputSearch" class="form-control" type="text" v-model="search" placeholder="Search" v-on:keyup.enter="doSearch">
-              <span class="input-group-btn">
-                <button type="button" class="btn btn-default" v-on:click="clearSearch()">
-                  <i class="fa fa-close"></i>
-                </button>
-              </span>
+            <div v-show="busyThings">
+              <br/>
+              <br/>
+              <br/>
+              <center><i class="spinner"></i></center>
             </div>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-2 tags">
-          <div v-show="!busyTags">
-            <h5>Tags</h5>
-            <div v-for="tag in tags | orderBy 'usage' -1">
-              <a href="{{'/#search?#' + tag.name}}" v-on:click="tagSearch(tag)" transition="present">#{{ tag.name }}</a>
-            </div>
-            <br/>
-          </div>
-          <div v-show="busyTags">
-            <br/>
-            <br/>
-            <br/>
-            <center><i class="spinner"></i></center>
-          </div>
-        </div>
-        <div class="col-md-8">
-          <div v-show="!busyThings">
-            <div class="well well-sm thing" v-for="thing in things">
-                <div class="col-md-12 thing-title-date">
-                  {{ thing.createdAt | prettyDateOffset }}
-                  <button class="btn btn-xs btn-default" v-on:click="showThingDel(thing)">delete</button>
-                  <button class="btn btn-xs btn-default" v-on:click="showThingEdit(thing)">edit</button>
-              </div>
-              <div class="content">{{{ thing.richContent | markdown }}}</div>
-            </div>
-          </div>
-          <div v-show="busyThings">
-            <br/>
-            <br/>
-            <br/>
-            <center><i class="spinner"></i></center>
           </div>
         </div>
       </div>
