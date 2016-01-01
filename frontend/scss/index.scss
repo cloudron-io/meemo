@@ -57,3 +57,7 @@ body {
 .emoji {
   height: 1.2em;
 }
+
+[v-cloak] {
+  display: none;
+}
