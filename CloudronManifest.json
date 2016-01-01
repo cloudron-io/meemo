@@ -8,7 +8,8 @@
   "healthCheckPath": "/",
   "httpPort": 3000,
   "addons": {
-    "mongodb": {}
+    "mongodb": {},
+    "simpleauth": {}
   },
   "targetBoxVersion": "0.4.0",
   "manifestVersion": 1,
