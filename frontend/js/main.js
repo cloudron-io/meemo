@@ -122,10 +122,10 @@ function refresh(search) {
 
     window.location.href = '/#search?' + (search ? encodeURIComponent(search) : '');
 
-    Core.things.get(search || '', function (error) {
+    Core.things.get(search || '', function (error, data) {
         if (error) return console.error(error);
 
-        vue.things = Core.things.data;
+        vue.things = data;
         vue.busyThings = false;
     });
 }
