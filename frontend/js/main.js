@@ -94,6 +94,7 @@ function reset() {
     vue.search = '';
     vue.username = '';
     vue.password = '';
+    Core.settings.reset();
 }
 
 function main() {

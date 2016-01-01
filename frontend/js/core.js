@@ -37,7 +37,6 @@ function ThingsApi() {
     this._addCallbacks = [];
     this._editCallbacks = [];
     this._delCallbacks = [];
-    this.data = [];
     this._operation = '';
 }
 
@@ -60,11 +59,11 @@ ThingsApi.prototype.get = function (filter, callback) {
         if (error) return callback(error);
         if (result.status !== 200) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
 
-        that.data = result.body.things.map(function (thing) {
+        var tmp = result.body.things.map(function (thing) {
             return new Thing(thing._id, new Date(thing.createdAt).getTime(), thing.tags, thing.content, thing.richContent);
         });
 
-        callback(null, that.data);
+        callback(null, tmp);
     }));
 };
 
@@ -131,11 +130,14 @@ ThingsApi.prototype.export = function () {
 
 function SettingsApi() {
     this._changeCallbacks = [];
-    this.data = {
-        title: '',
-        backgroundUrl: ''
-    };
+    this.data = {};
+    this.reset();
 }
+
+SettingsApi.prototype.reset = function () {
+    this.data.title = 'Guacamoly';
+    this.data.backgroundUrl =  '';
+};
 
 SettingsApi.prototype.save = function (callback) {
     superagent.post(url('/api/settings')).send({ settings: this.data }).end(errorWrapper(function (error, result) {
