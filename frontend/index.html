@@ -149,7 +149,30 @@
           </div>
           <div class="row">
             <div class="col-md-offset-1 col-md-10">
+              <div class="form-group">
+                <input id="inputImport" v-el:importfile type="file">
+                <div class="input-group">
+                  <input readonly="" class="form-control" placeholder="things.json ..." type="text">
+                    <span class="input-group-btn input-group-sm">
+                      <button type="button" class="btn btn-fab btn-fab-mini">
+                        <i class="fa fa-paperclip"></i>
+                      </button>
+                    </span>
+                </div>
+              </div>
+              <br/>
+              <button class="btn btn-primary pull-right" v-on:click="importThings">Import</button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-offset-1 col-md-10">
               <button class="btn btn-primary pull-right" v-on:click="exportThings">Export</button>
+            </div>
+          </div>
+          <br/>
+          <div class="row">
+            <div class="col-md-12">
+              <h4>Session</h4>
             </div>
           </div>
           <div class="row">

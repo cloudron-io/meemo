@@ -26,7 +26,8 @@ exports = module.exports = {
     getTags: getTags,
     settingsSave: settingsSave,
     settingsGet: settingsGet,
-    exportThings: exportThings
+    exportThings: exportThings,
+    importThings: importThings
 };
 
 function init(callback) {
@@ -166,5 +167,23 @@ function exportThings(req, res, next) {
 
             fs.unlink(fileName);
         });
+    });
+}
+
+function importThings(req, res, next) {
+    if (!req.files || !req.files[0]) return next(new HttpError('400', 'missing file'));
+
+    var data;
+    try {
+        data = JSON.parse(req.files[0].buffer.toString('utf-8'));
+    } catch (e) {
+        return next(new HttpError(400, 'content is not JSON'));
+    }
+
+    if (!Array.isArray(data.things)) return next(new HttpError(400, 'content must have a "things" array'));
+
+    things.imp(data, function (error) {
+        if (error) return next(new HttpError(500, error));
+        next(new HttpSuccess(200, {}));
     });
 }

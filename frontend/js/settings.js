@@ -41,6 +41,16 @@ var vueSettings = new Vue({
             Core.things.export();
             vueSettings.hide();
         },
+        importThings: function () {
+            var data = new FormData();
+            data.append('import', this.$els.importfile.files[0]);
+
+            Core.things.import(data, function (error) {
+                if (error) console.error(error);
+
+                // TODO refresh
+            });
+        },
         logout: function () {
             vueSettings.hide();
             Core.session.logout();

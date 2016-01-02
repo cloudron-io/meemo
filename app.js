@@ -7,6 +7,7 @@ require('supererror')({ splatchError: true });
 var express = require('express'),
     json = require('body-parser').json,
     cors = require('cors'),
+    multer  = require('multer'),
     routes = require('./src/routes.js'),
     things = require('./src/things.js'),
     lastmile = require('connect-lastmile'),
@@ -29,6 +30,7 @@ router.post('/api/settings', routes.auth, routes.settingsSave);
 router.get ('/api/settings', routes.auth, routes.settingsGet);
 
 router.get ('/api/export', routes.auth, routes.exportThings);
+router.post('/api/import', routes.auth, multer().any(), routes.importThings);
 
 router.post('/api/login', routes.login);
 router.get ('/api/logout', routes.logout);

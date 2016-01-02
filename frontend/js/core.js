@@ -112,6 +112,13 @@ ThingsApi.prototype.del = function (thing, callback) {
     }));
 };
 
+ThingsApi.prototype.import = function (formData, callback) {
+    superagent.post(url('/api/import')).send(formData).end(function (error, result) {
+        if (error) return callback(error);
+        callback(null);
+    });
+};
+
 ThingsApi.prototype.onAdded = function (callback) {
     this._addCallbacks.push(callback);
 };

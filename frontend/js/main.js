@@ -50,6 +50,9 @@ var vue = new Vue({
                 main();
             });
         },
+        refresh: function () {
+            refresh();
+        },
         doSearch: function () {
             window.location.href = '/#search?' + encodeURIComponent(this.search);
         },
