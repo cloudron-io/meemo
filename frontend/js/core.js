@@ -125,7 +125,7 @@ ThingsApi.prototype.onDeleted = function (callback) {
 };
 
 ThingsApi.prototype.export = function () {
-    window.location.href = this._server + '/api/export';
+    window.location.href = url('/api/export');
 };
 
 function SettingsApi() {
