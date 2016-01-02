@@ -7,7 +7,8 @@ var vueSettings = new Vue({
     el: '#settings',
     data: {
         settings: Core.settings.data,
-        open: false
+        open: false,
+        importFile: null
     },
     methods: {
         show: function () {
@@ -41,6 +42,10 @@ var vueSettings = new Vue({
             Core.things.export();
             vueSettings.hide();
         },
+        importFileChanged: function () {
+            this.importFile = this.$els.importfile.files[0];
+            console.log('---', this.importFile)
+        },
         importThings: function () {
             var data = new FormData();
             data.append('import', this.$els.importfile.files[0]);
@@ -48,8 +53,15 @@ var vueSettings = new Vue({
             Core.things.import(data, function (error) {
                 if (error) console.error(error);
 
+                vueSettings.hide();
+                vueSettings.importFile = null;
+
                 // TODO refresh
             });
+        },
+        importThingsCancel: function () {
+            this.importFile = null;
+            console.log(this.$els.importfile)
         },
         logout: function () {
             vueSettings.hide();

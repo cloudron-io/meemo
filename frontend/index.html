@@ -149,21 +149,24 @@
           </div>
           <div class="row">
             <div class="col-md-offset-1 col-md-10">
-              <div class="form-group">
-                <input id="inputImport" v-el:importfile type="file">
+              <div class="form-group" v-show="!importFile">
+                <input id="inputImport" v-el:importfile type="file" v-on:change="importFileChanged">
                 <div class="input-group">
                   <input readonly="" class="form-control" placeholder="things.json ..." type="text">
                     <span class="input-group-btn input-group-sm">
-                      <button type="button" class="btn btn-fab btn-fab-mini">
-                        <i class="fa fa-paperclip"></i>
-                      </button>
+                      <button class="btn btn-primary">Import</button>
                     </span>
                 </div>
               </div>
+              <div v-show="importFile">
+                <h5>Really Import from {{importFile.name}}?</h5>
+                <button class="btn btn-primary" v-on:click="importThingsCancel">No</button>
+                <button class="btn btn-success" v-on:click="importThings">Yes</button>
+              </div>
               <br/>
-              <button class="btn btn-primary pull-right" v-on:click="importThings">Import</button>
             </div>
           </div>
+          <br/>
           <div class="row">
             <div class="col-md-offset-1 col-md-10">
               <button class="btn btn-primary pull-right" v-on:click="exportThings">Export</button>
@@ -177,7 +180,7 @@
           </div>
           <div class="row">
             <div class="col-md-offset-1 col-md-10">
-              <button class="btn btn-danger pull-right" v-on:click="logout">Logout</button>
+              <button class="btn btn-danger btn-raised pull-right" v-on:click="logout">Logout</button>
             </div>
           </div>
         </div>
