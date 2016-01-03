@@ -47,14 +47,11 @@ gulp.task('favicon', function () {
 gulp.task('3rdparty', function () {
     return gulp.src([
         'node_modules/jquery/dist/*.min.js*',
-        'node_modules/bootstrap/dist/**/*.min.css*',
-        'node_modules/bootstrap/dist/**/*.min.js*',
+        'node_modules/materialize-css/dist/**/*.min.css*',
+        'node_modules/materialize-css/dist/**/*.min.js*',
+        'node_modules/materialize-css/dist/**/*.+(otf|eot|svg|ttf|woff|woff2)',
         'frontend/3rdparty/**/*.min.css*',
         'frontend/3rdparty/**/*.min.js*',
-        'node_modules/bootstrap-material-design/dist/**/roboto.min.css*',
-        'node_modules/font-awesome/**/font-awesome.min.css',
-        'node_modules/font-awesome/**/font-awesome.css.map',
-        'node_modules/font-awesome/**/*.+(otf|eot|svg|ttf|woff|woff2)'
     ]).pipe(gulp.dest('public/3rdparty/'));
 });
 

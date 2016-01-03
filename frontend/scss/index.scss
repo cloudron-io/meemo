@@ -1,5 +1,6 @@
 
 body {
+    background-color: #eee;
     background-repeat: no-repeat;
     background-position: right top;
     background-attachment: fixed;
@@ -51,7 +52,6 @@ body {
 }
 
 .tags {
-    background-color: white;
 }
 
 .emoji {
@@ -60,4 +60,16 @@ body {
 
 [v-cloak] {
   display: none;
+}
+
+textarea {
+    height: 26px;
+    border: none;
+    resize: vertical;
+    transition: height 200ms;
+
+    &.active {
+        border: none;
+        height: 200px;
+    }
 }

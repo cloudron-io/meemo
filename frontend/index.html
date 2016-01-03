@@ -8,18 +8,13 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
-    <link rel="stylesheet" href="3rdparty/css/font-awesome.min.css"/>
-    <link rel="stylesheet" href="3rdparty/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="3rdparty/css/bootstrap-material-design.min.css"/>
-    <link rel="stylesheet" href="3rdparty/css/ripples.min.css"/>
-    <link rel="stylesheet" href="3rdparty/css/roboto.min.css"/>
+    <!--Import Google Icon Font-->
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <!--Import materialize.css-->
+    <link type="text/css" rel="stylesheet" href="3rdparty/css/materialize.min.css"  media="screen,projection"/>
 
     <link rel="stylesheet" href="index.min.css"/>
-
-    <script type="text/javascript" src="3rdparty/jquery.min.js"></script>
-    <script type="text/javascript" src="3rdparty/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="3rdparty/js/material.min.js"></script>
-    <script type="text/javascript" src="3rdparty/js/ripples.min.js"></script>
 
   </head>
   <body id="application">
@@ -56,161 +51,91 @@
     </div>
 
     <div v-show="mainView === 'content'" v-cloak>
-      <div class="modal fade" id="modalAdd">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close">×</button>
-              <h4 class="modal-title">Add something</h4>
-            </div>
-            <div class="modal-body">
-              <textarea class="form-control" id="inputContent" rows="8" v-model="content" autofocus></textarea>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-success" v-on:click="save">Save</button>
+      <div class="navbar-fixed">
+        <nav>
+          <div class="nav-wrapper white" style="color: black;">
+            <div class="input-field">
+              <input id="search" v-el:searchinput type="search" v-model="search" v-on:keyup.enter="doSearch">
+              <label for="search"><i class="material-icons" style="color: black;">search</i></label>
+              <i class="material-icons" v-on:click="clearSearch()" style="color: black;">close</i>
             </div>
           </div>
+        </nav>
+      </div>
+      <div class="modal" id="modalDel">
+        <div class="modal-content">
+          <h4>Really Delete this Thing?</h4>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="modal-action waves-effect btn-flat" v-on:click="deleteThing()">Delete</button>
+          <button type="button" class="modal-action modal-close waves-effect btn-flat" data-dismiss="modal">Close</button>
         </div>
       </div>
 
-      <div class="modal fade" id="modalEdit">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close">×</button>
-              <h4 class="modal-title">Edit</h4>
-            </div>
-            <div class="modal-body">
-              <textarea class="form-control" id="inputContent" rows="8" v-model="thing.content" autofocus></textarea>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-success" v-on:click="save">Save</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="modal fade" id="modalDel">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h4 class="modal-title">Really Delete this Thing?</h4>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-danger" v-on:click="del">Delete</button>
-            </div>
-          </div>
-        </div>
+      <div class="fixed-action-btn" style="bottom: 45px; right: 24px;">
+        <a class="btn-floating btn-large" v-on:click="showSettings()">
+          <i class="large material-icons">reorder</i>
+        </a>
       </div>
 
       <div class="settings" id="settings">
-        <div class="backdrop hide" v-on:click="toggleSettings" v-bind:class="{ 'open': open }"></div>
-        <div class="action">
-          <button class="btn btn-default btn-fab" v-on:click="toggleSettings"><i class="fa fa-cog"></i></button>
-        </div>
         <div class="container" v-bind:class="{ 'open': open }">
-          <div class="row">
-            <div class="col-md-12">
-              <h4>Interface</h4>
-            </div>
-          </div>
-          <div class="row">
-            <form class="form-horizontal">
-              <div class="form-group">
-                <label htmlFor="inputTitle" class="col-sm-4 control-label">Title</label>
-                <div class="col-sm-7">
-                  <input type="text" class="form-control" id="inputTitle" v-model="settings.title" placeholder="Title" />
+          <div class="section">
+            <h5>Interface</h5>
+            <p>
+              <form class="form-horizontal">
+                <div class="form-group">
+                  <label htmlFor="inputTitle" class="col s4 control-label">Title</label>
+                  <div class="col s7">
+                    <input type="text" class="form-control" id="inputTitle" v-model="settings.title" placeholder="Title" />
+                  </div>
                 </div>
-              </div>
-              <div class="form-group">
-                <label htmlFor="inputBackgroundImage" class="col-sm-4 control-label">Background</label>
-                <div class="col-sm-7">
-                  <input type="text" class="form-control" id="inputBackgroundImage" v-model="settings.backgroundUrl" placeholder="url" />
+                <div class="form-group">
+                  <label htmlFor="inputBackgroundImage" class="col s4 control-label">Background</label>
+                  <div class="col s7">
+                    <input type="text" class="form-control" id="inputBackgroundImage" v-model="settings.backgroundUrl" placeholder="url" />
+                  </div>
                 </div>
+              </form>
+              <div class="col s12">
+                <button class="waves-effect waves-teal btn-flat" v-on:click="toggleSettings">Cancel</button>
+                <button class="waves-effect waves-teal btn-flat" v-on:click="saveSettings">Save</button>
               </div>
-            </form>
-          </div>
-          <div class="row">
-            <div class="col-md-offset-1 col-md-5">
-              <button class="btn btn-default" v-on:click="toggleSettings">Cancel</button>
-            </div>
-            <div class="col-md-5">
-              <button class="btn btn-success pull-right" v-on:click="saveSettings">Save</button>
-            </div>
+            </p>
           </div>
           <br/>
-          <div class="row">
-            <div class="col-md-12">
-              <h4>Content</h4>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-offset-1 col-md-10">
-              <div class="form-group" v-show="!importFile">
-                <input id="inputImport" v-el:importfile type="file" v-on:change="importFileChanged">
-                <div class="input-group">
-                  <input readonly="" class="form-control" placeholder="things.json ..." type="text">
-                    <span class="input-group-btn input-group-sm">
-                      <button class="btn btn-primary">Import</button>
-                    </span>
-                </div>
+          <div class="section">
+            <h5>Content</h5>
+            <p>
+              <div v-show="!importFile">
+                <input id="inputImport" v-el:importfile type="file" v-on:change="importFileChanged()" class="hide">
+                <button class="btn btn-raised" v-on:click="triggerImportInput()">Import</button>
               </div>
               <div v-show="importFile">
-                <h5>Really Import from {{importFile.name}}?</h5>
-                <button class="btn btn-primary" v-on:click="importThingsCancel">No</button>
-                <button class="btn btn-success" v-on:click="importThings">Yes</button>
+                <p>Really Import from {{importFile && importFile.name}}?</p>
+                <button class="btn btn-flat" v-on:click="importThingsCancel()">No</button>
+                <button class="btn btn-flat" v-on:click="importThings()">Yes</button>
               </div>
               <br/>
-            </div>
+              <button class="btn btn-raised" v-on:click="exportThings">Export</button>
+            </p>
           </div>
           <br/>
-          <div class="row">
-            <div class="col-md-offset-1 col-md-10">
-              <button class="btn btn-primary pull-right" v-on:click="exportThings">Export</button>
-            </div>
-          </div>
-          <br/>
-          <div class="row">
-            <div class="col-md-12">
-              <h4>Session</h4>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-offset-1 col-md-10">
-              <button class="btn btn-danger btn-raised pull-right" v-on:click="logout">Logout</button>
-            </div>
+          <div class="section">
+            <h5>Session</h5>
+            <p>
+              <button class="btn btn-raised" v-on:click="logout">Logout</button>
+            </p>
           </div>
         </div>
       </div>
 
       <div class="container main">
         <div class="row">
-          <div class="col-md-2 col-md-offset-5">
-              <button class="btn btn-raised btn-block btn-success" v-on:click="showThingAdd">Add</button>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-6 col-md-offset-3">
-            <div class="form-group">
-              <div class="input-group">
-                <input id="inputSearch" class="form-control" type="text" v-model="search" placeholder="Search" v-on:keyup.enter="doSearch">
-                <span class="input-group-btn">
-                  <button type="button" class="btn btn-default" v-on:click="clearSearch()">
-                    <i class="fa fa-close"></i>
-                  </button>
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-2 tags">
-            <div v-show="!busyTags">
+          <div class="col s2 tags">
+            <div v-show="!busyTags" class="right-align">
               <h5>Tags</h5>
-              <div v-for="tag in tags | orderBy 'usage' -1">
+              <div v-for="tag in tags | orderBy 'usage' -1" style="text-overflow: ellipsis; overflow: hidden;">
                 <a href="{{'/#search?#' + tag.name}}" v-on:click="tagSearch(tag)" transition="present">#{{ tag.name }}</a>
               </div>
               <br/>
@@ -222,15 +147,28 @@
               <center><i class="spinner"></i></center>
             </div>
           </div>
-          <div class="col-md-8">
+          <div class="col s8">
+            <div class="card" v-on:click="giveAddFocus()">
+              <div class="card-content right-align">
+                <textarea v-el:addinput placeholder="Add something..." v-model="thingContent" v-bind:class="{ active: !!thingContent }"></textarea>
+                <button v-el:addbutton class="waves-effect waves-teal btn-flat" v-on:click="addThing()" v-bind:class="{ hide: !thingContent }">add</button>
+              </div>
+            </div>
             <div v-show="!busyThings">
-              <div class="well well-sm thing" v-for="thing in things">
-                  <div class="col-md-12 thing-title-date">
+              <div class="card thing" v-for="thing in things">
+                  <div class="col s12 thing-title-date">
                     {{ thing.createdAt | prettyDateOffset }}
-                    <button class="btn btn-xs btn-default" v-on:click="showThingDel(thing)">delete</button>
-                    <button class="btn btn-xs btn-default" v-on:click="showThingEdit(thing)">edit</button>
+                    <span v-show="thing.edit">
+                      <button class="waves-effect waves-teal btn-flat" v-on:click="cancelEdit(thing)">cancel</button>
+                      <button class="waves-effect waves-teal btn green" v-on:click="saveEdit(thing)">save</button>
+                    </span>
+                    <span v-show="!thing.edit">
+                      <button class="waves-effect waves-teal btn-flat" v-on:click="showThingDel(thing)">delete</button>
+                      <button class="waves-effect waves-teal btn-flat" v-on:click="showThingEdit(thing)">edit</button>
+                    </span>
                 </div>
-                <div class="content">{{{ thing.richContent | markdown }}}</div>
+                <div class="card-content" v-show="thing.edit"><textarea v-model="thing.content" style="height: 200px"></textarea></div>
+                <div class="card-content" v-show="!thing.edit">{{{ thing.richContent | markdown }}}</div>
               </div>
             </div>
             <div v-show="busyThings">
@@ -244,6 +182,13 @@
       </div>
     </div>
 
+
+    <!--Import jQuery before materialize.js-->
+    <script type="text/javascript" src="3rdparty/jquery.min.js"></script>
+    <!-- <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script> -->
+    <script type="text/javascript" src="3rdparty/js/materialize.min.js"></script>
+
     <script src="bundle.js"></script>
+
   </body>
 </html>

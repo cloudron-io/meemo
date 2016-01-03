@@ -7,7 +7,7 @@
     overflow: hidden;
 
     &.open {
-        z-index: 1000;
+        z-index: 2000;
     }
 
     .action {
@@ -28,6 +28,8 @@
         box-shadow: 0 8px 17px 0 rgba(0,0,0,.2),0 6px 20px 0 rgba(0,0,0,.19);
         z-index: 2000;
         overflow: auto;
+        padding: 20px;
+        padding-top: 50px;
 
         &.open {
             right: 0;

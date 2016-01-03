@@ -13,18 +13,9 @@ var vueSettings = new Vue({
     methods: {
         show: function () {
             this.open = true;
-
-            $('.backdrop').removeClass('hide');
-            $('.settings').addClass('open');
         },
         hide: function () {
             this.open = false;
-
-            // wait for animation to finish
-            setTimeout(function () {
-                $('.backdrop').addClass('hide');
-                $('.settings').removeClass('open');
-            }, 500);
         },
         toggleSettings: function () {
             if (this.open) this.hide();
@@ -44,7 +35,6 @@ var vueSettings = new Vue({
         },
         importFileChanged: function () {
             this.importFile = this.$els.importfile.files[0];
-            console.log('---', this.importFile)
         },
         importThings: function () {
             var data = new FormData();
@@ -61,7 +51,9 @@ var vueSettings = new Vue({
         },
         importThingsCancel: function () {
             this.importFile = null;
-            console.log(this.$els.importfile)
+        },
+        triggerImportInput: function () {
+            this.$els.importfile.click();
         },
         logout: function () {
             vueSettings.hide();

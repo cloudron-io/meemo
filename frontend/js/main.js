@@ -4,10 +4,9 @@ var Vue = require('vue'),
     Core = require('./core.js');
 
 require('./filter.js');
-var vueThings = require('./thing.js');
 var vueSettings = require('./settings.js');
 
-// Vue.config.debug = true;
+Vue.config.debug = true;
 
 var vue = new Vue({
     el: '#application',
@@ -19,17 +18,52 @@ var vue = new Vue({
         search: '',
         username: '',
         password: '',
-        mainView: ''
+        mainView: '',
+        thingContent: '',
+        activeThing: {}
     },
     methods: {
-        showThingAdd: function () {
-            vueThings.add.open();
+        giveAddFocus: function () {
+            this.$els.addinput.focus();
+        },
+        addThing: function () {
+            Core.things.add(this.thingContent, function (error) {
+                if (error) return console.error(error);
+                vue.thingContent = '';
+                vue.refresh();
+            });
         },
         showThingEdit: function (thing) {
-            vueThings.edit.open(thing);
+            thing.edit = true;
+        },
+        saveEdit: function (thing) {
+            Core.things.edit(thing, function (error) {
+                if (error) return console.error(error);
+                thing.edit = false;
+                vue.refresh();
+            });
+        },
+        cancelEdit: function (thing) {
+            thing.edit = false;
         },
         showThingDel: function (thing) {
-            vueThings.del.open(thing);
+            this.activeThing = thing;
+            $('#modalDel').openModal();
+        },
+        deleteThing: function () {
+            if (!this.activeThing) return;
+
+            Core.things.del(this.activeThing, function (error) {
+                if (error) return console.error(error);
+
+                vue.activeThing = null;
+                vue.refresh();
+
+                $('#modalDel').closeModal();
+            });
+        },
+        showSettings: function () {
+            vueSettings.toggleSettings();
         },
         showLogin: function () {
             this.mainView = 'login';
@@ -113,7 +147,7 @@ function main() {
 
             vue.mainView = 'content';
 
-            $('#inputSearch').focus();
+            window.setTimeout(function () { vue.$els.searchinput.focus(); }, 0);
 
             hashChangeHandler();
         });
@@ -144,6 +178,4 @@ Core.onLogout = function () {
 };
 
 // Main
-$.material.init();
-
 main();

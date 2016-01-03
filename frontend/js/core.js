@@ -30,6 +30,7 @@ function Thing(id, createdAt, tags, content, richContent) {
     this.createdAt = createdAt || 0;
     this.tags = tags || [];
     this.content = content;
+    this.edit = false;
     this.richContent = richContent;
 }
 
@@ -142,8 +143,14 @@ function SettingsApi() {
 }
 
 SettingsApi.prototype.reset = function () {
+    var that = this;
+
     this.data.title = 'Guacamoly';
     this.data.backgroundUrl =  '';
+
+    this._changeCallbacks.forEach(function (callback) {
+        setTimeout(callback.bind(null, that.data), 0);
+    });
 };
 
 SettingsApi.prototype.save = function (callback) {
