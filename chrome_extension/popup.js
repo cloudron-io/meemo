@@ -20,21 +20,23 @@ function tryToDetectSettings() {
         chrome.tabs.executeScript(tabs[0].id, { file: 'detectapp.js' }, function (results) {
             if (results[0] && results[0].addPostUrl) {
                 localStorage.settingsUrl = results[0].addPostUrl;
-                show('main');
+                show('home');
             }
         });
     });
 }
 
+tryToDetectSettings();
+
 document.addEventListener('DOMContentLoaded', function() {
     if (!localStorage.settingsUrl) {
         show('setup');
-        tryToDetectSettings();
     } else {
         show('main');
     }
 
     document.getElementById('actionAdd').addEventListener('click', add);
+    document.getElementById('disconnectButton').addEventListener('click', disconnectApp);
 
     getCurrentTabUrl(function(url) {
         document.getElementById('content').value = url;
@@ -44,6 +46,8 @@ document.addEventListener('DOMContentLoaded', function() {
 var views = [
     'main',
     'done',
+    'home',
+    'disconnected',
     'setup',
     'busy'
 ];
@@ -54,6 +58,11 @@ function show(view) {
     });
 
     document.getElementById(view).classList.remove('hide');
+}
+
+function disconnectApp() {
+    delete localStorage.settingsUrl;
+    show('disconnected');
 }
 
 function add() {
