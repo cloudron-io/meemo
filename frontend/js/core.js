@@ -2,7 +2,7 @@
 
 var superagent = require('superagent');
 
-var g_server = '';
+var g_server = location.origin;
 var g_token = localStorage.token || '';
 
 function guid() {
@@ -230,6 +230,7 @@ SessionApi.prototype.logout = function () {
 module.exports = {
     loginFailed: function () {},
     onLogout: function () {},
+    url: url,
     Thing: Thing,
     session: new SessionApi(),
     settings: new SettingsApi(),

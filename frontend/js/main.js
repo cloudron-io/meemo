@@ -164,6 +164,11 @@ function refresh(search) {
 
         vue.things = data;
         vue.busyThings = false;
+
+        // add global object for browser extensions
+        document.getElementById('guacamoly-settings-node').textContent = JSON.stringify({
+            addPostUrl: Core.url('/api/things')
+        });
     });
 }
 
