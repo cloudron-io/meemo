@@ -25,6 +25,14 @@ function url(path) {
     return g_server + path + '?token=' + g_token;
 }
 
+function origin() {
+    return g_server;
+}
+
+function token() {
+    return g_token;
+}
+
 function Thing(id, createdAt, tags, content, richContent) {
     this.id = id;
     this.createdAt = createdAt || 0;
@@ -231,6 +239,8 @@ module.exports = {
     loginFailed: function () {},
     onLogout: function () {},
     url: url,
+    origin: origin,
+    token: token,
     Thing: Thing,
     session: new SessionApi(),
     settings: new SettingsApi(),

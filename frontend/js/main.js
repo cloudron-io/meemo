@@ -167,7 +167,9 @@ function refresh(search) {
 
         // add global object for browser extensions
         document.getElementById('guacamoly-settings-node').textContent = JSON.stringify({
-            addPostUrl: Core.url('/api/things')
+            origin: Core.origin(),
+            token: Core.token(),
+            title: Core.settings.data.title
         });
     });
 }
