@@ -10,6 +10,7 @@ var express = require('express'),
     multer  = require('multer'),
     routes = require('./src/routes.js'),
     things = require('./src/things.js'),
+    morgan = require('morgan'),
     lastmile = require('connect-lastmile'),
     serveStatic = require('serve-static');
 
@@ -33,8 +34,9 @@ router.get ('/api/export', routes.auth, routes.exportThings);
 router.post('/api/import', routes.auth, multer().any(), routes.importThings);
 
 router.post('/api/login', routes.login);
-router.get ('/api/logout', routes.logout);
+router.get ('/api/logout', routes.auth, routes.logout);
 
+app.use(morgan('dev', { immediate: false, stream: { write: function (str) { console.log(str.slice(0, -1)); } } }));
 app.use(serveStatic(__dirname + '/public'));
 app.use(cors());
 app.use(json({ strict: true }));
