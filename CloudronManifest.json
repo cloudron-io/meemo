@@ -5,7 +5,7 @@
   "description": "file://DESCRIPTION.md",
   "tagline": "Your personal notes",
   "version": "0.1.0",
-  "healthCheckPath": "/",
+  "healthCheckPath": "/api/healthcheck",
   "httpPort": 3000,
   "addons": {
     "mongodb": {},

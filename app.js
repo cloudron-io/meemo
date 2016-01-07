@@ -36,6 +36,8 @@ router.post('/api/import', routes.auth, multer().any(), routes.importThings);
 router.post('/api/login', routes.login);
 router.get ('/api/logout', routes.auth, routes.logout);
 
+router.get ('/api/healthcheck', routes.healthcheck);
+
 app.use(morgan('dev', { immediate: false, stream: { write: function (str) { console.log(str.slice(0, -1)); } } }));
 app.use(serveStatic(__dirname + '/public'));
 app.use(cors());

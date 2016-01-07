@@ -27,7 +27,8 @@ exports = module.exports = {
     settingsSave: settingsSave,
     settingsGet: settingsGet,
     exportThings: exportThings,
-    importThings: importThings
+    importThings: importThings,
+    healthcheck: healthcheck
 };
 
 function init(callback) {
@@ -37,6 +38,10 @@ function init(callback) {
         tags.init,
         settings.init
     ], callback);
+}
+
+function healthcheck(req, res, next) {
+    next(new HttpSuccess(200, {}));
 }
 
 function auth(req, res, next) {
