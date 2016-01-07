@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Guacamoly",
   "description": "This extension allows to add the current page as a Guacamoly thing.",
-  "icons": { "512": "logo.png" },
+  "icons": { "128": "logo.png" },
   "version": "1.0",
   "browser_action": {
     "default_icon": "logo.png",
