@@ -3,14 +3,15 @@
   "title": "Guacamoly",
   "author": "Johannes Zellner",
   "description": "file://DESCRIPTION.md",
-  "tagline": "Your personal data store",
-  "version": "0.0.1",
+  "tagline": "Your personal notes",
+  "version": "0.1.0",
   "healthCheckPath": "/",
   "httpPort": 3000,
   "addons": {
     "mongodb": {},
     "simpleauth": {}
   },
+  "singleUser": true,
   "tags": ["notes", "bookmarks", "todo", "ideas"],
   "changelog": "Initial Version",
   "targetBoxVersion": "0.4.0",
