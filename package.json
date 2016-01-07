@@ -11,7 +11,8 @@
     "url": "https://git-berlin.cloudron.me/nebulon/holyguacamoly.git"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
+  "readme": "README.md",
   "dependencies": {
     "async": "^1.5.0",
     "body-parser": "^1.14.1",
