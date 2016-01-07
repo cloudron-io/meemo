@@ -11,13 +11,16 @@
     "mongodb": {},
     "simpleauth": {}
   },
+  "tags": ["notes", "bookmarks", "todo", "ideas"],
+  "changelog": "Initial Version",
   "targetBoxVersion": "0.4.0",
   "manifestVersion": 1,
   "website": "http://nebulon.de",
   "contactEmail": "johannes@nebulon.de",
   "icon": "logo.png",
   "mediaLinks": [
-    "https://i.imgur.com/usmcF9U.png",
-    "https://i.imgur.com/Rm0GuiX.png"
+    "https://i.imgur.com/BtD7Rdz.png",
+    "https://i.imgur.com/ufrO5mX.png",
+    "https://i.imgur.com/8ptpKcG.png"
   ]
 }
