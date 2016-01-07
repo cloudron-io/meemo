@@ -72,64 +72,6 @@
         </div>
       </div>
 
-      <div class="fixed-action-btn" style="bottom: 45px; right: 24px;">
-        <a class="btn-floating btn-large" v-on:click="showSettings()">
-          <i class="large material-icons">reorder</i>
-        </a>
-      </div>
-
-      <div class="settings" id="settings">
-        <div class="container" v-bind:class="{ 'open': open }">
-          <div class="section">
-            <h5>Interface</h5>
-            <p>
-              <form class="form-horizontal">
-                <div class="form-group">
-                  <label htmlFor="inputTitle" class="col s4 control-label">Title</label>
-                  <div class="col s7">
-                    <input type="text" class="form-control" id="inputTitle" v-model="settings.title" placeholder="Title" />
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label htmlFor="inputBackgroundImage" class="col s4 control-label">Background</label>
-                  <div class="col s7">
-                    <input type="text" class="form-control" id="inputBackgroundImage" v-model="settings.backgroundUrl" placeholder="url" />
-                  </div>
-                </div>
-              </form>
-              <div class="col s12">
-                <button class="waves-effect waves-teal btn-flat" v-on:click="toggleSettings">Cancel</button>
-                <button class="waves-effect waves-teal btn-flat" v-on:click="saveSettings">Save</button>
-              </div>
-            </p>
-          </div>
-          <br/>
-          <div class="section">
-            <h5>Content</h5>
-            <p>
-              <div v-show="!importFile">
-                <input id="inputImport" v-el:importfile type="file" v-on:change="importFileChanged()" class="hide">
-                <button class="btn btn-raised" v-on:click="triggerImportInput()">Import</button>
-              </div>
-              <div v-show="importFile">
-                <p>Really Import from {{importFile && importFile.name}}?</p>
-                <button class="btn btn-flat" v-on:click="importThingsCancel()">No</button>
-                <button class="btn btn-flat" v-on:click="importThings()">Yes</button>
-              </div>
-              <br/>
-              <button class="btn btn-raised" v-on:click="exportThings">Export</button>
-            </p>
-          </div>
-          <br/>
-          <div class="section">
-            <h5>Session</h5>
-            <p>
-              <button class="btn btn-raised" v-on:click="logout">Logout</button>
-            </p>
-          </div>
-        </div>
-      </div>
-
       <div class="container main">
         <div class="row">
           <div class="col s2 tags">
@@ -177,6 +119,65 @@
               <br/>
               <center><i class="spinner"></i></center>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="fixed-action-btn" style="bottom: 45px; right: 24px;">
+        <a class="btn-floating btn-large" v-on:click="showSettings()">
+          <i class="large material-icons">reorder</i>
+        </a>
+      </div>
+
+      <div class="settings" id="settings" v-bind:class="{ 'open': open }">
+        <div class="backdrop" v-bind:class="{ 'open': open }" v-on:click="hide()"></div>
+        <div class="container" v-bind:class="{ 'open': open }">
+          <div class="section">
+            <h5>Interface</h5>
+            <p>
+              <form class="form-horizontal">
+                <div class="form-group">
+                  <label htmlFor="inputTitle" class="col s4 control-label">Title</label>
+                  <div class="col s7">
+                    <input type="text" class="form-control" id="inputTitle" v-model="settings.title" placeholder="Title" />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label htmlFor="inputBackgroundImage" class="col s4 control-label">Background</label>
+                  <div class="col s7">
+                    <input type="text" class="form-control" id="inputBackgroundImage" v-model="settings.backgroundUrl" placeholder="url" />
+                  </div>
+                </div>
+              </form>
+              <div class="col s12">
+                <button class="waves-effect waves-teal btn-flat" v-on:click="toggleSettings">Cancel</button>
+                <button class="waves-effect waves-teal btn-flat" v-on:click="saveSettings">Save</button>
+              </div>
+            </p>
+          </div>
+          <br/>
+          <div class="section">
+            <h5>Content</h5>
+            <p>
+              <div v-show="!importFile">
+                <input id="inputImport" v-el:importfile type="file" v-on:change="importFileChanged()" class="hide">
+                <button class="btn btn-raised" v-on:click="triggerImportInput()">Import</button>
+              </div>
+              <div v-show="importFile">
+                <p>Really Import from {{importFile && importFile.name}}?</p>
+                <button class="btn btn-flat" v-on:click="importThingsCancel()">No</button>
+                <button class="btn btn-flat" v-on:click="importThings()">Yes</button>
+              </div>
+              <br/>
+              <button class="btn btn-raised" v-on:click="exportThings">Export</button>
+            </p>
+          </div>
+          <br/>
+          <div class="section">
+            <h5>Session</h5>
+            <p>
+              <button class="btn btn-raised" v-on:click="logout">Logout</button>
+            </p>
           </div>
         </div>
       </div>
