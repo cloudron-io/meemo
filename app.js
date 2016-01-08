@@ -39,7 +39,8 @@ router.get ('/api/logout', routes.auth, routes.logout);
 
 router.get ('/api/healthcheck', routes.healthcheck);
 
-router.get('/api/extensions/chrome', extensions.chrome);
+router.get('/api/extensions/chrome.crx', extensions.chrome);
+router.get('/api/extensions/firefox.xpi', extensions.firefox);
 
 app.use(morgan('dev', { immediate: false, stream: { write: function (str) { console.log(str.slice(0, -1)); } } }));
 app.use(serveStatic(__dirname + '/public'));

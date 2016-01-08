@@ -57,10 +57,16 @@ gulp.task('3rdparty', function () {
 });
 
 gulp.task('chrome_extension', function () {
-    run('chromium --pack-extension=chrome_extension --pack-extension-key=chrome_extension.pem').exec();
+    run('chromium --pack-extension=webextension --pack-extension-key=webextension.pem').exec();
 });
 
-gulp.task('default', ['clean', 'html', 'favicon', 'styles', 'browserify', '3rdparty'], function() {});
+gulp.task('firefox_extension', function () {
+    run('/bin/bash build_firefox_extension.sh').exec();
+});
+
+gulp.task('extensions', ['chrome_extension', 'firefox_extension'], function () {});
+
+gulp.task('default', ['clean', 'html', 'favicon', 'styles', 'browserify', '3rdparty'], function () {});
 
 gulp.task('clean', function () {
     del.sync(['public/']);

@@ -1,13 +1,20 @@
 'use strict';
 
-// Query filter to be passed to chrome.tabs.query - see
-// https://developer.chrome.com/extensions/tabs#method-query
+/* global chrome */
+
 var queryInfo = {
     active: true,
     currentWindow: true
 };
 
-// localStorage.settingsUrl = 'https://things.nebulon.info/api/things?token=70c40f76-75cb-49a0-bf97-e06815208baf';
+chrome.runtime.onMessage.addListener(function (msg, sender) {
+    if (msg.origin && msg.token && msg.title) {
+        localStorage.origin = msg.origin;
+        localStorage.token = msg.token;
+        localStorage.title = msg.title;
+        show('home');
+    }
+});
 
 function getCurrentTabUrl(callback) {
     chrome.tabs.query(queryInfo, function(tabs) {
@@ -17,14 +24,7 @@ function getCurrentTabUrl(callback) {
 
 function tryToDetectSettings() {
     chrome.tabs.query(queryInfo, function(tabs) {
-        chrome.tabs.executeScript(tabs[0].id, { file: 'detectapp.js' }, function (results) {
-            if (results[0] && results[0].origin && results[0].token) {
-                localStorage.origin = results[0].origin;
-                localStorage.token = results[0].token;
-                localStorage.title = results[0].title;
-                show('home');
-            }
-        });
+        chrome.tabs.executeScript(tabs[0].id, { file: 'detectapp.js' });
     });
 }
 

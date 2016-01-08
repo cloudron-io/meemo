@@ -1,16 +1,10 @@
-
 <!doctype html>
-<!--
- This page is shown when the extension button is clicked, because the
- "browser_action" field in manifest.json contains the "default_popup" key with
- value "popup.html".
- -->
 <html>
   <head>
-    <title>Guacamoly</title>
 
+    <title>Guacamoly</title>
+    <meta charset="utf-8">
     <link rel="stylesheet" href="popup.css">
-    <script src="popup.js"></script>
 
   </head>
   <body>
@@ -19,7 +13,7 @@
       <br/>
       <button id="actionAdd">Add</button>
     </div>
-    <div id="setup" class="hide">
+    <div id="setup" class="">
       <p>Please visit your Guacamoly app</p>
     </div>
     <div id="home" class="hide">
@@ -38,6 +32,7 @@
     <div id="busy" class="hide">
       <center><i class="spinner"></i></center>
     </div>
+
+    <script src="popup.js"></script>
   </body>
 </html>
-

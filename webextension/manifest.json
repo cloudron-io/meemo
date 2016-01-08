@@ -2,13 +2,23 @@
   "manifest_version": 2,
   "name": "Guacamoly",
   "description": "This extension allows to add the current page as a Guacamoly thing.",
+  "homepage_url": "https://git.nebulon.info/nebulon/holyguacamoly",
   "icons": { "128": "logo.png" },
   "version": "0.1.0",
   "browser_action": {
+    "default_title": "Guacamoly",
     "default_icon": "logo.png",
     "default_popup": "popup.html"
   },
   "permissions": [
     "activeTab"
-  ]
+  ],
+  "web_accessible_resources": [
+    "logo.png"
+  ],
+  "applications": {
+    "gecko": {
+      "id": "guacamoly@nebulon.de"
+    }
+  }
 }
