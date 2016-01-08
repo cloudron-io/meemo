@@ -9,6 +9,7 @@ var gulp = require('gulp'),
     browserify = require('browserify'),
     buffer = require('vinyl-buffer'),
     uglify = require('gulp-uglify'),
+    run = require('gulp-run'),
     gutil = require('gulp-util');
 
 gulp.task('styles', function () {
@@ -53,6 +54,10 @@ gulp.task('3rdparty', function () {
         'frontend/3rdparty/**/*.min.css*',
         'frontend/3rdparty/**/*.min.js*',
     ]).pipe(gulp.dest('public/3rdparty/'));
+});
+
+gulp.task('chrome_extension', function () {
+    run('chromium --pack-extension=chrome_extension --pack-extension-key=chrome_extension.pem').exec();
 });
 
 gulp.task('default', ['clean', 'html', 'favicon', 'styles', 'browserify', '3rdparty'], function() {});
