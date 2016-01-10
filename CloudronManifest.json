@@ -4,7 +4,7 @@
   "author": "Johannes Zellner",
   "description": "file://DESCRIPTION.md",
   "tagline": "Your personal notes",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "healthCheckPath": "/api/healthcheck",
   "httpPort": 3000,
   "addons": {
@@ -16,7 +16,7 @@
   "changelog": "Initial Version",
   "targetBoxVersion": "0.4.0",
   "manifestVersion": 1,
-  "website": "http://nebulon.de",
+  "website": "https://github.com/nebulade/guacamoly",
   "contactEmail": "johannes@nebulon.de",
   "icon": "logo.png",
   "mediaLinks": [
