@@ -1,16 +1,16 @@
+'use strict';
+
 var gulp = require('gulp'),
     source = require('vinyl-source-stream'),
     sourcemaps = require('gulp-sourcemaps'),
     sass = require('gulp-sass'),
-    minifycss = require('gulp-minify-css'),
+    minifycss = require('gulp-cssnano'),
     autoprefixer = require('gulp-autoprefixer'),
     del = require('del'),
     rename = require('gulp-rename'),
     browserify = require('browserify'),
     buffer = require('vinyl-buffer'),
-    uglify = require('gulp-uglify'),
-    run = require('gulp-run'),
-    gutil = require('gulp-util');
+    run = require('gulp-run');
 
 gulp.task('styles', [ 'styles-material' ], function () {
     return gulp.src('frontend/scss/index.scss')

@@ -3,8 +3,10 @@
   "title": "Guacamoly",
   "author": "Johannes Zellner",
   "description": "file://DESCRIPTION.md",
+  "changelog": "file://CHANGELOG",
+  "icon": "file://logo.png",
   "tagline": "Your personal notes",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "healthCheckPath": "/api/healthcheck",
   "httpPort": 3000,
   "addons": {
@@ -18,7 +20,6 @@
   "manifestVersion": 1,
   "website": "https://github.com/nebulade/guacamoly",
   "contactEmail": "johannes@nebulon.de",
-  "icon": "logo.png",
   "mediaLinks": [
     "https://i.imgur.com/BtD7Rdz.png",
     "https://i.imgur.com/ufrO5mX.png",

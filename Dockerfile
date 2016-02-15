@@ -6,14 +6,12 @@ EXPOSE 3000
 RUN mkdir -p /app/code
 WORKDIR /app/code
 
+ENV PATH /usr/local/node-4.2.1/bin:$PATH
+
 ADD src/ /app/code/src/
 ADD frontend/ /app/code/frontend/
 ADD webextension.xpi webextension.crx webextension.pem gulpfile.js package.json app.js start.sh things.json logo.png /app/code/
 
-ENV PATH /usr/local/node-4.2.1/bin:$PATH
-
-RUN npm install
-RUN npm install -g gulp-cli
-RUN gulp default
+RUN npm install && npm install -g gulp-cli && gulp default
 
 CMD [ "/app/code/start.sh" ]
