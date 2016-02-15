@@ -8,7 +8,9 @@ body {
 }
 
 .main {
-    margin-top: 50px;
+    @media (min-width: 992px) {
+        margin-top: 50px;
+    }
 }
 
 .filter {
@@ -32,9 +34,16 @@ body {
     padding-top: 0;
 }
 
-.content {
-    width: 100%;
-    overflow-x: auto;
+.card {
+    overflow: hidden;
+}
+
+.card-content {
+    overflow: hidden;
+}
+
+.thing-content {
+    overflow: scroll;
 }
 
 @import 'settings';

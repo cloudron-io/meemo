@@ -74,7 +74,7 @@
 
       <div class="container main">
         <div class="row">
-          <div class="col s2 tags">
+          <div class="col s12 m12 l2 hide-on-med-and-down tags">
             <div v-show="!busyTags" class="right-align">
               <br/>
               <div v-for="tag in tags | orderBy 'usage' -1" style="text-overflow: ellipsis; overflow: hidden;">
@@ -89,7 +89,7 @@
               <center><i class="spinner"></i></center>
             </div>
           </div>
-          <div class="col s8">
+          <div class="col s12 m12 l10">
             <div class="card" v-on:click="giveAddFocus()">
               <div class="card-content right-align">
                 <textarea v-el:addinput placeholder="Add something..." v-model="thingContent" v-bind:class="{ active: !!thingContent }"></textarea>
@@ -109,8 +109,10 @@
                       <button class="waves-effect waves-teal btn-flat" v-on:click="showThingEdit(thing)">edit</button>
                     </span>
                 </div>
-                <div class="card-content" v-show="thing.edit"><textarea v-model="thing.content" style="height: 200px"></textarea></div>
-                <div class="card-content" v-show="!thing.edit">{{{ thing.richContent | markdown }}}</div>
+                <div class="card-content">
+                  <div v-show="thing.edit"><textarea v-model="thing.content" style="height: 200px"></textarea></div>
+                  <div class="thing-content" v-show="!thing.edit">{{{ thing.richContent | markdown }}}</div>
+                </div>
               </div>
             </div>
             <div v-show="busyThings">
