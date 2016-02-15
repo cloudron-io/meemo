@@ -12,7 +12,7 @@
     <link href="//fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     <!--Import materialize.css-->
-    <link type="text/css" rel="stylesheet" href="3rdparty/css/materialize.min.css"  media="screen,projection"/>
+    <link type="text/css" rel="stylesheet" href="3rdparty/materialize.min.css"  media="screen,projection"/>
 
     <link rel="stylesheet" href="index.min.css"/>
 
@@ -89,7 +89,7 @@
               <center><i class="spinner"></i></center>
             </div>
           </div>
-          <div class="col s12 m12 l10">
+          <div class="col s12 m12 l8">
             <div class="card" v-on:click="giveAddFocus()">
               <div class="card-content right-align">
                 <textarea v-el:addinput placeholder="Add something..." v-model="thingContent" v-bind:class="{ active: !!thingContent }"></textarea>
