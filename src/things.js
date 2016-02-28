@@ -91,8 +91,8 @@ function extractTags(data) {
     return tagObjects;
 }
 
-function getAll(query, callback) {
-    g_things.find(query).sort({ modifiedAt: -1 }).toArray(function (error, result) {
+function getAll(query, skip, limit, callback) {
+    g_things.find(query).skip(skip).limit(limit).sort({ modifiedAt: -1 }).toArray(function (error, result) {
         if (error) return callback(error);
         if (!result) return callback(null, []);
 

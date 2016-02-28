@@ -56,9 +56,13 @@ ThingsApi.prototype.get = function (filter, callback) {
 
     this._operation = operation;
 
-    if (filter) u += '&filter=' + encodeURIComponent(filter);
+    var query = {};
 
-    superagent.get(u).end(errorWrapper(function (error, result) {
+    if (filter) query.filter = filter;
+    query.skip = 0;
+    query.limit = 10;
+
+    superagent.get(u).query(query).end(errorWrapper(function (error, result) {
         // ignore this if we moved on
         if (that._operation !== operation) {
             console.log('ignore this call');

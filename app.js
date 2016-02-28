@@ -55,7 +55,7 @@ function exit(error) {
 }
 
 function welcomeIfNeeded(callback) {
-    things.getAll({}, function (error, result) {
+    things.getAll({}, 0, 1, function (error, result) {
         if (error) return callback(error);
         if (result.length > 0) return callback(null);
 

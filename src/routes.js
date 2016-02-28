@@ -106,7 +106,10 @@ function getAll(req, res, next) {
         };
     }
 
-    things.getAll(query, function (error, result) {
+    var skip = isNaN(parseInt(req.query.skip)) ? 0 : parseInt(req.query.skip);
+    var limit = isNaN(parseInt(req.query.limit)) ? 10 : parseInt(req.query.limit);
+
+    things.getAll(query, skip, limit, function (error, result) {
         if (error) return next(new HttpError(500, error));
         next(new HttpSuccess(200, { things: result }));
     });
