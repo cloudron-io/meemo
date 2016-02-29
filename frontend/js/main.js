@@ -168,7 +168,7 @@ function main() {
 
             vue.mainView = 'content';
 
-            window.setTimeout(function () { vue.$els.searchinput.focus(); }, 0);
+            window.setTimeout(function () { vue.$els.addinput.focus(); }, 0);
 
             hashChangeHandler();
         });

@@ -143,7 +143,7 @@ textarea {
     text-align: left;
     padding: 10px;
     background-color: white;
-    width: 400px;
+    max-height: 400px;
     overflow: auto;
     box-shadow: 0 13px 22px 0 rgba(0,0,0,.2),0 15px 20px 0 rgba(0,0,0,.19)
 }

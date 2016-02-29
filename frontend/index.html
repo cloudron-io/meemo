@@ -103,7 +103,7 @@
             <input type="text" placeholder="Search..." class="search" v-el:searchinput type="search" v-model="search" v-on:focus="showTags()" v-on:blur="hideTags()" v-on:keyup.enter="doSearch()">
             <button type="button" class="btn btn-default btn-small" id="showTagsButton" v-on:click.stop="clearSearch()"><i class="material-icons">clear</i></button>
             <div class="tag-dropdown" v-show="tagsVisible">
-              <div v-for="tag in tags" class="col-xs-6">
+              <div v-for="tag in tags" class="col-xs-4">
                 <a href="{{'/#search?#' + tag.name}}" v-on:click="tagSearch(tag)" class="tag-link">{{ tag.name }}</a>
               </div>
             </div>
