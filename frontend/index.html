@@ -64,7 +64,7 @@
       </div>
       <div class="modal" id="modalDel">
         <div class="modal-content">
-          <h4>Really Delete this Thing?</h4>
+          <h4>Really Delete this Note?</h4>
         </div>
         <div class="modal-footer">
           <button type="button" class="modal-action waves-effect btn-flat" v-on:click="deleteThing()">Delete</button>
@@ -97,16 +97,18 @@
               </div>
             </div>
             <div v-show="!busyThings">
-              <div class="card thing" v-for="thing in things">
+              <div class="card thing" v-for="thing in things" v-bind:class="{ edit: thing.edit }">
                   <div class="col s12 thing-title-date">
                     {{ thing.createdAt | prettyDateOffset }}
                     <span v-show="thing.edit">
-                      <button class="waves-effect waves-teal btn-flat" v-on:click="cancelEdit(thing)">cancel</button>
-                      <button class="waves-effect waves-teal btn green" v-on:click="saveEdit(thing)">save</button>
+                      <button class="waves-effect waves-teal btn-flat btn-small" v-on:click="cancelEdit(thing)"><i class="material-icons">clear</i></button>
+                      &nbsp;
+                      <button class="waves-effect waves-teal btn-flat btn-small" v-on:click="saveEdit(thing)"><i class="material-icons">done</i></button>
                     </span>
                     <span v-show="!thing.edit">
-                      <button class="waves-effect waves-teal btn-flat" v-on:click="showThingDel(thing)">delete</button>
-                      <button class="waves-effect waves-teal btn-flat" v-on:click="showThingEdit(thing)">edit</button>
+                      <button class="waves-effect waves-teal btn-flat btn-small" v-on:click="showThingDel(thing)"><i class="material-icons">delete</i></button>
+                      <button class="waves-effect waves-teal btn-flat btn-small" v-on:click="showThingEdit(thing)"><i class="material-icons">edit</i></button>
+                      <button class="waves-effect waves-teal btn-flat btn-small"><i class="material-icons">more_vert</i></button>
                     </span>
                 </div>
                 <div class="card-content">

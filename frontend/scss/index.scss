@@ -36,6 +36,10 @@ body {
 
 .card {
     overflow: hidden;
+
+    &.edit {
+        background-color: rgba(255, 231, 0, 0.22);
+    }
 }
 
 .card-content {
@@ -88,4 +92,8 @@ textarea {
     position: absolute;
     top: 20px;
     right: 20px;
+}
+
+.btn-small {
+    padding: 0 !important;
 }
