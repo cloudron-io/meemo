@@ -53,7 +53,7 @@ var vue = new Vue({
         },
         showThingDel: function (thing) {
             this.activeThing = thing;
-            $('#modalDel').openModal();
+            $('#modalDel').modal('show');
         },
         deleteThing: function () {
             if (!this.activeThing) return;
@@ -64,12 +64,12 @@ var vue = new Vue({
                 vue.activeThing = null;
                 vue.refresh();
 
-                $('#modalDel').closeModal();
+                $('#modalDel').modal('hide');
             });
         },
         showThingShare: function (thing) {
             vue.shareThingLink = 'http://foobar';
-            $('#modalShare').openModal();
+            $('#modalShare').modal('show');
         },
         showSettings: function () {
             vueSettings.toggleSettings();

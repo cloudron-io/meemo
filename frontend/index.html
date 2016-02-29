@@ -12,7 +12,20 @@
     <link href="//fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     <!--Import materialize.css-->
-    <link type="text/css" rel="stylesheet" href="3rdparty/materialize.min.css"  media="screen,projection"/>
+    <!-- <link type="text/css" rel="stylesheet" href="3rdparty/materialize.min.css"  media="screen,projection"/> -->
+
+
+    <!-- Bootstrap -->
+    <link href="3rdparty/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Material Design -->
+    <link href="3rdparty/css/bootstrap-material-design.min.css" rel="stylesheet">
+    <link href="3rdparty/css/ripples.min.css" rel="stylesheet">
+
+    <script src="3rdparty/jquery.min.js"></script>
+    <script src="3rdparty/js/bootstrap.min.js"></script>
+    <script src="3rdparty/js/ripples.min.js"></script>
+    <script src="3rdparty/js/material.min.js"></script>
 
     <link rel="stylesheet" href="index.min.css"/>
 
@@ -51,40 +64,50 @@
     </div>
 
     <div v-show="mainView === 'content'" v-cloak>
-      <div class="navbar-fixed">
-        <nav>
-          <div class="nav-wrapper white" style="color: black;">
-            <div class="input-field">
-              <input id="search" v-el:searchinput type="search" v-model="search" v-on:keyup.enter="doSearch">
-              <label for="search"><i class="material-icons" style="color: black;">search</i></label>
-              <i class="material-icons" v-on:click="clearSearch()" style="color: black;">close</i>
+      <div class="modal" id="modalDel">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+            </div>
+            <div class="modal-body">
+              <h4>Really Delete this Note?</h4>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger" v-on:click="deleteThing()">Delete</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
           </div>
-        </nav>
-      </div>
-
-      <div class="modal" id="modalDel">
-        <div class="modal-content">
-          <h4>Really Delete this Note?</h4>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="modal-action waves-effect btn-flat" v-on:click="deleteThing()">Delete</button>
-          <button type="button" class="modal-action modal-close waves-effect btn-flat" data-dismiss="modal">Close</button>
         </div>
       </div>
 
       <div class="modal" id="modalShare">
-        <div class="modal-content">
-          This note is publicly available at <a href="{{ shareThingLink }}" target="_blank">{{ shareThingLink }}</a>
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+            </div>
+            <div class="modal-body">
+              This note is publicly available at <a href="{{ shareThingLink }}" target="_blank">{{ shareThingLink }}</a>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+          </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="modal-action modal-close waves-effect btn-flat" data-dismiss="modal">Close</button>
+      </div>
+
+      <div class="container-fluid title-bar shadow">
+        <div class="row">
+          <div class="col-xs-12 no-wrap align-center">
+            <button type="button" class="btn btn-default btn-small" v-on:click="clearSearch()"><i class="material-icons">search</i></button>
+            <input type="text" class="search" v-el:searchinput type="search" v-model="search" v-on:keyup.enter="doSearch()">
+            <button type="button" class="btn btn-default btn-small" v-on:click="doSearch()"><i class="material-icons">clear</i></button>
+          </div>
         </div>
       </div>
 
       <div class="container main">
         <div class="row">
-          <div class="col s12 m12 l2 hide-on-med-and-down tags">
+          <div class="col-xs-1 tags">
             <div v-show="!busyTags" class="right-align">
               <br/>
               <div v-for="tag in tags | orderBy 'usage' -1" style="text-overflow: ellipsis; overflow: hidden;">
@@ -99,27 +122,27 @@
               <center><i class="spinner"></i></center>
             </div>
           </div>
-          <div class="col s12 m12 l8">
-            <div class="card" v-on:click="giveAddFocus()">
-              <div class="card-content right-align">
+          <div class="col-xs-10">
+            <div class="well" v-on:click="giveAddFocus()">
+              <div class="card-content align-right">
                 <textarea v-el:addinput placeholder="Add something..." v-model="thingContent" v-bind:class="{ active: !!thingContent }"></textarea>
-                <button v-el:addbutton class="waves-effect waves-teal btn-flat" v-on:click="addThing()" v-bind:class="{ hide: !thingContent }">add</button>
+                <button v-el:addbutton class="btn btn-default" v-on:click="addThing()" v-bind:class="{ hide: !thingContent }">add</button>
               </div>
             </div>
             <div v-show="!busyThings">
-              <div class="card thing" v-for="thing in things" v-bind:class="{ edit: thing.edit }">
-                  <div class="col s12 thing-title-date">
-                    {{ thing.createdAt | prettyDateOffset }}
-                    <span v-show="thing.edit">
-                      <button class="waves-effect waves-teal btn-flat btn-small" v-on:click="cancelEdit(thing)"><i class="material-icons">clear</i></button>
-                      &nbsp;
-                      <button class="waves-effect waves-teal btn-flat btn-small" v-on:click="saveEdit(thing)"><i class="material-icons">done</i></button>
-                    </span>
-                    <span v-show="!thing.edit">
-                      <button class="waves-effect waves-teal btn-flat btn-small" v-on:click="showThingShare(thing)"><i class="material-icons">share</i></button>
-                      <button class="waves-effect waves-teal btn-flat btn-small" v-on:click="showThingEdit(thing)"><i class="material-icons">edit</i></button>
-                      <button class="waves-effect waves-teal btn-flat btn-small" v-on:click="showThingDel(thing)"><i class="material-icons">delete</i></button>
-                    </span>
+              <div class="well" v-for="thing in things" v-bind:class="{ edit: thing.edit }">
+                <div class="thing-title-date">
+                  {{ thing.createdAt | prettyDateOffset }}
+                  <span v-show="thing.edit">
+                    <button class="btn btn-default btn-small" v-on:click="cancelEdit(thing)"><i class="material-icons">clear</i></button>
+                    &nbsp;
+                    <button class="btn btn-default btn-small" v-on:click="saveEdit(thing)"><i class="material-icons">done</i></button>
+                  </span>
+                  <span v-show="!thing.edit">
+                    <button class="btn btn-default btn-small" v-on:click="showThingShare(thing)"><i class="material-icons">share</i></button>
+                    <button class="btn btn-default btn-small" v-on:click="showThingEdit(thing)"><i class="material-icons">edit</i></button>
+                    <button class="btn btn-default btn-small" v-on:click="showThingDel(thing)"><i class="material-icons">delete</i></button>
+                  </span>
                 </div>
                 <div class="card-content">
                   <div v-show="thing.edit"><textarea v-model="thing.content" id="{{ 'editThingTextarea' + thing.id }}" style="height: 200px"></textarea></div>
@@ -137,8 +160,8 @@
         </div>
       </div>
 
-      <div class="fixed-action-btn" style="bottom: 45px; right: 24px;">
-        <a class="btn-floating btn-large" v-on:click="showSettings()">
+      <div class="fixed-action-btn">
+        <a class="btn btn-fab" v-on:click="showSettings()">
           <i class="large material-icons">reorder</i>
         </a>
       </div>
@@ -147,25 +170,25 @@
         <div class="backdrop" v-bind:class="{ 'open': open }" v-on:click="hide()"></div>
         <div class="container" v-bind:class="{ 'open': open }">
           <div class="section">
-            <h5>Interface</h5>
+            <h4>Interface</h4>
             <p>
               <form class="form-horizontal">
                 <div class="form-group">
-                  <label htmlFor="inputTitle" class="col s4 control-label">Title</label>
-                  <div class="col s7">
+                  <label htmlFor="inputTitle" class="col-xs-4 control-label">Title</label>
+                  <div class="col-xs-7">
                     <input type="text" class="form-control" id="inputTitle" v-model="settings.title" placeholder="Title" />
                   </div>
                 </div>
                 <div class="form-group">
-                  <label htmlFor="inputBackgroundImage" class="col s4 control-label">Background</label>
-                  <div class="col s7">
+                  <label htmlFor="inputBackgroundImage" class="col-xs-4 control-label">Background</label>
+                  <div class="col-xs-7">
                     <input type="text" class="form-control" id="inputBackgroundImage" v-model="settings.backgroundUrl" placeholder="url" />
                   </div>
                 </div>
               </form>
               <div class="col s12">
-                <button class="waves-effect waves-teal btn-flat" v-on:click="toggleSettings">Cancel</button>
-                <button class="waves-effect waves-teal btn-flat" v-on:click="saveSettings">Save</button>
+                <button class="btn btn-default" v-on:click="toggleSettings">Cancel</button>
+                <button class="btn btn-default" v-on:click="saveSettings">Save</button>
               </div>
             </p>
           </div>
@@ -208,10 +231,6 @@
     </div>
 
     <div id="guacamoly-settings-node" class="hide"></div>
-
-    <!--Import jQuery before materialize.js-->
-    <script type="text/javascript" src="3rdparty/jquery.min.js"></script>
-    <script type="text/javascript" src="3rdparty/js/materialize.min.js"></script>
 
     <script src="bundle.js"></script>
 

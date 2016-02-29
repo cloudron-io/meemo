@@ -8,17 +8,7 @@ body {
 }
 
 .main {
-    @media (min-width: 992px) {
-        margin-top: 50px;
-    }
-}
-
-.filter {
-    width: 100%;
-}
-
-.well {
-    position: relative;
+    margin-top: 100px;
 }
 
 .thing-title-date {
@@ -29,10 +19,10 @@ body {
     .btn-small {
         margin: 0;
         padding: 0 !important;
-        color: #aaa;
+        color: #aaa !important;
 
         &:hover {
-            color: black;
+            color: black !important;
         }
     }
 }
@@ -41,16 +31,24 @@ body {
     padding-top: 0;
 }
 
-.card {
+.well {
     overflow: hidden;
 
     &.edit {
-        background-color: rgba(255, 231, 0, 0.22);
+        background-color: rgba(255, 231, 0, 0.22) !important;
     }
+}
+
+.align-right {
+    text-align: right;
 }
 
 .card-content {
     overflow: hidden;
+
+    textarea {
+        width: 100%;
+    }
 }
 
 .thing-content {
@@ -99,4 +97,38 @@ textarea {
     position: absolute;
     top: 20px;
     right: 20px;
+}
+
+.fixed-action-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+}
+
+.title-bar {
+    background-color: white;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+.shadow {
+    box-shadow: 0 8px 17px 0 rgba(0,0,0,.2),0 6px 20px 0 rgba(0,0,0,.19);
+}
+
+.search {
+    border: 0;
+    border-bottom: 1px solid;
+    width: 50%;
+    font-size: 24px;
+}
+
+.no-wrap {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.align-center {
+    text-align: center;
 }
