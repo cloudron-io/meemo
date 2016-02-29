@@ -98,9 +98,9 @@
       <div class="container-fluid title-bar shadow">
         <div class="row">
           <div class="col-xs-12 no-wrap align-center">
-            <button type="button" class="btn btn-default btn-small" v-on:click="clearSearch()"><i class="material-icons">search</i></button>
-            <input type="text" class="search" v-el:searchinput type="search" v-model="search" v-on:keyup.enter="doSearch()">
-            <button type="button" class="btn btn-default btn-small" v-on:click="doSearch()"><i class="material-icons">clear</i></button>
+            <button type="button" class="btn btn-default btn-small" v-on:click="doSearch()"><i class="material-icons">search</i></button>
+            <input type="text" placeholder="Search..." class="search" v-el:searchinput type="search" v-model="search" v-on:keyup.enter="doSearch()">
+            <button type="button" class="btn btn-default btn-small" v-on:click="clearSearch()"><i class="material-icons">clear</i></button>
           </div>
         </div>
       </div>
