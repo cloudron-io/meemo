@@ -20,7 +20,8 @@ var vue = new Vue({
         password: '',
         mainView: '',
         thingContent: '',
-        activeThing: {}
+        activeThing: {},
+        shareThingLink: ''
     },
     methods: {
         giveAddFocus: function () {
@@ -65,6 +66,10 @@ var vue = new Vue({
 
                 $('#modalDel').closeModal();
             });
+        },
+        showThingShare: function (thing) {
+            vue.shareThingLink = 'http://foobar';
+            $('#modalShare').openModal();
         },
         showSettings: function () {
             vueSettings.toggleSettings();

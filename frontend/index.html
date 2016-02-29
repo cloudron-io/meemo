@@ -62,12 +62,22 @@
           </div>
         </nav>
       </div>
+
       <div class="modal" id="modalDel">
         <div class="modal-content">
           <h4>Really Delete this Note?</h4>
         </div>
         <div class="modal-footer">
           <button type="button" class="modal-action waves-effect btn-flat" v-on:click="deleteThing()">Delete</button>
+          <button type="button" class="modal-action modal-close waves-effect btn-flat" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+
+      <div class="modal" id="modalShare">
+        <div class="modal-content">
+          This note is publicly available at <a href="{{ shareThingLink }}" target="_blank">{{ shareThingLink }}</a>
+        </div>
+        <div class="modal-footer">
           <button type="button" class="modal-action modal-close waves-effect btn-flat" data-dismiss="modal">Close</button>
         </div>
       </div>
@@ -106,9 +116,9 @@
                       <button class="waves-effect waves-teal btn-flat btn-small" v-on:click="saveEdit(thing)"><i class="material-icons">done</i></button>
                     </span>
                     <span v-show="!thing.edit">
-                      <button class="waves-effect waves-teal btn-flat btn-small" v-on:click="showThingDel(thing)"><i class="material-icons">delete</i></button>
+                      <button class="waves-effect waves-teal btn-flat btn-small" v-on:click="showThingShare(thing)"><i class="material-icons">share</i></button>
                       <button class="waves-effect waves-teal btn-flat btn-small" v-on:click="showThingEdit(thing)"><i class="material-icons">edit</i></button>
-                      <button class="waves-effect waves-teal btn-flat btn-small"><i class="material-icons">more_vert</i></button>
+                      <button class="waves-effect waves-teal btn-flat btn-small" v-on:click="showThingDel(thing)"><i class="material-icons">delete</i></button>
                     </span>
                 </div>
                 <div class="card-content">
