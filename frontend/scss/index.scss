@@ -24,10 +24,17 @@ body {
 .thing-title-date {
     font-size: 12px;
     text-align: right;
-}
+    color: #aaa;
 
-.thing-title-date,.btn {
-    margin: 0;
+    .btn-small {
+        margin: 0;
+        padding: 0 !important;
+        color: #aaa;
+
+        &:hover {
+            color: black;
+        }
+    }
 }
 
 .modal-content .modal-body {
@@ -92,8 +99,4 @@ textarea {
     position: absolute;
     top: 20px;
     right: 20px;
-}
-
-.btn-small {
-    padding: 0 !important;
 }
