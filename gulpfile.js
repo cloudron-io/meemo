@@ -59,9 +59,6 @@ gulp.task('favicon', function () {
 gulp.task('3rdparty', function () {
     return gulp.src([
         'node_modules/jquery/dist/*.min.js*',
-        'node_modules/materialize-css/dist/**/*.min.css*',
-        'node_modules/materialize-css/dist/**/*.min.js*',
-        'node_modules/materialize-css/dist/**/*.+(otf|eot|svg|ttf|woff|woff2)',
         'frontend/3rdparty/**/*.min.css*',
         'frontend/3rdparty/**/*.min.js*',
     ]).pipe(gulp.dest('public/3rdparty/'));
