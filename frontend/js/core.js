@@ -77,6 +77,9 @@ ThingsApi.prototype.get = function (filter, callback) {
             return new Thing(thing._id, new Date(thing.createdAt).getTime(), thing.tags, thing.content, thing.richContent);
         });
 
+        // update skip for fetch more call
+        that._query.skip += result.body.things.length;
+
         callback(null, tmp);
     }));
 };
