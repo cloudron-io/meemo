@@ -21,7 +21,8 @@ var vue = new Vue({
         mainView: '',
         thingContent: '',
         activeThing: {},
-        shareThingLink: ''
+        shareThingLink: '',
+        tagsVisible: false
     },
     methods: {
         giveAddFocus: function () {
@@ -50,6 +51,17 @@ var vue = new Vue({
         },
         cancelEdit: function (thing) {
             thing.edit = false;
+        },
+        showTags: function () {
+            vue.tagsVisible = true;
+
+            var s = $('.search');
+            $('.tag-dropdown').offset({ left: s.offset().left }).css({ width: s.width() });
+        },
+        hideTags: function () {
+            setTimeout(function () {
+                vue.tagsVisible = false;
+            }, 100);
         },
         showThingDel: function (thing) {
             this.activeThing = thing;

@@ -234,7 +234,9 @@ TagsApi.prototype.get = function (callback) {
         if (error) return callback(error);
         if (result.status !== 200) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
 
-        callback(null, result.body.tags);
+        var tmp = result.body.tags.sort(function (a, b) { return a.name > b.name; });
+
+        callback(null, tmp);
     }));
 };
 
