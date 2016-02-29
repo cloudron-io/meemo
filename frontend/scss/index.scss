@@ -11,21 +11,6 @@ body {
     margin-top: 100px;
 }
 
-.thing-title-date {
-    font-size: 12px;
-    text-align: right;
-    color: #aaa;
-
-    .btn-small {
-        margin: 0;
-        padding: 0 !important;
-        color: #aaa !important;
-
-        &:hover {
-            color: black !important;
-        }
-    }
-}
 
 .modal-content .modal-body {
     padding-top: 0;
@@ -33,9 +18,27 @@ body {
 
 .well {
     overflow: hidden;
+    padding: 10px !important;
 
     &.edit {
-        background-color: rgba(255, 231, 0, 0.22) !important;
+        background-color: rgba(255, 231, 0, 1) !important;
+    }
+
+    .thing-actions {
+        font-size: 12px;
+        text-align: right;
+        color: #aaa;
+        padding-bottom: 10px;
+
+        .btn-small {
+            margin: 0;
+            padding: 0 !important;
+            color: #aaa !important;
+
+            &:hover {
+                color: black !important;
+            }
+        }
     }
 }
 
@@ -85,6 +88,7 @@ textarea {
     border: none;
     resize: vertical;
     transition: height 200ms;
+    background: transparent;
 
     &.active {
         border: none;

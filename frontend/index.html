@@ -131,7 +131,7 @@
             </div>
             <div v-show="!busyThings">
               <div class="well" v-for="thing in things" v-bind:class="{ edit: thing.edit }">
-                <div class="thing-title-date">
+                <div class="thing-actions">
                   {{ thing.createdAt | prettyDateOffset }}
                   <span v-show="thing.edit">
                     <button class="btn btn-default btn-small" v-on:click="cancelEdit(thing)"><i class="material-icons">clear</i></button>
