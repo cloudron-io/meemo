@@ -186,3 +186,13 @@ Core.onLogout = function () {
 
 // Main
 main();
+
+window.addEventListener('scroll', function () {
+    if ($(window).height() + $(window).scrollTop() == $(document).height()) {
+        Core.things.fetchMore(function (error, result) {
+            if (error) return console.error(error);
+
+            vue.things = vue.things.concat(result);
+        });
+    }
+});

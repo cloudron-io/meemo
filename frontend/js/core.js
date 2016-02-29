@@ -47,6 +47,7 @@ function ThingsApi() {
     this._editCallbacks = [];
     this._delCallbacks = [];
     this._operation = '';
+    this._query = null;
 }
 
 ThingsApi.prototype.get = function (filter, callback) {
@@ -56,13 +57,13 @@ ThingsApi.prototype.get = function (filter, callback) {
 
     this._operation = operation;
 
-    var query = {};
+    this._query = {};
 
-    if (filter) query.filter = filter;
-    query.skip = 0;
-    query.limit = 10;
+    if (filter) this._query.filter = filter;
+    this._query.skip = 0;
+    this._query.limit = 10;
 
-    superagent.get(u).query(query).end(errorWrapper(function (error, result) {
+    superagent.get(u).query(this._query).end(errorWrapper(function (error, result) {
         // ignore this if we moved on
         if (that._operation !== operation) {
             console.log('ignore this call');
@@ -75,6 +76,27 @@ ThingsApi.prototype.get = function (filter, callback) {
         var tmp = result.body.things.map(function (thing) {
             return new Thing(thing._id, new Date(thing.createdAt).getTime(), thing.tags, thing.content, thing.richContent);
         });
+
+        callback(null, tmp);
+    }));
+};
+
+ThingsApi.prototype.fetchMore = function (callback) {
+    var that = this;
+    var u = url('/api/things');
+
+    if (!this._query) return callback(new Error('no previous query'));
+
+    superagent.get(u).query(this._query).end(errorWrapper(function (error, result) {
+        if (error) return callback(error);
+        if (result.status !== 200) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
+
+        var tmp = result.body.things.map(function (thing) {
+            return new Thing(thing._id, new Date(thing.createdAt).getTime(), thing.tags, thing.content, thing.richContent);
+        });
+
+        // update skip for next call
+        that._query.skip += result.body.things.length;
 
         callback(null, tmp);
     }));
