@@ -29,21 +29,25 @@
   <body id="application">
 
     <div v-show="mainView === 'login'" v-cloak>
+      <br/>
+      <br/>
       <div class="container" id="loginView">
         <div class="row">
-          <div class="col s6 offset-s3">
-            <h4 class="modal-title">Login</h4>
+          <div class="col-md-4 col-md-offset-4">
+            <h2 class="modal-title">Login</h2>
           </div>
         </div>
         <form v-on:submit.prevent="doLogin">
           <div class="row">
-            <div class="col s6 offset-s3">
+            <div class="col-md-4 col-md-offset-4">
               <div class="form-group label-floating">
                 <label class="control-label" for="inputUsername">Username</label>
                 <input type="text" class="form-control" id="inputUsername" v-model="username" autofocus />
               </div>
             </div>
-            <div class="col s6 offset-s3">
+          </div>
+          <div class="row">
+            <div class="col-md-4 col-md-offset-4">
               <div class="form-group label-floating">
                 <label class="control-label" for="inputPassword">Password</label>
                 <input type="password" class="form-control" id="inputPassword" v-model="password" autofocus />
@@ -51,7 +55,7 @@
             </div>
           </div>
           <div class="row">
-            <div class="col s6 offset-s3">
+            <div class="col-md-4 col-md-offset-4">
               <button type="submit" class="btn btn-success pull-right">Login</button>
             </div>
           </div>
