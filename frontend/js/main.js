@@ -35,6 +35,10 @@ var vue = new Vue({
         },
         showThingEdit: function (thing) {
             thing.edit = true;
+
+            Vue.nextTick(function() {
+                $('#editThingTextarea' + thing.id).focus();
+            });
         },
         saveEdit: function (thing) {
             Core.things.edit(thing, function (error) {
