@@ -1,2 +1,8 @@
 [0.1.2]
 * Improved responsive design
+
+[0.1.3]
+* Limit results to 10 and fetch more on scroll
+* Support public shared items
+* Move tags to search field
+
