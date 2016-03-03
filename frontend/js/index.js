@@ -80,8 +80,13 @@ var vue = new Vue({
             });
         },
         showThingShare: function (thing) {
-            vue.shareThingLink = 'http://foobar';
-            $('#modalShare').modal('show');
+            Core.things.publicLink(thing, function (error, publicLinkId) {
+                if (error) return console.error(error);
+
+                vue.shareThingLink = location.origin + '/public/thing.html#' + publicLinkId;
+
+                $('#modalShare').modal('show');
+            });
         },
         showSettings: function () {
             vueSettings.toggleSettings();

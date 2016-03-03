@@ -150,6 +150,15 @@ ThingsApi.prototype.del = function (thing, callback) {
     }));
 };
 
+ThingsApi.prototype.publicLink = function (thing, callback) {
+    superagent.post(url('/api/things/' + thing.id + '/public')).end(errorWrapper(function (error, result) {
+        if (error) return callback(error);
+        if (result.status !== 201) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
+
+        callback(null, result.body.publicLinkId);
+    }));
+};
+
 ThingsApi.prototype.import = function (formData, callback) {
     superagent.post(url('/api/import')).send(formData).end(function (error, result) {
         if (error) return callback(error);

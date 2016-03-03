@@ -20,10 +20,11 @@ exports = module.exports = {
     put: put,
     del: del,
     exp: exp,
-    imp: imp
+    imp: imp,
+    publicLink: publicLink
 };
 
-var g_db, g_things;
+var g_db, g_things, g_publicLinks;
 
 function init(callback) {
     MongoClient.connect(config.databaseUrl, function (error, db) {
@@ -31,7 +32,9 @@ function init(callback) {
 
         g_db = db;
         g_db.createCollection('things');
+        g_db.createCollection('publicLinks');
         g_things = db.collection('things');
+        g_publicLinks = db.collection('publicLinks');
 
         g_things.createIndex({ content: 'text' }, { default_language: 'none' });
 
@@ -204,4 +207,18 @@ function imp(data, callback) {
             });
         });
     }, callback);
+}
+
+function publicLink(id, callback) {
+    var doc = {
+        thingId: id,
+        createdAt: new Date()
+    };
+
+    g_publicLinks.insert(doc, function (error, result) {
+        if (error) return callback(error);
+        if (!result) return callback(new Error('no result returned'));
+
+        callback(null, result.insertedIds[0]);
+    });
 }

@@ -23,12 +23,26 @@ gulp.task('styles', function () {
         .pipe(gulp.dest('public/'));
 });
 
-gulp.task('browserify', function () {
+gulp.task('browserify', ['browserify-index', 'browserify-thing'], function () {});
+
+gulp.task('browserify-index', function () {
     browserify({
-        entries: 'frontend/js/main.js',
+        entries: 'frontend/js/index.js',
         debug: true
     }).bundle()
-        .pipe(source('bundle.js'))
+        .pipe(source('index.js'))
+        .pipe(buffer())
+        .pipe(sourcemaps.init({loadMaps: true}))
+        .pipe(sourcemaps.write('./'))
+        .pipe(gulp.dest('public/'));
+});
+
+gulp.task('browserify-thing', function () {
+    browserify({
+        entries: 'frontend/js/thing.js',
+        debug: true
+    }).bundle()
+        .pipe(source('thing.js'))
         .pipe(buffer())
         .pipe(sourcemaps.init({loadMaps: true}))
         .pipe(sourcemaps.write('./'))

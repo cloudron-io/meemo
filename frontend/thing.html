@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title></title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <link href="favicon.png" rel="shortcut icon" type="image/png">
+
+    <!--Import Google Icon Font-->
+    <link href="//fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <!-- Bootstrap -->
+    <link href="3rdparty/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Material Design -->
+    <link href="3rdparty/css/bootstrap-material-design.min.css" rel="stylesheet">
+    <link href="3rdparty/css/ripples.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="index.min.css"/>
+
+  </head>
+  <body id="application">
+
+    <div class="container main" v-show="!busy" v-cloak>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+          <div class="well" v-on:click="giveAddFocus()">
+            <div class="card-content align-right">
+              <textarea v-el:addinput placeholder="Add something..." v-model="thingContent" v-bind:class="{ active: !!thingContent }"></textarea>
+              <button v-el:addbutton class="btn btn-default" v-on:click="addThing()" v-bind:class="{ hide: !thingContent }">add</button>
+            </div>
+          </div>
+          <div v-show="!busyThings">
+            <div class="well" v-for="thing in things" v-bind:class="{ edit: thing.edit }">
+              <div class="thing-actions">
+                {{ thing.createdAt | prettyDateOffset }}
+                <span v-show="thing.edit">
+                  <button class="btn btn-default btn-small" v-on:click="cancelEdit(thing)"><i class="material-icons">clear</i></button>
+                  &nbsp;
+                  <button class="btn btn-default btn-small" v-on:click="saveEdit(thing)"><i class="material-icons">done</i></button>
+                </span>
+                <span v-show="!thing.edit">
+                  <button class="btn btn-default btn-small" v-on:click="showThingShare(thing)"><i class="material-icons">share</i></button>
+                  <button class="btn btn-default btn-small" v-on:click="showThingEdit(thing)"><i class="material-icons">edit</i></button>
+                  <button class="btn btn-default btn-small" v-on:click="showThingDel(thing)"><i class="material-icons">delete</i></button>
+                </span>
+              </div>
+              <div class="card-content">
+                <div v-show="thing.edit"><textarea v-model="thing.content" id="{{ 'editThingTextarea' + thing.id }}" style="height: 200px"></textarea></div>
+                <div class="thing-content" v-show="!thing.edit">{{{ thing.richContent | markdown }}}</div>
+              </div>
+            </div>
+          </div>
+          <div v-show="busyThings">
+            <br/>
+            <br/>
+            <br/>
+            <center><i class="spinner"></i></center>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="3rdparty/jquery.min.js"></script>
+    <script src="3rdparty/js/bootstrap.min.js"></script>
+    <script src="3rdparty/js/ripples.min.js"></script>
+    <script src="3rdparty/js/material.min.js"></script>
+    <script src="thing.js"></script>
+
+  </body>
+</html>

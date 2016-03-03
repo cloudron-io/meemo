@@ -23,6 +23,7 @@ exports = module.exports = {
     add: add,
     put: put,
     del: del,
+    publicLink: publicLink,
     getTags: getTags,
     settingsSave: settingsSave,
     settingsGet: settingsGet,
@@ -142,6 +143,13 @@ function del(req, res, next) {
     things.del(req.params.id, function (error) {
         if (error) return next(new HttpError(500, error));
         next(new HttpSuccess(200, {}));
+    });
+}
+
+function publicLink(req, res, next) {
+    things.publicLink(req.params.id, function (error, result) {
+        if (error) return next(new HttpError(500, error));
+        next(new HttpSuccess(201, { publicLinkId: result }));
     });
 }
 

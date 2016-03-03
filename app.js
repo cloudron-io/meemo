@@ -25,6 +25,7 @@ router.get ('/api/things', routes.auth, routes.getAll);
 router.get ('/api/things/:id', routes.auth, routes.get);
 router.put ('/api/things/:id', routes.auth, routes.put);
 router.del ('/api/things/:id', routes.auth, routes.del);
+router.post('/api/things/:id/public', routes.auth, routes.publicLink);
 
 router.get ('/api/tags', routes.auth, routes.getTags);
 
