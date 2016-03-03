@@ -21,7 +21,8 @@ exports = module.exports = {
     del: del,
     exp: exp,
     imp: imp,
-    publicLink: publicLink
+    publicLink: publicLink,
+    getByShareId: getByShareId
 };
 
 var g_db, g_things, g_publicLinks;
@@ -113,11 +114,15 @@ function getAll(query, skip, limit, callback) {
 }
 
 function get(id, callback) {
-    g_things.find({ _id: id }).toArray(function (error, result) {
+    g_things.find({ _id: new ObjectId(id) }).toArray(function (error, result) {
         if (error) return callback(error);
-        if (!result) return callback(new Error('not found'));
+        if (result.length === 0) return callback(new Error('not found'));
 
-        callback(null, result);
+        var thing = result[0];
+        facelift(thing.content, extractTags(thing.content), function (data) {
+            thing.richContent = data;
+            callback(null, thing);
+        });
     });
 }
 
@@ -220,5 +225,18 @@ function publicLink(id, callback) {
         if (!result) return callback(new Error('no result returned'));
 
         callback(null, result.insertedIds[0]);
+    });
+}
+
+function getByShareId(shareId, callback) {
+    g_publicLinks.find({ _id: new ObjectId(shareId) }).toArray(function (error, result) {
+        if (error) return callback(error);
+        if (result.length === 0) return callback(new Error('not found'));
+
+        get(result[0].thingId, function (error, result) {
+            if (error) return callback(error);
+
+            callback(null, result);
+        });
     });
 }

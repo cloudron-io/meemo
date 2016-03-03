@@ -23,7 +23,8 @@ exports = module.exports = {
     add: add,
     put: put,
     del: del,
-    publicLink: publicLink,
+    getPublic: getPublic,
+    makePublic: makePublic,
     getTags: getTags,
     settingsSave: settingsSave,
     settingsGet: settingsGet,
@@ -146,7 +147,14 @@ function del(req, res, next) {
     });
 }
 
-function publicLink(req, res, next) {
+function getPublic(req, res, next) {
+    things.getByShareId(req.params.shareId, function (error, result) {
+        if (error) return next(new HttpError(500, error));
+        next(new HttpSuccess(200, { thing: result }));
+    });
+}
+
+function makePublic(req, res, next) {
     things.publicLink(req.params.id, function (error, result) {
         if (error) return next(new HttpError(500, error));
         next(new HttpSuccess(201, { publicLinkId: result }));

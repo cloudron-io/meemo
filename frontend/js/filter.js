@@ -16,6 +16,8 @@ md.renderer.rules.emoji = function(token, idx) {
 };
 
 Vue.filter('markdown', function (value) {
+    if (!value) return '';
+
     return md.render(value);
 });
 

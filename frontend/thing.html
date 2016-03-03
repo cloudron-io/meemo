@@ -23,41 +23,36 @@
   </head>
   <body id="application">
 
-    <div class="container main" v-show="!busy" v-cloak>
+    <div v-show="busy" v-cloak>
+      <br/>
+      <br/>
+      <br/>
+      <center><i class="spinner"></i></center>
+    </div>
+
+    <div class="container" v-show="!busy && error" v-cloak>
+      <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+          <center>
+            <br/>
+            <br/>
+            <br/>
+            <p>{{ error }}</p>
+          </center>
+        </div>
+      </div>
+    </div>
+
+    <div class="container main" v-show="!busy && !error" v-cloak>
       <div class="row">
         <div class="col-md-10 col-md-offset-1">
-          <div class="well" v-on:click="giveAddFocus()">
-            <div class="card-content align-right">
-              <textarea v-el:addinput placeholder="Add something..." v-model="thingContent" v-bind:class="{ active: !!thingContent }"></textarea>
-              <button v-el:addbutton class="btn btn-default" v-on:click="addThing()" v-bind:class="{ hide: !thingContent }">add</button>
+          <div class="well">
+            <div class="thing-actions">
+              {{ thing.createdAt | prettyDateOffset }}
             </div>
-          </div>
-          <div v-show="!busyThings">
-            <div class="well" v-for="thing in things" v-bind:class="{ edit: thing.edit }">
-              <div class="thing-actions">
-                {{ thing.createdAt | prettyDateOffset }}
-                <span v-show="thing.edit">
-                  <button class="btn btn-default btn-small" v-on:click="cancelEdit(thing)"><i class="material-icons">clear</i></button>
-                  &nbsp;
-                  <button class="btn btn-default btn-small" v-on:click="saveEdit(thing)"><i class="material-icons">done</i></button>
-                </span>
-                <span v-show="!thing.edit">
-                  <button class="btn btn-default btn-small" v-on:click="showThingShare(thing)"><i class="material-icons">share</i></button>
-                  <button class="btn btn-default btn-small" v-on:click="showThingEdit(thing)"><i class="material-icons">edit</i></button>
-                  <button class="btn btn-default btn-small" v-on:click="showThingDel(thing)"><i class="material-icons">delete</i></button>
-                </span>
-              </div>
-              <div class="card-content">
-                <div v-show="thing.edit"><textarea v-model="thing.content" id="{{ 'editThingTextarea' + thing.id }}" style="height: 200px"></textarea></div>
-                <div class="thing-content" v-show="!thing.edit">{{{ thing.richContent | markdown }}}</div>
-              </div>
+            <div class="card-content">
+              <div class="thing-content">{{{ thing.richContent | markdown }}}</div>
             </div>
-          </div>
-          <div v-show="busyThings">
-            <br/>
-            <br/>
-            <br/>
-            <center><i class="spinner"></i></center>
           </div>
         </div>
       </div>

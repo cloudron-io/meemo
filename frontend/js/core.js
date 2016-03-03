@@ -159,6 +159,17 @@ ThingsApi.prototype.publicLink = function (thing, callback) {
     }));
 };
 
+ThingsApi.prototype.getPublic = function (shareId, callback) {
+    superagent.get(url('/api/share/' + shareId)).end(errorWrapper(function (error, result) {
+        if (result && result.status !== 200) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
+        if (error) return callback(error);
+
+        var thing = result.body.thing;
+
+        callback(null, new Thing(thing._id, new Date(thing.createdAt).getTime(), thing.tags, thing.content, thing.richContent));
+    }));
+};
+
 ThingsApi.prototype.import = function (formData, callback) {
     superagent.post(url('/api/import')).send(formData).end(function (error, result) {
         if (error) return callback(error);
