@@ -83,7 +83,7 @@ var vue = new Vue({
             Core.things.publicLink(thing, function (error, publicLinkId) {
                 if (error) return console.error(error);
 
-                vue.shareThingLink = location.origin + '/public/thing.html#' + publicLinkId;
+                vue.shareThingLink = location.origin + '/thing.html?id=' + publicLinkId;
 
                 $('#modalShare').modal('show');
             });
