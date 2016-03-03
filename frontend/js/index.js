@@ -211,7 +211,8 @@ Core.onLogout = function () {
 main();
 
 window.addEventListener('scroll', function () {
-    if ($(window).height() + $(window).scrollTop() == $(document).height()) {
+    // add 1 full pixel to be on the safe side for zoom settings, where pixel values might be floats
+    if ($(window).height() + $(window).scrollTop() + 1 >= $(document).height()) {
         vue.busyFetchMore = true;
 
         Core.things.fetchMore(function (error, result) {
