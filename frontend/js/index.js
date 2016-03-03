@@ -14,7 +14,6 @@ var vue = new Vue({
         tags: [],
         things: [],
         busyThings: true,
-        busyTags: true,
         busyFetchMore: false,
         search: '',
         username: '',
@@ -169,9 +168,6 @@ function main() {
             if (error) return console.error(error);
 
             vue.tags = tags;
-
-            vue.busyTags = false;
-
             vue.mainView = 'content';
 
             window.setTimeout(function () { vue.$els.addinput.focus(); }, 0);
