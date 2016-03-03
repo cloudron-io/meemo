@@ -15,6 +15,7 @@ var vue = new Vue({
         things: [],
         busyThings: true,
         busyTags: true,
+        busyFetchMore: false,
         search: '',
         username: '',
         password: '',
@@ -215,7 +216,11 @@ main();
 
 window.addEventListener('scroll', function () {
     if ($(window).height() + $(window).scrollTop() == $(document).height()) {
+        vue.busyFetchMore = true;
+
         Core.things.fetchMore(function (error, result) {
+            vue.busyFetchMore = false;
+
             if (error) return console.error(error);
 
             vue.things = vue.things.concat(result);

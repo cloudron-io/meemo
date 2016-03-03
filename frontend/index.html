@@ -138,11 +138,14 @@
                 </div>
               </div>
             </div>
-            <div v-show="busyThings">
+            <div v-show="busyThings || busyFetchMore">
               <br/>
               <br/>
               <br/>
               <center><i class="spinner"></i></center>
+              <br/>
+              <br/>
+              <br/>
             </div>
           </div>
         </div>
