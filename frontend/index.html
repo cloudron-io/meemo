@@ -108,15 +108,14 @@
                   <button class="btn btn-raised" v-on:click="triggerImportInput()">Select File</button>
                 </div>
                 <div v-show="importFile">
-                  <p>Really Import from {{ importFile && importFile.name }}?</p>
-                  <button class="btn btn-flat" v-on:click="importThingsCancel()">No</button>
-                  <button class="btn btn-flat" v-on:click="importThings()">Yes</button>
+                  <p>This will add all data from {{ importFile && importFile.name }} to your current set.</p>
+                  <a href="#" v-on:click.stop.prevent="importFile = null;">Choose other file</a>
                 </div>
               </p>
             </div>
             <div class="modal-footer">
               <button class="btn btn-default" data-dismiss="modal">Cancel</button>
-              <button class="btn btn-success" v-on:click="importThings()">Import</button>
+              <button class="btn btn-success" v-show="!!importFile" v-on:click="importThings()">Import</button>
             </div>
           </div>
         </div>
