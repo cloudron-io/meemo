@@ -67,6 +67,12 @@ gulp.task('3rdparty', function () {
     ]).pipe(gulp.dest('public/3rdparty/'));
 });
 
+gulp.task('images', function () {
+    return gulp.src([
+        'frontend/img/*',
+    ]).pipe(gulp.dest('public/img/'));
+});
+
 gulp.task('chrome_extension', function () {
     run('chromium --pack-extension=webextension --pack-extension-key=webextension.pem').exec();
 });
@@ -77,7 +83,7 @@ gulp.task('firefox_extension', function () {
 
 gulp.task('extensions', ['chrome_extension', 'firefox_extension'], function () {});
 
-gulp.task('default', ['clean', 'html', 'favicon', 'styles', 'browserify', '3rdparty'], function () {});
+gulp.task('default', ['clean', 'html', 'favicon', 'images', 'styles', 'browserify', '3rdparty'], function () {});
 
 gulp.task('clean', function () {
     del.sync(['public/']);
