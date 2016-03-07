@@ -7,6 +7,32 @@ require('./filter.js');
 
 Vue.config.debug = true;
 
+function getCurrentSearchWord() {
+    if (!vue) return '';
+
+    var cursorPos = vue.$els.searchinput.selectionStart;
+    var search = vue.search;
+    var word = '';
+
+    for (var i = 0; i < search.length; ++i) {
+        // break if we went beyond and we hit a space
+        if (i > cursorPos && search[i] === ' ') break;
+
+        if (search[i] === ' ') word = '';
+        else word += search[i];
+    }
+
+    return word.replace(/^#/, '');
+}
+
+Vue.filter('proposeTags', function (options) {
+    var word = getCurrentSearchWord();
+
+    return options.filter(function (o) {
+        return (o.name.indexOf(word) >= 0);
+    });
+});
+
 var vue = new Vue({
     el: '#application',
     data: {
@@ -148,6 +174,8 @@ var vue = new Vue({
         }
     }
 });
+
+window.app = vue;
 
 Core.settings.onChanged(function (data) {
     if (data.title) window.document.title = data.title;
