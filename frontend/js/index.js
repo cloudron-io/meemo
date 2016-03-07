@@ -85,6 +85,9 @@ var vue = new Vue({
                 $('#inputUsername').focus();
             }, 0);
         },
+        logout: function () {
+            Core.session.logout();
+        },
         doLogin: function () {
             Core.session.login(this.username, this.password, function (error) {
                 if (error) {
