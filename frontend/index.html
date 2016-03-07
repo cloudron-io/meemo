@@ -173,7 +173,7 @@
                 <input type="text" class="form-control search" placeholder="Search..." data-toggle="dropdown" v-el:searchinput v-model="search" v-on:keyup.enter="doSearch()">
                 <ul class="dropdown-menu" id="tagsDropdown">
                   <li v-for="tag in tags | proposeTags">
-                    <a href="{{'/#search?#' + tag.name}}" v-on:click="tagSearch(tag)" class="tag-link">#{{ tag.name }}</a>
+                    <a href="#" v-on:click.stop.prevent="activateProposedTag(tag)" class="tag-link">#{{ tag.name }}</a>
                   </li>
                 </ul>
               </div>

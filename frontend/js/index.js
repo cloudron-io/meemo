@@ -68,6 +68,13 @@ var vue = new Vue({
                 $('#editThingTextarea' + thing.id).focus();
             });
         },
+        activateProposedTag: function (tag) {
+            vue.search = vue.search.replace(getCurrentSearchWord(), tag.name);
+
+            if (vue.search === tag.name || vue.search === '#' + tag.name) window.location.href = '/#search?#' + tag.name;
+
+            vue.$els.searchinput.focus();
+        },
         saveEdit: function (thing) {
             Core.things.edit(thing, function (error) {
                 if (error) return console.error(error);
