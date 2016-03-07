@@ -120,6 +120,9 @@ var vue = new Vue({
             vue.search = '';
             refresh();
             $('#inputSearch').focus();
+        },
+        exportThings: function () {
+            Core.things.export();
         }
     }
 });

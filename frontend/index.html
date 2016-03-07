@@ -140,9 +140,9 @@
                   <li><a href="javascript:void(0)">Extensions</a></li>
                   <li class="divider"></li>
                   <li><a href="javascript:void(0)">Import</a></li>
-                  <li><a href="javascript:void(0)">Export</a></li>
+                  <li><a href="#" class="hand" v-on:click.stop.prevent="exportThings()">Export</a></li>
                   <li class="divider"></li>
-                  <li><a href="#" v-on:click.stop="logout()">Logout</a></li>
+                  <li><a href="#" v-on:click.stop.prevent="logout()">Logout</a></li>
                 </ul>
               </li>
             </ul>
