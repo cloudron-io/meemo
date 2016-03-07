@@ -22,14 +22,14 @@ function getCurrentSearchWord() {
         else word += search[i];
     }
 
-    return word.replace(/^#/, '');
+    return word;
 }
 
 Vue.filter('proposeTags', function (options) {
-    var word = getCurrentSearchWord();
+    var word = getCurrentSearchWord().replace(/^#/, '');
 
     return options.filter(function (o) {
-        return (o.name.indexOf(word) >= 0);
+        return (o.name.indexOf(word) >= 0) && (o.name !== word);
     });
 });
 
@@ -69,9 +69,9 @@ var vue = new Vue({
             });
         },
         activateProposedTag: function (tag) {
-            vue.search = vue.search.replace(getCurrentSearchWord(), tag.name);
+            vue.search = vue.search.replace(getCurrentSearchWord(), '#' + tag.name);
 
-            if (vue.search === tag.name || vue.search === '#' + tag.name) window.location.href = '/#search?#' + tag.name;
+            if (vue.search === '#' + tag.name) window.location.href = '/#search?#' + tag.name;
 
             vue.$els.searchinput.focus();
         },
