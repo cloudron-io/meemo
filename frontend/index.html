@@ -23,38 +23,24 @@
   </head>
   <body id="application">
 
-    <div v-show="mainView === 'login'" v-cloak>
+    <div class="container" v-show="mainView === 'login'" v-cloak>
       <br/>
       <br/>
-      <div class="container" id="loginView">
-        <div class="row">
-          <div class="col-md-4 col-md-offset-4">
-            <h2 class="modal-title">Login</h2>
-          </div>
+      <div class="row">
+        <div class="col-md-4 col-md-offset-4 login-form shadow">
+          <h2 class="modal-title">Login</h2>
+          <form v-on:submit.prevent="doLogin">
+            <div class="form-group label-floating">
+              <label class="control-label" for="inputUsername">Username</label>
+              <input type="text" class="form-control" id="inputUsername" v-model="username" autofocus />
+            </div>
+            <div class="form-group label-floating">
+              <label class="control-label" for="inputPassword">Password</label>
+              <input type="password" class="form-control" id="inputPassword" v-model="password" autofocus />
+            </div>
+            <button type="submit" class="btn btn-success pull-right">Login</button>
+          </form>
         </div>
-        <form v-on:submit.prevent="doLogin">
-          <div class="row">
-            <div class="col-md-4 col-md-offset-4">
-              <div class="form-group label-floating">
-                <label class="control-label" for="inputUsername">Username</label>
-                <input type="text" class="form-control" id="inputUsername" v-model="username" autofocus />
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-4 col-md-offset-4">
-              <div class="form-group label-floating">
-                <label class="control-label" for="inputPassword">Password</label>
-                <input type="password" class="form-control" id="inputPassword" v-model="password" autofocus />
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-4 col-md-offset-4">
-              <button type="submit" class="btn btn-success pull-right">Login</button>
-            </div>
-          </div>
-        </form>
       </div>
     </div>
 
@@ -125,7 +111,7 @@
                   <li><a href="javascript:void(0)">Import</a></li>
                   <li><a href="javascript:void(0)">Export</a></li>
                   <li class="divider"></li>
-                  <li><a href="javascript:void(0)">Logout</a></li>
+                  <li><a href="#" v-on:click.stop="logout()">Logout</a></li>
                 </ul>
               </li>
             </ul>
