@@ -4,7 +4,6 @@ var Vue = require('vue'),
     Core = require('./core.js');
 
 require('./filter.js');
-var vueSettings = require('./settings.js');
 
 Vue.config.debug = true;
 
@@ -161,8 +160,6 @@ function hashChangeHandler() {
 
     if (action === '#add') {
         vue.showThingAdd();
-    } else if (action === '#settings') {
-        vueSettings.show();
     } else if (action === '#search' && params !== null) {
         vue.search = params;
         refresh(vue.search);
