@@ -93,6 +93,35 @@
         </div>
       </div>
 
+
+      <div class="modal fade" tabindex="-1" role="dialog" id="modalImport">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4>Import</h4>
+            </div>
+            <div class="modal-body">
+              <p>
+                <div v-show="!importFile">
+                  <input id="inputImport" v-el:importfile type="file" v-on:change="importFileChanged()" class="hide">
+                  <button class="btn btn-raised" v-on:click="triggerImportInput()">Select File</button>
+                </div>
+                <div v-show="importFile">
+                  <p>Really Import from {{ importFile && importFile.name }}?</p>
+                  <button class="btn btn-flat" v-on:click="importThingsCancel()">No</button>
+                  <button class="btn btn-flat" v-on:click="importThings()">Yes</button>
+                </div>
+              </p>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-default" data-dismiss="modal">Cancel</button>
+              <button class="btn btn-success" v-on:click="importThings()">Import</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="modal fade" id="modalShare">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -160,7 +189,7 @@
                   <li><a href="javascript:void(0)" data-toggle="modal" data-target="#modalSettings">Settings</a></li>
                   <li><a href="javascript:void(0)" data-toggle="modal" data-target="#modalExtensions">Extensions</a></li>
                   <li class="divider"></li>
-                  <li><a href="javascript:void(0)">Import</a></li>
+                  <li><a href="javascript:void(0)" data-toggle="modal" data-target="#modalImport">Import</a></li>
                   <li><a href="#" class="hand" v-on:click.stop.prevent="exportThings()">Export</a></li>
                   <li class="divider"></li>
                   <li><a href="#" v-on:click.stop.prevent="logout()">Logout</a></li>
