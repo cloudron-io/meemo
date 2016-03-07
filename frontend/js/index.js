@@ -18,6 +18,7 @@ var vue = new Vue({
         search: '',
         username: '',
         password: '',
+        settings: Core.settings.data,
         mainView: '',
         thingContent: '',
         activeThing: {},
@@ -76,8 +77,13 @@ var vue = new Vue({
                 $('#modalShare').modal('show');
             });
         },
-        showSettings: function () {
-            vueSettings.toggleSettings();
+        saveSettings: function () {
+            Core.settings.set(this.settings);
+            Core.settings.save(function (error) {
+                if (error) return console.error(error);
+
+                $('#modalSettings').modal('hide');
+            });
         },
         showLogin: function () {
             this.mainView = 'login';

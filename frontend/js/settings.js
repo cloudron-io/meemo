@@ -11,24 +11,7 @@ var vueSettings = new Vue({
         importFile: null
     },
     methods: {
-        show: function () {
-            this.open = true;
-        },
-        hide: function () {
-            this.open = false;
-        },
-        toggleSettings: function () {
-            if (this.open) this.hide();
-            else this.show();
-        },
-        saveSettings: function () {
-            Core.settings.set(this.settings);
-            Core.settings.save(function (error) {
-                if (error) return console.error(error);
 
-                vueSettings.hide();
-            });
-        },
         exportThings: function () {
             Core.things.export();
             vueSettings.hide();
@@ -54,10 +37,6 @@ var vueSettings = new Vue({
         },
         triggerImportInput: function () {
             this.$els.importfile.click();
-        },
-        logout: function () {
-            vueSettings.hide();
-            Core.session.logout();
         }
     }
 });
