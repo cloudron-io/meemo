@@ -91,24 +91,49 @@
         </div>
       </div>
 
-      <div class="container-fluid title-bar shadow">
-        <div class="row">
-          <div class="col-xs-12 align-center">
-            <button type="button" class="btn btn-default btn-small" v-on:click="doSearch()"><i class="material-icons">search</i></button>
-            <input type="text" placeholder="Search..." class="search" v-el:searchinput type="search" v-model="search" v-on:focus="showTags()" v-on:blur="hideTags()" v-on:keyup.enter="doSearch()">
-            <button type="button" class="btn btn-default btn-small" id="showTagsButton" v-on:click.stop="clearSearch()"><i class="material-icons">clear</i></button>
-            <div class="tag-dropdown" v-show="tagsVisible">
-              <div v-for="tag in tags" class="col-xs-4">
-                <a href="{{'/#search?#' + tag.name}}" v-on:click="tagSearch(tag)" class="tag-link">{{ tag.name }}</a>
+      <div class="navbar navbar-fixed-top shadow">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-inverse-collapse">
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="javascript:void(0)">Guacamoly</a>
+          </div>
+          <div class="navbar-collapse collapse navbar-inverse-collapse">
+            <form class="navbar-form navbar-left" v-on:submit.prevent>
+              <div class="form-group dropdown">
+                <input type="text" class="form-control search" placeholder="Search..." data-toggle="dropdown" v-el:searchinput v-model="search" v-on:keyup.enter="doSearch()">
+                <ul class="dropdown-menu" id="tagsDropdown">
+                  <li v-for="tag in tags | filterBy search in 'name'">
+                    <a href="{{'/#search?#' + tag.name}}" v-on:click="tagSearch(tag)" class="tag-link">#{{ tag.name }}</a>
+                  </li>
+                </ul>
               </div>
-            </div>
+            </form>
+            <ul class="nav navbar-nav navbar-left">
+              <li class="active"><a href="javascript:void(0)" v-on:click.stop="clearSearch()"><i class="material-icons">clear</i></a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+              <li class="dropdown">
+                <a href="javascript:void(0)" data-target="#" class="dropdown-toggle" data-toggle="dropdown">Awesomepretzel <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <li><a href="javascript:void(0)">Settings</a></li>
+                  <li><a href="javascript:void(0)">Extensions</a></li>
+                  <li class="divider"></li>
+                  <li><a href="javascript:void(0)">Import</a></li>
+                  <li><a href="javascript:void(0)">Export</a></li>
+                  <li class="divider"></li>
+                  <li><a href="javascript:void(0)">Logout</a></li>
+                </ul>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
 
-      <div class="backdrop-main" v-bind:class="{ 'open': tagsVisible }" v-show="tagsVisible"></div>
-
-      <div class="container main">
+      <div class="container">
         <div class="row">
           <div class="col-md-10 col-md-offset-1">
             <div class="well" v-on:click="giveAddFocus()">

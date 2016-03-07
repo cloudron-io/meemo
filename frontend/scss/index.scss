@@ -5,12 +5,17 @@ body {
     background-position: right top;
     background-attachment: fixed;
     background-size: cover;
+    padding-top: 80px;
 }
 
-.main {
-    margin-top: 100px;
-}
+.navbar {
+    background-color: white;
+    color: black;
 
+    :placeholder-shown { /* Standard (https://drafts.csswg.org/selectors-4/#placeholder) */
+        color: #909 !important;
+    }
+}
 
 .modal-content .modal-body {
     padding-top: 0;
@@ -127,6 +132,18 @@ textarea {
     font-size: 24px;
     padding: 8px 0;
     margin: 10px 0;
+}
+
+.navbar-form {
+    width: 50%;
+
+    .form-group {
+        width: 100%;
+
+        .form-control {
+            width: 100%;
+        }
+    }
 }
 
 .no-wrap {
