@@ -69,7 +69,10 @@ var vue = new Vue({
             });
         },
         activateProposedTag: function (tag) {
-            vue.search = vue.search.replace(getCurrentSearchWord(), '#' + tag.name);
+            var word = getCurrentSearchWord();
+
+            if (!word) vue.search += '#' + tag.name;
+            else vue.search = vue.search.replace(getCurrentSearchWord(), '#' + tag.name);
 
             if (vue.search === '#' + tag.name) window.location.href = '/#search?#' + tag.name;
 
