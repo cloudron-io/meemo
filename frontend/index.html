@@ -206,7 +206,7 @@
           <div class="col-md-10 col-md-offset-1">
             <div class="well" v-on:click="giveAddFocus()">
               <div class="card-content align-right">
-                <textarea class="new-thing" v-el:addinput placeholder="Add something..." v-model="thingContent" v-bind:class="{ active: !!thingContent }"></textarea>
+                <textarea id="addTextarea" class="new-thing" v-el:addinput placeholder="Add something..." v-model="thingContent" v-bind:class="{ active: !!thingContent }"></textarea>
                 <button v-el:addbutton class="btn btn-default" v-on:click="addThing()" v-bind:class="{ hide: !thingContent }">add</button>
               </div>
             </div>

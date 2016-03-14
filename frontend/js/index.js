@@ -224,6 +224,8 @@ function handleSaveShortcut() {
     if (document.activeElement && document.activeElement.id && document.activeElement.id.split('-')[1]) {
         var thing = findById(document.activeElement.id.split('-')[1]);
         if (thing) vue.saveEdit(thing);
+    } else if (document.activeElement && document.activeElement.id === 'addTextarea') {
+        vue.addThing();
     }
 }
 
