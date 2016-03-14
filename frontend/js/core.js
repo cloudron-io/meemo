@@ -133,7 +133,7 @@ ThingsApi.prototype.edit = function (thing, callback) {
             setTimeout(callback, 0);
         });
 
-        callback(null);
+        callback(null, result.body.thing);
     }));
 };
 

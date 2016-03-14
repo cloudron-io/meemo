@@ -134,9 +134,9 @@ function add(req, res, next) {
 }
 
 function put(req, res, next) {
-    things.put(req.params.id, req.body.content, function (error) {
+    things.put(req.params.id, req.body.content, function (error, result) {
         if (error) return next(new HttpError(500, error));
-        next(new HttpSuccess(201, { id: req.params.id }));
+        next(new HttpSuccess(201, { thing: result }));
     });
 }
 

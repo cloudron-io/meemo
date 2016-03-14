@@ -91,8 +91,11 @@ var vue = new Vue({
             vue.$els.searchinput.focus();
         },
         saveEdit: function (thing) {
-            Core.things.edit(thing, function (error) {
+            Core.things.edit(thing, function (error, result) {
                 if (error) return console.error(error);
+
+                // update the enhanced content from the server
+                thing.richContent = result.richContent;
                 thing.edit = false;
             });
         },

@@ -162,7 +162,8 @@ function put(id, content, callback) {
 
         g_things.update({_id: new ObjectId(id) }, { $set: { content: data, tags: tagObjects, modifiedAt: new Date() } }, function (error) {
             if (error) return callback(error);
-            callback(null);
+
+            get(id, callback);
         });
     });
 }
