@@ -63,10 +63,10 @@ var vue = new Vue({
             this.$els.addinput.focus();
         },
         addThing: function () {
-            Core.things.add(this.thingContent, function (error) {
+            Core.things.add(this.thingContent, function (error, thing) {
                 if (error) return console.error(error);
                 vue.thingContent = '';
-                vue.refresh();
+                vue.things.push(thing);
             });
         },
         showThingEdit: function (thing) {
@@ -94,7 +94,6 @@ var vue = new Vue({
             Core.things.edit(thing, function (error) {
                 if (error) return console.error(error);
                 thing.edit = false;
-                vue.refresh();
             });
         },
         cancelEdit: function (thing) {
@@ -105,13 +104,15 @@ var vue = new Vue({
             $('#modalDel').modal('show');
         },
         deleteThing: function () {
+            var that = this;
+
             if (!this.activeThing) return;
 
             Core.things.del(this.activeThing, function (error) {
                 if (error) return console.error(error);
 
-                vue.activeThing = null;
-                vue.refresh();
+                that.things.splice(that.things.indexOf(that.activeThing, 1));
+                that.activeThing = null;
 
                 $('#modalDel').modal('hide');
             });

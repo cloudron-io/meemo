@@ -144,7 +144,11 @@ function add(content, callback) {
             if (error) return callback(error);
             if (!result) return callback(new Error('no result returned'));
 
-            callback(null, result._id);
+            var thing = result.ops[0];
+            facelift(thing.content, extractTags(thing.content), function (data) {
+                thing.richContent = data;
+                callback(null, thing);
+            });
         });
     });
 }

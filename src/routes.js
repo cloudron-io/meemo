@@ -127,9 +127,9 @@ function get(req, res, next) {
 function add(req, res, next) {
     if (typeof req.body.content !== 'string' || !req.body.content) return next(new HttpError(400, 'content must be a string'));
 
-    things.add(req.body.content, function (error, id) {
+    things.add(req.body.content, function (error, result) {
         if (error) return next(new HttpError(500, error));
-        next(new HttpSuccess(201, { id: id }));
+        next(new HttpSuccess(201, { thing: result }));
     });
 }
 
