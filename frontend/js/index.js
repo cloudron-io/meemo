@@ -25,6 +25,14 @@ function getCurrentSearchWord() {
     return word;
 }
 
+function findById(id) {
+    for (var i = 0; i < vue.things.length; ++i) {
+        if (vue.things[i].id === id) return vue.things[i];
+    }
+
+    return null;
+}
+
 Vue.filter('proposeTags', function (options) {
     var word = getCurrentSearchWord().replace(/^#/, '');
 
@@ -67,8 +75,8 @@ var vue = new Vue({
             Vue.nextTick(function() {
                 var margin = 20;
 
-                $('#editThingTextarea' + thing.id).focus();
-                $('#editThingTextarea' + thing.id).height($(window).height() - $('.navbar').height() - (margin*2) - 60);
+                $('#textarea-' + thing.id).focus();
+                $('#textarea-' + thing.id).height($(window).height() - $('.navbar').height() - (margin*2) - 60);
                 window.scroll(0, $('#card-' + thing.id).offset().top - $('.navbar').height() - margin);
             });
         },
@@ -211,6 +219,16 @@ function hashChangeHandler() {
 }
 
 window.addEventListener('hashchange', hashChangeHandler, false);
+
+function handleSaveShortcut() {
+    if (document.activeElement && document.activeElement.id && document.activeElement.id.split('-')[1]) {
+        var thing = findById(document.activeElement.id.split('-')[1]);
+        if (thing) vue.saveEdit(thing);
+    }
+}
+
+shortcut.add('Ctrl+s', handleSaveShortcut, {});
+shortcut.add('Ctrl+Enter', handleSaveShortcut, {});
 
 function reset() {
     vue.mainView = '';

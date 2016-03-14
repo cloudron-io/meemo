@@ -18,6 +18,8 @@
     <link href="3rdparty/css/bootstrap-material-design.min.css" rel="stylesheet">
     <link href="3rdparty/css/ripples.min.css" rel="stylesheet">
 
+    <script type="text/javascript" src="3rdparty/js/shortcut.js"></script>
+
     <link rel="stylesheet" href="index.min.css"/>
 
   </head>
@@ -224,7 +226,7 @@
                   </span>
                 </div>
                 <div class="card-content">
-                  <div v-show="thing.edit"><textarea v-model="thing.content" id="{{ 'editThingTextarea' + thing.id }}" style="height: 200px"></textarea></div>
+                  <div v-show="thing.edit"><textarea v-model="thing.content" id="{{ 'textarea-' + thing.id }}" style="height: 200px"></textarea></div>
                   <div class="thing-content" v-show="!thing.edit">{{{ thing.richContent | markdown }}}</div>
                 </div>
               </div>

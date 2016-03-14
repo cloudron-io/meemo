@@ -64,6 +64,7 @@ gulp.task('3rdparty', function () {
         'node_modules/jquery/dist/*.min.js*',
         'frontend/3rdparty/**/*.min.css*',
         'frontend/3rdparty/**/*.min.js*',
+        'frontend/3rdparty/**/*.js*',
     ]).pipe(gulp.dest('public/3rdparty/'));
 });
 
