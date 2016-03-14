@@ -6,7 +6,7 @@
   "changelog": "file://CHANGELOG",
   "icon": "file://logo.png",
   "tagline": "Your personal notes",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "healthCheckPath": "/api/healthcheck",
   "httpPort": 3000,
   "addons": {
