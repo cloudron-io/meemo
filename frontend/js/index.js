@@ -66,7 +66,7 @@ var vue = new Vue({
             Core.things.add(this.thingContent, function (error, thing) {
                 if (error) return console.error(error);
                 vue.thingContent = '';
-                vue.things.push(thing);
+                vue.things.unshift(thing);
             });
         },
         showThingEdit: function (thing) {
@@ -111,7 +111,14 @@ var vue = new Vue({
             Core.things.del(this.activeThing, function (error) {
                 if (error) return console.error(error);
 
-                that.things.splice(that.things.indexOf(that.activeThing, 1));
+                var i;
+                for (i = 0; i < that.things.length; ++i) {
+                    if (that.things[i].id === that.activeThing.id) break;
+                }
+
+                // remove if found
+                if (i < that.things.length) that.things.splice(i, 1);
+
                 that.activeThing = null;
 
                 $('#modalDel').modal('hide');
@@ -279,10 +286,6 @@ function refresh(search) {
         });
     });
 }
-
-Core.things.onAdded(refresh);
-Core.things.onEdited(refresh);
-Core.things.onDeleted(refresh);
 
 Core.loginFailed = vue.showLogin;
 Core.onLogout = function () {

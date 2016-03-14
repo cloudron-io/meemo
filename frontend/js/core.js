@@ -116,9 +116,9 @@ ThingsApi.prototype.add = function (content, callback) {
             setTimeout(callback, 0);
         });
 
-        var thing = new Thing(result.body._id, new Date(result.body.createdAt).getTime(), result.body.tags, result.body.content, result.body.richContent);
+        var thing = result.body.thing;
 
-        callback(null, thing);
+        callback(null, new Thing(thing._id, new Date(thing.createdAt).getTime(), thing.tags, thing.content, thing.richContent));
     }));
 };
 
