@@ -92,13 +92,16 @@ textarea {
     height: 26px;
     border: none;
     resize: vertical;
-    transition: height 200ms;
     background: transparent;
 
     &.active {
         border: none;
         height: 200px;
     }
+}
+
+.new-thing {
+    transition: height 200ms;
 }
 
 .action {

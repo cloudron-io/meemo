@@ -204,12 +204,12 @@
           <div class="col-md-10 col-md-offset-1">
             <div class="well" v-on:click="giveAddFocus()">
               <div class="card-content align-right">
-                <textarea v-el:addinput placeholder="Add something..." v-model="thingContent" v-bind:class="{ active: !!thingContent }"></textarea>
+                <textarea class="new-thing" v-el:addinput placeholder="Add something..." v-model="thingContent" v-bind:class="{ active: !!thingContent }"></textarea>
                 <button v-el:addbutton class="btn btn-default" v-on:click="addThing()" v-bind:class="{ hide: !thingContent }">add</button>
               </div>
             </div>
             <div v-show="!busyThings">
-              <div class="well" v-for="thing in things" v-bind:class="{ edit: thing.edit }">
+              <div class="well" v-for="thing in things" id="{{ 'card-' + thing.id }}" v-bind:class="{ edit: thing.edit }">
                 <div class="thing-actions">
                   {{ thing.createdAt | prettyDateOffset }}
                   <span v-show="thing.edit">

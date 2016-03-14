@@ -65,7 +65,11 @@ var vue = new Vue({
             thing.edit = true;
 
             Vue.nextTick(function() {
+                var margin = 20;
+
                 $('#editThingTextarea' + thing.id).focus();
+                $('#editThingTextarea' + thing.id).height($(window).height() - $('.navbar').height() - (margin*2) - 60);
+                window.scroll(0, $('#card-' + thing.id).offset().top - $('.navbar').height() - margin);
             });
         },
         activateProposedTag: function (tag) {
