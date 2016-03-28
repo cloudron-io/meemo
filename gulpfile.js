@@ -65,6 +65,10 @@ gulp.task('3rdparty', function () {
         'frontend/3rdparty/**/*.min.css*',
         'frontend/3rdparty/**/*.min.js*',
         'frontend/3rdparty/**/*.js*',
+        'frontend/3rdparty/**/*.otf',
+        'frontend/3rdparty/**/*.svg',
+        'frontend/3rdparty/**/*.ttf',
+        'frontend/3rdparty/**/*.woff*',
     ]).pipe(gulp.dest('public/3rdparty/'));
 });
 
