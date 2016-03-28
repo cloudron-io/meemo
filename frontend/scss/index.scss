@@ -24,6 +24,10 @@ body {
 .well {
     overflow: hidden;
     padding: 10px !important;
+    border: 0 solid;
+    background-color: white;
+    box-shadow: 0 4px 17px 0 rgba(0,0,0,.2),0 6px 20px 0 rgba(0,0,0,.19);
+    border-radius: 2px;
 
     &.edit {
         background-color: rgba(255, 231, 0, 1) !important;
@@ -39,6 +43,7 @@ body {
             margin: 0;
             padding: 0 !important;
             color: #aaa !important;
+            border: 0 solid;
 
             &:hover {
                 color: black !important;
@@ -129,24 +134,25 @@ textarea {
     box-shadow: 0 4px 17px 0 rgba(0,0,0,.2),0 6px 20px 0 rgba(0,0,0,.19);
 }
 
-.search {
-    border: 0;
-    width: 50%;
-    font-size: 24px;
-    padding: 8px 0;
-    margin: 10px 0;
+.navigation {
+    z-index: 2000;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    padding: 10px;
+
+    button, input {
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+    }
 }
 
-.navbar-form {
-    width: 50%;
-
-    .form-group {
-        width: 100%;
-
-        .form-control {
-            width: 100%;
-        }
-    }
+.dropdown-right {
+    left: -100px;
+    right: 0;
 }
 
 .no-wrap {

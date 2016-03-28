@@ -14,9 +14,8 @@
     <!-- Bootstrap -->
     <link href="3rdparty/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Bootstrap Material Design -->
-    <link href="3rdparty/css/bootstrap-material-design.min.css" rel="stylesheet">
-    <link href="3rdparty/css/ripples.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="3rdparty/css/font-awesome.min.css" rel="stylesheet">
 
     <script type="text/javascript" src="3rdparty/js/shortcut.js"></script>
 
@@ -159,17 +158,47 @@
         </div>
       </div>
 
-      <div class="navbar navbar-fixed-top shadow">
+      <div class="container-fluid navigation shadow">
+        <form v-on:submit.prevent>
+          <div class="input-group">
+            <div class="input-group-btn">
+              <button type="button" class="btn btn-default" v-on:click.stop="doSearch()"><i class="fa fa-search"></i></button>
+            </div>
+            <input type="text" class="form-control search" placeholder="Search..." data-toggle="dropdown" v-el:searchinput v-model="search" v-on:keyup.enter="doSearch()">
+            <ul class="dropdown-menu" id="tagsDropdown">
+              <li v-for="tag in tags | proposeTags">
+                <a href="#" v-on:click.stop.prevent="activateProposedTag(tag)" class="tag-link">#{{ tag.name }}</a>
+              </li>
+            </ul>
+            <div class="input-group-btn">
+              <button type="button" class="btn btn-default" v-on:click.stop="clearSearch()"><i class="fa fa-times"></i></button>
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">{{ username }} <b class="caret"></b></button>
+              <ul class="dropdown-menu dropdown-right" style="right: 0; left: none !important;">
+                  <li><a href="javascript:void(0)" data-toggle="modal" data-target="#modalSettings">Settings</a></li>
+                  <li><a href="javascript:void(0)" data-toggle="modal" data-target="#modalExtensions">Extensions</a></li>
+                  <li class="divider"></li>
+                  <li><a href="javascript:void(0)" data-toggle="modal" data-target="#modalImport">Import</a></li>
+                  <li><a href="#" class="hand" v-on:click.stop.prevent="exportThings()">Export</a></li>
+                  <li class="divider"></li>
+                  <li><a href="#" v-on:click.stop.prevent="logout()">Logout</a></li>
+                </ul>
+            </div>
+          </div>
+        </form>
+      </div>
+
+<!--       <div class="navbar navbar-fixed-top shadow">
         <div class="container-fluid">
           <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-inverse-collapse">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-1">
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="javascript:void(0)">Guacamoly</a>
           </div>
-          <div class="navbar-collapse collapse navbar-inverse-collapse">
+
+          <div class="collapse navbar-collapse" id="navbar-collapse-1">
+
             <form class="navbar-form navbar-left" v-on:submit.prevent>
               <div class="form-group dropdown">
                 <input type="text" class="form-control search" placeholder="Search..." data-toggle="dropdown" v-el:searchinput v-model="search" v-on:keyup.enter="doSearch()">
@@ -199,7 +228,7 @@
             </ul>
           </div>
         </div>
-      </div>
+      </div> -->
 
       <div class="container">
         <div class="row">
@@ -249,8 +278,6 @@
 
     <script src="3rdparty/jquery.min.js"></script>
     <script src="3rdparty/js/bootstrap.min.js"></script>
-    <script src="3rdparty/js/ripples.min.js"></script>
-    <script src="3rdparty/js/material.min.js"></script>
     <script src="index.js"></script>
 
   </body>
