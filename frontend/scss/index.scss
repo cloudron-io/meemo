@@ -21,6 +21,10 @@ body {
     padding-top: 0;
 }
 
+.modal-footer, .modal-header {
+     border: 0px solid;
+}
+
 .well {
     overflow: hidden;
     padding: 10px !important;
