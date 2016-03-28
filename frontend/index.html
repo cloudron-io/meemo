@@ -231,11 +231,11 @@
                 </div>
               </div>
             </div>
-            <div v-show="busyThings || busyFetchMore">
+            <div>
               <br/>
               <br/>
               <br/>
-              <center><i class="spinner"></i></center>
+              <center><i class="spinner" v-show="busyThings || busyFetchMore"></i></center>
               <br/>
               <br/>
               <br/>
