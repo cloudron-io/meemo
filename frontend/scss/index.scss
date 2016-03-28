@@ -39,14 +39,16 @@ body {
         color: #aaa;
         padding-bottom: 10px;
 
-        .btn-small {
-            margin: 0;
-            padding: 0 !important;
-            color: #aaa !important;
-            border: 0 solid;
+        button {
+            border: 0;
+            border-radius: 0;
+            background-color: transparent;
+            box-shadow: none;
+            transition: all 100ms;
 
             &:hover {
-                color: black !important;
+                background-color: transparent;
+                transform: scale(1.5);
             }
         }
     }

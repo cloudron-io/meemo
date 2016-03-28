@@ -201,14 +201,14 @@
                 <div class="thing-actions">
                   {{ thing.createdAt | prettyDateOffset }}
                   <span v-show="thing.edit">
-                    <button class="btn btn-default btn-small" v-on:click="cancelEdit(thing)"><i class="material-icons">clear</i></button>
+                    <button class="btn btn-default" v-on:click="cancelEdit(thing)"><i class="fa fa-times"></i></button>
                     &nbsp;
-                    <button class="btn btn-default btn-small" v-on:click="saveEdit(thing)"><i class="material-icons">done</i></button>
+                    <button class="btn btn-default" v-on:click="saveEdit(thing)"><i class="fa fa-check"></i></button>
                   </span>
                   <span v-show="!thing.edit">
-                    <button class="btn btn-default btn-small" v-on:click="showThingShare(thing)"><i class="material-icons">share</i></button>
-                    <button class="btn btn-default btn-small" v-on:click="showThingEdit(thing)"><i class="material-icons">edit</i></button>
-                    <button class="btn btn-default btn-small" v-on:click="showThingDel(thing)"><i class="material-icons">delete</i></button>
+                    <button class="btn btn-default" v-on:click="showThingShare(thing)"><i class="fa fa-share-alt"></i></button>
+                    <button class="btn btn-default" v-on:click="showThingEdit(thing)"><i class="fa fa-pencil"></i></button>
+                    <button class="btn btn-default" v-on:click="showThingDel(thing)"><i class="fa fa-trash"></i></button>
                   </span>
                 </div>
                 <div class="card-content">
