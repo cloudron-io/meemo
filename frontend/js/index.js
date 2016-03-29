@@ -46,8 +46,7 @@ var vue = new Vue({
     data: {
         tags: [],
         things: [],
-        busyThings: true,
-        busyFetchMore: false,
+        busy: true,
         search: '',
         username: '',
         password: '',
@@ -271,7 +270,7 @@ function main() {
 }
 
 function refresh(search) {
-    vue.busyThings = true;
+    vue.busy = true;
 
     window.location.href = '/#search?' + (search ? encodeURIComponent(search) : '');
 
@@ -279,7 +278,7 @@ function refresh(search) {
         if (error) return console.error(error);
 
         vue.things = data;
-        vue.busyThings = false;
+        vue.busy = false;
 
         // add global object for browser extensions
         document.getElementById('guacamoly-settings-node').textContent = JSON.stringify({
@@ -302,10 +301,10 @@ main();
 window.addEventListener('scroll', function () {
     // add 1 full pixel to be on the safe side for zoom settings, where pixel values might be floats
     if ($(window).height() + $(window).scrollTop() + 1 >= $(document).height()) {
-        vue.busyFetchMore = true;
+        vue.busy = true;
 
         Core.things.fetchMore(function (error, result) {
-            vue.busyFetchMore = false;
+            vue.busy = false;
 
             if (error) return console.error(error);
 
