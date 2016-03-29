@@ -8,15 +8,6 @@ body {
     padding-top: 80px;
 }
 
-.navbar {
-    background-color: white;
-    color: black;
-
-    :placeholder-shown { /* Standard (https://drafts.csswg.org/selectors-4/#placeholder) */
-        color: #909 !important;
-    }
-}
-
 .modal-content .modal-body {
     padding-top: 0;
 }
@@ -30,14 +21,13 @@ body {
     padding: 10px !important;
     border: 0 solid;
     background-color: white;
-    box-shadow: 0 4px 17px 0 rgba(0,0,0,.2),0 6px 20px 0 rgba(0,0,0,.19);
     border-radius: 2px;
 
     &.edit {
         background-color: rgba(255, 231, 0, 1) !important;
     }
 
-    .thing-actions {
+    .card-actions {
         font-size: 12px;
         text-align: right;
         color: #aaa;
@@ -55,40 +45,45 @@ body {
             }
         }
     }
+
+    .card-content {
+        overflow: hidden;
+
+        textarea {
+            width: 100%;
+        }
+    }
 }
 
 .align-right {
     text-align: right;
 }
 
-.card-content {
-    overflow: hidden;
-
-    textarea {
-        width: 100%;
-    }
+.align-center {
+    text-align: center;
 }
+
+.no-wrap {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.shadow {
+    box-shadow: 0 0 10px 0 rgba(0,0,0,.2),0 6px 20px 0 rgba(0,0,0,.19);
+    // box-shadow: 0 4px 17px 0 rgba(0,0,0,.2),0 6px 20px 0 rgba(0,0,0,.19);
+}
+
 
 .thing-content {
     overflow: auto;
 }
 
+.new-thing {
+    transition: height 200ms;
+}
+
 @import 'settings';
 @import 'spinner';
-
-.present-transition {
-    transition: all .3s ease;
-    opacity: 1;
-    transform: scale(1);
-}
-
-.present-enter, .present-leave {
-    transform: scale(0.8);
-    opacity: 0;
-}
-
-.tags {
-}
 
 .emoji {
   height: 1.2em;
@@ -110,33 +105,11 @@ textarea {
     }
 }
 
-.new-thing {
-    transition: height 200ms;
-}
-
 .action {
     display: inline-block;
     position: absolute;
     top: 20px;
     right: 20px;
-}
-
-.fixed-action-btn {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-}
-
-.title-bar {
-    background-color: white;
-    position: fixed;
-    top: 0;
-    width: 100%;
-    z-index: 1000;
-}
-
-.shadow {
-    box-shadow: 0 4px 17px 0 rgba(0,0,0,.2),0 6px 20px 0 rgba(0,0,0,.19);
 }
 
 .navigation {
@@ -155,40 +128,15 @@ textarea {
     }
 }
 
-.dropdown-right {
+.settings-menu {
     left: -100px;
     right: 0;
 }
 
-.no-wrap {
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.align-center {
-    text-align: center;
-}
-
 .dropdown-tags {
     left: 36px;
-}
-
-.tag-link {
-    font-size: 24px;
-}
-
-.backdrop-main {
-    display: block;
-    width: 100%;
-    height: 100%;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 10;
-
-    &.open {
-        background-color: rgba(0,0,0,0.5);
-    }
+    border: 0;
+    border-radius: 0;
 }
 
 .login-form {

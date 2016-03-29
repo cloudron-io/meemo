@@ -164,13 +164,13 @@
             <input type="text" class="form-control search" placeholder="Search..." data-toggle="dropdown" v-el:searchinput v-model="search" v-on:keyup.enter="doSearch()">
             <ul class="dropdown-menu dropdown-tags" id="tagsDropdown">
               <li v-for="tag in tags | proposeTags">
-                <a href="#" v-on:click.stop.prevent="activateProposedTag(tag)" class="tag-link">#{{ tag.name }}</a>
+                <a href="#" v-on:click.stop.prevent="activateProposedTag(tag)">#{{ tag.name }}</a>
               </li>
             </ul>
             <div class="input-group-btn">
               <button type="button" class="btn btn-default" v-on:click.stop="clearSearch()" title="Clear"><i class="fa fa-times"></i></button>
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">{{ username }} <b class="caret"></b></button>
-              <ul class="dropdown-menu dropdown-right" style="right: 0; left: none !important;">
+              <ul class="dropdown-menu settings-menu" style="right: 0; left: none !important;">
                   <li><a href="javascript:void(0)" data-toggle="modal" data-target="#modalSettings">Settings</a></li>
                   <li><a href="javascript:void(0)" data-toggle="modal" data-target="#modalExtensions">Extensions</a></li>
                   <li class="divider"></li>
@@ -187,15 +187,15 @@
       <div class="container">
         <div class="row">
           <div class="col-md-10 col-md-offset-1">
-            <div class="well" v-on:click="giveAddFocus()">
+            <div class="well shadow" v-on:click="giveAddFocus()">
               <div class="card-content align-right">
                 <textarea id="addTextarea" class="new-thing" v-el:addinput placeholder="Add something..." v-model="thingContent" v-bind:class="{ active: !!thingContent }"></textarea>
                 <button v-el:addbutton class="btn btn-default" v-on:click="addThing()" v-bind:class="{ hide: !thingContent }">add</button>
               </div>
             </div>
             <div v-show="!busyThings">
-              <div class="well" v-for="thing in things" id="{{ 'card-' + thing.id }}" v-bind:class="{ edit: thing.edit }">
-                <div class="thing-actions">
+              <div class="well shadow" v-for="thing in things" id="{{ 'card-' + thing.id }}" v-bind:class="{ edit: thing.edit }">
+                <div class="card-actions">
                   {{ thing.createdAt | prettyDateOffset }}
                   <span v-show="thing.edit">
                     <button class="btn btn-default" v-on:click="cancelEdit(thing)" title="Cancel"><i class="fa fa-times"></i></button>
