@@ -193,7 +193,7 @@
                 <button v-el:addbutton class="btn btn-default" v-on:click="addThing()" v-bind:class="{ hide: !thingContent }">add</button>
               </div>
             </div>
-            <div v-show="!busy">
+            <div v-show="!busyThings">
               <div class="well shadow" v-for="thing in things" id="{{ 'card-' + thing.id }}" v-bind:class="{ edit: thing.edit }">
                 <div class="card-actions">
                   {{ thing.createdAt | prettyDateOffset }}
@@ -218,9 +218,9 @@
               <br/>
               <br/>
               <center>
-                <i class="spinner" v-show="busy"></i>
-                <span v-show="!busy && things.length" class="text-muted">That is all</span>
-                <span v-show="!busy && !things.length" class="text-muted">No things found</span>
+                <i class="spinner" v-show="busyThings || busyFetchMore"></i>
+                <span v-show="(!busyThings && !busyFetchMore) && things.length" class="text-muted">That is all</span>
+                <span v-show="(!busyThings && !busyFetchMore) && !things.length" class="text-muted">No things found</span>
               </center>
               <br/>
               <br/>
