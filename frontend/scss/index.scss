@@ -48,11 +48,10 @@ body {
             border-radius: 0;
             background-color: transparent;
             box-shadow: none;
-            transition: all 100ms;
 
             &:hover {
+                color: #5CB85C;
                 background-color: transparent;
-                transform: scale(1.5);
             }
         }
     }
@@ -170,14 +169,8 @@ textarea {
     text-align: center;
 }
 
-.tag-dropdown {
-    position: absolute;
-    text-align: left;
-    padding: 10px;
-    background-color: white;
-    max-height: 400px;
-    overflow: auto;
-    box-shadow: 0 13px 22px 0 rgba(0,0,0,.2),0 15px 20px 0 rgba(0,0,0,.19)
+.dropdown-tags {
+    left: 36px;
 }
 
 .tag-link {

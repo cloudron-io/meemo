@@ -159,16 +159,16 @@
         <form v-on:submit.prevent>
           <div class="input-group">
             <div class="input-group-btn">
-              <button type="button" class="btn btn-default" v-on:click.stop="doSearch()"><i class="fa fa-search"></i></button>
+              <button type="button" class="btn btn-default" v-on:click.stop="doSearch()" title="Search"><i class="fa fa-search"></i></button>
             </div>
             <input type="text" class="form-control search" placeholder="Search..." data-toggle="dropdown" v-el:searchinput v-model="search" v-on:keyup.enter="doSearch()">
-            <ul class="dropdown-menu" id="tagsDropdown">
+            <ul class="dropdown-menu dropdown-tags" id="tagsDropdown">
               <li v-for="tag in tags | proposeTags">
                 <a href="#" v-on:click.stop.prevent="activateProposedTag(tag)" class="tag-link">#{{ tag.name }}</a>
               </li>
             </ul>
             <div class="input-group-btn">
-              <button type="button" class="btn btn-default" v-on:click.stop="clearSearch()"><i class="fa fa-times"></i></button>
+              <button type="button" class="btn btn-default" v-on:click.stop="clearSearch()" title="Clear"><i class="fa fa-times"></i></button>
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">{{ username }} <b class="caret"></b></button>
               <ul class="dropdown-menu dropdown-right" style="right: 0; left: none !important;">
                   <li><a href="javascript:void(0)" data-toggle="modal" data-target="#modalSettings">Settings</a></li>
@@ -198,14 +198,14 @@
                 <div class="thing-actions">
                   {{ thing.createdAt | prettyDateOffset }}
                   <span v-show="thing.edit">
-                    <button class="btn btn-default" v-on:click="cancelEdit(thing)"><i class="fa fa-times"></i></button>
+                    <button class="btn btn-default" v-on:click="cancelEdit(thing)" title="Cancel"><i class="fa fa-times"></i></button>
                     &nbsp;
-                    <button class="btn btn-default" v-on:click="saveEdit(thing)"><i class="fa fa-check"></i></button>
+                    <button class="btn btn-default" v-on:click="saveEdit(thing)" title="Save"><i class="fa fa-check"></i></button>
                   </span>
                   <span v-show="!thing.edit">
-                    <button class="btn btn-default" v-on:click="showThingShare(thing)"><i class="fa fa-share-alt"></i></button>
-                    <button class="btn btn-default" v-on:click="showThingEdit(thing)"><i class="fa fa-pencil"></i></button>
-                    <button class="btn btn-default" v-on:click="showThingDel(thing)"><i class="fa fa-trash"></i></button>
+                    <button class="btn btn-default" v-on:click="showThingShare(thing)" title="Share"><i class="fa fa-share-alt"></i></button>
+                    <button class="btn btn-default" v-on:click="showThingEdit(thing)" title="Edit"><i class="fa fa-pencil"></i></button>
+                    <button class="btn btn-default" v-on:click="showThingDel(thing)" title="Delete"><i class="fa fa-trash"></i></button>
                   </span>
                 </div>
                 <div class="card-content">
@@ -218,7 +218,11 @@
               <br/>
               <br/>
               <br/>
-              <center><i class="spinner" v-show="busyThings || busyFetchMore"></i></center>
+              <center>
+                <i class="spinner" v-show="busyThings || busyFetchMore"></i>
+                <span v-show="(!busyThings && !busyFetchMore) && things.length">That is all</span>
+                <span v-show="(!busyThings && !busyFetchMore) && !things.length">No things found</span>
+              </center>
               <br/>
               <br/>
               <br/>
