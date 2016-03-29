@@ -302,6 +302,9 @@ main();
 window.addEventListener('scroll', function () {
     // add 1 full pixel to be on the safe side for zoom settings, where pixel values might be floats
     if ($(window).height() + $(window).scrollTop() + 1 >= $(document).height()) {
+        // prevent from refetching while in progress
+        if (vue.busyFetchMore) return;
+
         vue.busyFetchMore = true;
 
         Core.things.fetchMore(function (error, result) {
