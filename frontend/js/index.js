@@ -51,6 +51,7 @@ var vue = new Vue({
         search: '',
         username: '',
         password: '',
+        displayName: '',
         settings: Core.settings.data,
         mainView: '',
         thingContent: '',
@@ -154,7 +155,7 @@ var vue = new Vue({
             Core.session.logout();
         },
         doLogin: function () {
-            Core.session.login(this.username, this.password, function (error) {
+            Core.session.login(this.username, this.password, function (error, user) {
                 if (error) {
                     vue.username = '';
                     vue.password = '';
@@ -163,7 +164,7 @@ var vue = new Vue({
                     return console.error('Login failed:', error.status ? error.status : error);
                 }
 
-                main();
+                main(user);
             });
         },
         refresh: function () {
@@ -253,7 +254,9 @@ function reset() {
     Core.settings.reset();
 }
 
-function main() {
+function main(user) {
+    vue.displayName = user.displayName || user.username || user.email;
+
     Core.settings.get(function (error) {
         if (error) return console.error(error);
 

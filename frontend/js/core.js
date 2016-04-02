@@ -272,7 +272,7 @@ SessionApi.prototype.login = function (username, password, callback) {
         g_token = result.body.token;
         localStorage.token = g_token;
 
-        callback(null);
+        callback(null, result.body.user);
     });
 };
 
