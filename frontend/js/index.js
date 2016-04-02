@@ -46,6 +46,7 @@ var vue = new Vue({
     data: {
         tags: [],
         things: [],
+        busyLogin: false,
         busyThings: true,
         busyFetchMore: false,
         search: '',
@@ -155,7 +156,11 @@ var vue = new Vue({
             Core.session.logout();
         },
         doLogin: function () {
+            vue.busyLogin = true;
+
             Core.session.login(this.username, this.password, function (error, user) {
+                vue.busyLogin = false;
+
                 if (error) {
                     vue.username = '';
                     vue.password = '';
@@ -164,7 +169,7 @@ var vue = new Vue({
                     return console.error('Login failed:', error.status ? error.status : error);
                 }
 
-                main(user);
+                main();
             });
         },
         refresh: function () {
@@ -254,21 +259,25 @@ function reset() {
     Core.settings.reset();
 }
 
-function main(user) {
-    vue.displayName = user.displayName || user.username || user.email;
-
-    Core.settings.get(function (error) {
+function main() {
+    Core.session.profile(function (error, profile) {
         if (error) return console.error(error);
 
-        Core.tags.get(function (error, tags) {
+        vue.displayName = profile.displayName || profile.username || profile.email;
+
+        Core.settings.get(function (error) {
             if (error) return console.error(error);
 
-            vue.tags = tags;
-            vue.mainView = 'content';
+            Core.tags.get(function (error, tags) {
+                if (error) return console.error(error);
 
-            window.setTimeout(function () { vue.$els.searchinput.focus(); }, 0);
+                vue.tags = tags;
+                vue.mainView = 'content';
 
-            hashChangeHandler();
+                window.setTimeout(function () { vue.$els.searchinput.focus(); }, 0);
+
+                hashChangeHandler();
+            });
         });
     });
 }

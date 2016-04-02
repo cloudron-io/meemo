@@ -288,6 +288,15 @@ SessionApi.prototype.logout = function () {
     });
 };
 
+SessionApi.prototype.profile = function (callback) {
+    superagent.get(url('/api/profile')).end(errorWrapper(function (error, result) {
+        if (error) return callback(error);
+        if (result.status !== 200) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
+
+        callback(null, result.body);
+    }));
+};
+
 module.exports = {
     loginFailed: function () {},
     onLogout: function () {},

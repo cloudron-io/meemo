@@ -18,6 +18,7 @@ exports = module.exports = {
     auth: auth,
     login: login,
     logout: logout,
+    profile: profile,
     getAll: getAll,
     get: get,
     add: add,
@@ -54,6 +55,7 @@ function auth(req, res, next) {
         if (!result) return res.status(401).send('invalid credentials');
 
         req.token = req.query.token;
+        req.cloudronToken = result.cloudronToken;
 
         next();
     });
@@ -61,8 +63,12 @@ function auth(req, res, next) {
 
 var simpleAuth = process.env.SIMPLE_AUTH_URL && process.env.SIMPLE_AUTH_CLIENT_ID;
 
+function wrapRestError(error) {
+    return new Error('Failed with status: ' + error.status + ' text: ' + error.response.res.text);
+}
+
 function verifyUser(username, password, callback) {
-    if (!simpleAuth) return callback(null, username === 'test' && password === 'test');
+    if (!simpleAuth) return callback(null, username === 'test' && password === 'test' ? {  accessToken: '', user: { username: 'test', displayName: 'Test', email: 'test@test.com' } } : null);
 
     var authPayload = {
         clientId: process.env.SIMPLE_AUTH_CLIENT_ID,
@@ -71,8 +77,11 @@ function verifyUser(username, password, callback) {
     };
 
     superagent.post(process.env.SIMPLE_AUTH_URL + '/api/v1/login').send(authPayload).end(function (error, result) {
-        if (error) return callback(error);
-        callback(null, result.status === 200);
+        if (error && error.status === 401) return callback(null, null);
+        if (error) return callback(wrapRestError(error));
+        if (result.status !== 200) return callback(null, null);
+
+        callback(null, result.body);
     });
 }
 
@@ -80,14 +89,14 @@ function login(req, res, next) {
     if (typeof req.body.username !== 'string' || !req.body.username) return next(new HttpError(400, 'missing username'));
     if (typeof req.body.password !== 'string' || !req.body.password) return next(new HttpError(400, 'missing password'));
 
-    verifyUser(req.body.username, req.body.password, function (error, valid) {
+    verifyUser(req.body.username, req.body.password, function (error, result) {
         if (error) return next(new HttpError(500, error));
-        if (!valid) return next(new HttpError(401, 'invalid credentials'));
+        if (!result) return next(new HttpError(401, 'invalid credentials'));
 
         var token = uuid.v4();
-        tokens.add(token, function (error) {
+        tokens.add(token, result.accessToken, function (error) {
             if (error) return next(new HttpError(500, error));
-            next(new HttpSuccess(201, { token: token }));
+            next(new HttpSuccess(201, { token: token, user: result.user }));
         });
     });
 }
@@ -96,6 +105,16 @@ function logout(req, res, next) {
     tokens.remove(req.token, function (error) {
         if (error) return next(new HttpError(500, error));
         next(new HttpSuccess(200, {}));
+    });
+}
+
+function profile(req, res, next) {
+    if (!simpleAuth) return next(new HttpSuccess(200, { username: 'test', displayName: 'Test', email: 'test@test.com' }));
+
+    superagent.post(process.env.SIMPLE_AUTH_URL + '/api/v1/profile').query({ access_token: req.cloudronToken }).end(function (error, result) {
+        if (error) return next(new HttpError(500, wrapRestError(error)));
+        if (result.statusCode === 401) return next(new HttpError(401, 'invalid credentials'));
+        next(new HttpSuccess(200, { user: result.body }));
     });
 }
 

@@ -40,6 +40,8 @@ router.post('/api/import', routes.auth, multer().any(), routes.importThings);
 router.post('/api/login', routes.login);
 router.get ('/api/logout', routes.auth, routes.logout);
 
+router.get ('/api/profile', routes.auth, routes.profile);
+
 router.get ('/api/healthcheck', routes.healthcheck);
 
 router.get('/api/extensions/chrome.crx', extensions.chrome);
