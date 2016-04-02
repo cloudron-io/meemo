@@ -1,7 +1,9 @@
 .spinner {
     background-color: transparent;
-    border: 3px solid #03a9f4;
+    border: 3px solid;
     border-radius: 50%;
+    border-left-color: #03a9f4;
+    border-bottom-color: #03a9f4;
     border-top-color: transparent;
     border-right-color: transparent;
     width: 1em;
@@ -10,7 +12,15 @@
     vertical-align: middle;
     box-sizing: border-box;
     animation: spinner-animation 0.65s infinite linear;
-    font-size: 35px;
+
+    &.large {
+        font-size: 35px;
+    }
+
+    &.alt {
+        border-left-color: white;
+        border-bottom-color: white;
+    }
 }
 
 @keyframes spinner-animation {
