@@ -111,9 +111,9 @@ function logout(req, res, next) {
 function profile(req, res, next) {
     if (!simpleAuth) return next(new HttpSuccess(200, { username: 'test', displayName: 'Test', email: 'test@test.com' }));
 
-    superagent.post(process.env.SIMPLE_AUTH_URL + '/api/v1/profile').query({ access_token: req.cloudronToken }).end(function (error, result) {
+    superagent.get(process.env.SIMPLE_AUTH_URL + '/api/v1/profile').query({ access_token: req.cloudronToken }).end(function (error, result) {
+        if (error && error.status === 401) return next(new HttpError(401, 'invalid credentials'));
         if (error) return next(new HttpError(500, wrapRestError(error)));
-        if (result.statusCode === 401) return next(new HttpError(401, 'invalid credentials'));
         next(new HttpSuccess(200, { user: result.body }));
     });
 }
