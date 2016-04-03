@@ -195,7 +195,7 @@ var vue = new Vue({
                 if (error) {
                     vue.username = '';
                     vue.password = '';
-                    $('#inputUsername').focus();
+                    Vue.nextTick(function () { $('#inputUsername').focus(); });
 
                     return console.error('Login failed:', error.status ? error.status : error);
                 }
@@ -289,9 +289,7 @@ function reset() {
     vue.password = '';
     Core.settings.reset();
 
-    setTimeout(function () {
-        $('#inputUsername').focus();
-    }, 0);
+    Vue.nextTick(function () { $('#inputUsername').focus(); });
 }
 
 function main() {
