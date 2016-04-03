@@ -86,6 +86,7 @@ var vue = new Vue({
         busyLogin: false,
         busyThings: true,
         busyFetchMore: false,
+        loginError: false,
         search: '',
         username: '',
         password: '',
@@ -188,11 +189,13 @@ var vue = new Vue({
         },
         doLogin: function () {
             vue.busyLogin = true;
+            vue.loginError = false;
 
             Core.session.login(this.username, this.password, function (error, user) {
                 vue.busyLogin = false;
 
                 if (error) {
+                    vue.loginError = true;
                     vue.username = '';
                     vue.password = '';
                     Vue.nextTick(function () { $('#inputUsername').focus(); });
@@ -200,6 +203,7 @@ var vue = new Vue({
                     return console.error('Login failed:', error.status ? error.status : error);
                 }
 
+                vue.loginError = false;
                 main();
             });
         },

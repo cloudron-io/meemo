@@ -29,11 +29,11 @@
         <div class="col-md-4 col-md-offset-4 login-form shadow">
           <h2 class="modal-title">Login</h2>
           <form v-on:submit.prevent="doLogin">
-            <div class="form-group">
+            <div class="form-group" :class="{ 'has-error': loginError }">
               <label class="control-label" for="inputUsername">Username</label>
               <input type="text" class="form-control" id="inputUsername" v-model="username" v-bind="{ disabled: busyLogin }" autofocus/>
             </div>
-            <div class="form-group">
+            <div class="form-group" :class="{ 'has-error': loginError }">
               <label class="control-label" for="inputPassword">Password</label>
               <input type="password" class="form-control" id="inputPassword" v-model="password" v-bind="{ disabled: busyLogin }" autofocus />
             </div>
