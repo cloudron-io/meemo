@@ -48,11 +48,10 @@ function healthcheck(req, res, next) {
 }
 
 function auth(req, res, next) {
-    if (!req.query.token) return res.status(401).send('missing token');
+    if (!req.query.token) return next(new HttpError(401, 'missing token'));
 
-    tokens.exists(req.query.token, function (error, result) {
-        if (error) return res.status(500).send('internal error');
-        if (!result) return res.status(401).send('invalid credentials');
+    tokens.get(req.query.token, function (error, result) {
+        if (error) return next(new HttpError(401, 'invalid credentials'));
 
         req.token = req.query.token;
         req.cloudronToken = result.cloudronToken;

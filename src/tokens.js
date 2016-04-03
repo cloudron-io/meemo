@@ -8,7 +8,7 @@ var assert = require('assert'),
 
 exports = module.exports = {
     init: init,
-    exists: exists,
+    get: get,
     remove: remove,
     add: add
 };
@@ -29,7 +29,7 @@ function init(callback) {
     });
 }
 
-function exists(value, callback) {
+function get(value, callback) {
     assert.strictEqual(typeof value, 'string');
     assert.strictEqual(typeof callback, 'function');
 
