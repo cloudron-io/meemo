@@ -13,6 +13,7 @@
     "mongodb": {},
     "simpleauth": {}
   },
+  "developmentMode": false,
   "singleUser": true,
   "tags": ["notes", "bookmarks", "todo", "ideas"],
   "changelog": "Initial Version",
