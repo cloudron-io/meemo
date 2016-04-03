@@ -1,3 +1,4 @@
+(function () {
 'use strict';
 
 Vue.config.debug = true;
@@ -182,12 +183,6 @@ var vue = new Vue({
                 $('#modalSettings').modal('hide');
             });
         },
-        showLogin: function () {
-            this.mainView = 'login';
-            setTimeout(function () {
-                $('#inputUsername').focus();
-            }, 0);
-        },
         logout: function () {
             Core.session.logout();
         },
@@ -286,13 +281,17 @@ shortcut.add('Ctrl+s', handleSaveShortcut, {});
 shortcut.add('Ctrl+Enter', handleSaveShortcut, {});
 
 function reset() {
-    vue.mainView = '';
+    vue.mainView = 'login';
     vue.things = [];
     vue.tags = [];
     vue.search = '';
     vue.username = '';
     vue.password = '';
     Core.settings.reset();
+
+    setTimeout(function () {
+        $('#inputUsername').focus();
+    }, 0);
 }
 
 function main() {
@@ -338,11 +337,8 @@ function refresh(search) {
     });
 }
 
-Core.loginFailed = vue.showLogin;
-Core.onLogout = function () {
-    reset();
-    vue.showLogin();
-};
+Core.loginFailed = reset;
+Core.onLogout = reset;
 
 // Main
 main();
@@ -364,3 +360,5 @@ window.addEventListener('scroll', function () {
         });
     }
 });
+
+})();

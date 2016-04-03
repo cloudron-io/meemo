@@ -1,3 +1,4 @@
+(function () {
 'use strict';
 
 Vue.config.debug = true;
@@ -45,3 +46,5 @@ function main() {
 
 // Main
 main();
+
+})();

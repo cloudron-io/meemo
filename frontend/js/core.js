@@ -1,3 +1,4 @@
+(function () {
 'use strict';
 
 var g_server = location.origin;
@@ -13,7 +14,7 @@ function guid() {
 
 function errorWrapper(callback) {
     return function (error, result) {
-        if (error && error.status === 401) return module.exports.loginFailed();
+        if (error && error.status === 401) return window.Guacamoly.Core.loginFailed();
 
         callback(error, result);
     };
@@ -282,7 +283,7 @@ SessionApi.prototype.logout = function () {
         g_token = '';
         delete localStorage.token;
 
-        module.exports.onLogout();
+        window.Guacamoly.Core.onLogout();
     });
 };
 
@@ -308,3 +309,5 @@ window.Guacamoly.Core = {
     things: new ThingsApi(),
     tags: new TagsApi()
 };
+
+})();
