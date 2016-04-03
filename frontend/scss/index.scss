@@ -16,6 +16,16 @@ body {
      border: 0px solid;
 }
 
+.brand-link {
+    color: black;
+    font-size: 17px;
+
+    &:hover,
+    &:focus {
+        text-decoration: none;
+    }
+}
+
 .well {
     overflow: hidden;
     padding: 10px !important;
