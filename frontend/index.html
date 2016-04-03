@@ -31,11 +31,11 @@
           <form v-on:submit.prevent="doLogin">
             <div class="form-group" :class="{ 'has-error': loginError }">
               <label class="control-label" for="inputUsername">Username</label>
-              <input type="text" class="form-control" id="inputUsername" v-model="username" v-bind="{ disabled: busyLogin }" autofocus/>
+              <input type="text" class="form-control" id="inputUsername" v-model="username" v-bind="{ disabled: busyLogin }" required autofocus/>
             </div>
             <div class="form-group" :class="{ 'has-error': loginError }">
               <label class="control-label" for="inputPassword">Password</label>
-              <input type="password" class="form-control" id="inputPassword" v-model="password" v-bind="{ disabled: busyLogin }" autofocus />
+              <input type="password" class="form-control" id="inputPassword" v-model="password" v-bind="{ disabled: busyLogin }" required/>
             </div>
             <button type="submit" class="btn btn-success" v-bind="{ disabled: busyLogin }"><i class="spinner alt" v-show="busyLogin"></i> Login</button>
           </form>
