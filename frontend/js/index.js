@@ -1,11 +1,9 @@
 'use strict';
 
-var Vue = require('vue'),
-    Core = require('./core.js');
-
-require('./filter.js');
-
 Vue.config.debug = true;
+
+window.Guacamoly = window.Guacamoly || {};
+var Core = window.Guacamoly.Core;
 
 function getCurrentSearchWord() {
     if (!vue) return '';

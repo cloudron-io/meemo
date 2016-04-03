@@ -23,30 +23,9 @@ gulp.task('styles', function () {
         .pipe(gulp.dest('public/'));
 });
 
-gulp.task('browserify', ['browserify-index', 'browserify-thing'], function () {});
-
-gulp.task('browserify-index', function () {
-    browserify({
-        entries: 'frontend/js/index.js',
-        debug: true
-    }).bundle()
-        .pipe(source('index.js'))
-        .pipe(buffer())
-        .pipe(sourcemaps.init({loadMaps: true}))
-        .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest('public/'));
-});
-
-gulp.task('browserify-thing', function () {
-    browserify({
-        entries: 'frontend/js/thing.js',
-        debug: true
-    }).bundle()
-        .pipe(source('thing.js'))
-        .pipe(buffer())
-        .pipe(sourcemaps.init({loadMaps: true}))
-        .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest('public/'));
+gulp.task('javascript', function () {
+    return gulp.src('frontend/**/*.js')
+    .pipe(gulp.dest('public/'));
 });
 
 gulp.task('html', function () {
@@ -59,7 +38,7 @@ gulp.task('favicon', function () {
         .pipe(gulp.dest('public/'));
 });
 
-gulp.task('3rdparty', function () {
+gulp.task('3rdparty', ['other'], function () {
     return gulp.src([
         'node_modules/jquery/dist/*.min.js*',
         'frontend/3rdparty/**/*.min.css*',
@@ -70,6 +49,16 @@ gulp.task('3rdparty', function () {
         'frontend/3rdparty/**/*.ttf',
         'frontend/3rdparty/**/*.woff*',
     ]).pipe(gulp.dest('public/3rdparty/'));
+});
+
+gulp.task('other', function () {
+    return gulp.src([
+        'node_modules/superagent/superagent.js',
+        'node_modules/vue/dist/vue.min.js',
+        'node_modules/markdown-it/dist/markdown-it.min.js',
+        'node_modules/markdown-it-checkbox/dist/markdown-it-checkbox.min.js',
+        'node_modules/markdown-it-emoji/dist/markdown-it-emoji.min.js'
+    ]).pipe(gulp.dest('public/3rdparty/js/'));
 });
 
 gulp.task('images', function () {
@@ -88,7 +77,7 @@ gulp.task('firefox_extension', function () {
 
 gulp.task('extensions', ['chrome_extension', 'firefox_extension'], function () {});
 
-gulp.task('default', ['clean', 'html', 'favicon', 'images', 'styles', 'browserify', '3rdparty'], function () {});
+gulp.task('default', ['clean', 'html', 'favicon', 'images', 'styles', 'javascript', '3rdparty'], function () {});
 
 gulp.task('clean', function () {
     del.sync(['public/']);
@@ -96,7 +85,7 @@ gulp.task('clean', function () {
 
 gulp.task('watch', ['default'], function () {
     gulp.watch('frontend/scss/*.scss', ['styles']);
-    gulp.watch('frontend/**/*.js', ['browserify']);
+    gulp.watch('frontend/**/*.js', ['javascript']);
     gulp.watch('frontend/**/*.html', ['html']);
     gulp.watch('frontend/img/*', ['images']);
     gulp.watch('webextension/*', ['extensions']);

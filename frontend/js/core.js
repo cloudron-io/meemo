@@ -1,7 +1,5 @@
 'use strict';
 
-var superagent = require('superagent');
-
 var g_server = location.origin;
 var g_token = localStorage.token || '';
 
@@ -297,7 +295,8 @@ SessionApi.prototype.profile = function (callback) {
     }));
 };
 
-module.exports = {
+window.Guacamoly = window.Guacamoly || {};
+window.Guacamoly.Core = {
     loginFailed: function () {},
     onLogout: function () {},
     url: url,

@@ -35,7 +35,8 @@ function exists(value, callback) {
 
     g_tokens.find({ value: value }).toArray(function (error, result) {
         if (error) return callback(error);
-        callback(null, result ? !!result.length : false);
+        if (result.length === 0) return callback(new Error('No token found'));
+        callback(null, result[0]);
     });
 }
 

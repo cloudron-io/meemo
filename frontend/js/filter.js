@@ -1,15 +1,13 @@
 'use strict';
 
-var Vue = require('vue'),
-    twemoji = require('twemoji');
+// var twemoji = require('twemoji');
 
-var md = require('markdown-it')({
+var md = window.markdownit({
     breaks: true,
     html: true,
     linkify: true
-}).use(require('markdown-it-emoji'))
-.use(require('markdown-it-highlightjs'))
-.use(require('markdown-it-checkbox'));
+}).use(window.markdownitEmoji)
+.use(window.markdownitCheckbox);
 
 md.renderer.rules.emoji = function(token, idx) {
   return twemoji.parse(token[idx].content);
