@@ -15,3 +15,7 @@
 
 [0.2.0]
 * Rework the ui theme
+
+[0.3.0]
+* Fully intergrate with Cloudron usermanagement
+
