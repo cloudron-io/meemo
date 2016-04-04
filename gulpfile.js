@@ -68,11 +68,13 @@ gulp.task('images', function () {
 });
 
 gulp.task('chrome_extension', function () {
-    run('chromium --pack-extension=webextension --pack-extension-key=webextension.pem').exec();
+    del.sync(['webextension-chrome.zip']);
+    run('zip -r webextension-chrome.zip webextension/').exec();
 });
 
 gulp.task('firefox_extension', function () {
-    run('/bin/bash build_firefox_extension.sh').exec();
+    del.sync(['webextension-firefox.xpi']);
+    run('zip -r ../webextension-firefox.xpi .', { cwd: process.cwd() + '/webextension' }).exec();
 });
 
 gulp.task('extensions', ['chrome_extension', 'firefox_extension'], function () {});
