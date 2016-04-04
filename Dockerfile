@@ -10,7 +10,7 @@ ENV PATH /usr/local/node-4.2.1/bin:$PATH
 
 ADD src/ /app/code/src/
 ADD frontend/ /app/code/frontend/
-ADD webextension.xpi webextension.crx webextension.pem gulpfile.js package.json app.js start.sh things.json logo.png /app/code/
+ADD gulpfile.js package.json app.js start.sh things.json logo.png /app/code/
 
 RUN npm install && npm install -g gulp-cli && gulp default
 
