@@ -143,10 +143,11 @@
               <h4>Browser Extensions</h4>
             </div>
             <div class="modal-body">
-              Webextensions have to be installed manually. Download the extension and add it in the <a href="chrome://extensions/">extension</a> page for chrome or <a href="about:addons">addons</a> page in firefox-nightly.
               <p>
-                <a class="btn btn-success btn-raised" href="/api/extensions/chrome.crx">Chrome</a>
-                <a class="btn btn-success btn-raised" href="/api/extensions/firefox.xpi">Firefox</a>
+                <a class="btn btn-success btn-raised" href="https://chrome.google.com/webstore/detail/guacamoly/lhkjapedcimeeiildlmebipnekekjmod" target="_blank">Google Chrome</a>
+                <a class="btn btn-success btn-raised" href="https://addons.mozilla.org/en-US/firefox/addon/guacamoly/" target="_blank">Firefox</a>
+                <br/><br/>
+                <a href="mailto:johannes@nebulon.de">Let us know if you would need an extension for another browser.</a>
               </p>
             </div>
             <div class="modal-footer">
@@ -173,7 +174,7 @@
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">{{ displayName }} <b class="caret"></b></button>
               <ul class="dropdown-menu settings-menu" style="right: 0; left: none !important;">
                   <li><a href="javascript:void(0)" data-toggle="modal" data-target="#modalSettings">Settings</a></li>
-                  <li><a href="javascript:void(0)" data-toggle="modal" data-target="#modalExtensions">Extensions</a></li>
+                  <li><a href="javascript:void(0)" data-toggle="modal" data-target="#modalExtensions">Browser Extensions</a></li>
                   <li class="divider"></li>
                   <li><a href="javascript:void(0)" data-toggle="modal" data-target="#modalImport">Import</a></li>
                   <li><a href="#" class="hand" v-on:click.stop.prevent="exportThings()">Export</a></li>
