@@ -22,7 +22,10 @@ exports = module.exports = {
     exp: exp,
     imp: imp,
     publicLink: publicLink,
-    getByShareId: getByShareId
+    getByShareId: getByShareId,
+
+    TYPE_IMAGE: 'image',
+    TYPE_UNKNOWN: 'unknown'
 };
 
 var g_db, g_things, g_publicLinks;
@@ -43,11 +46,12 @@ function init(callback) {
     });
 }
 
-function facelift(data, tagObjects, callback) {
+function extractExternalContent(content, callback) {
     var geturl = new RegExp('(^|[ \t\r\n])((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){2,}(#([a-zA-Z0-9][a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))', 'g');
 
-    var lines = data.split('\n');
+    var lines = content.split('\n');
     var urls = [];
+    var externalContent = [];
 
     lines.forEach(function (line) {
         var tmp = line.match(geturl);
@@ -58,24 +62,77 @@ function facelift(data, tagObjects, callback) {
         }).concat(urls);
     });
 
+    urls = urls.filter(function (item, pos, self) {
+        return self.indexOf(item) === pos;
+    });
+
     async.each(urls, function (url, callback) {
-        url = url.trim();
-
         superagent.get(url).end(function (error, result) {
-            if (error) return callback(null);
+            var obj = { url: url, type: exports.TYPE_UNKNOWN };
 
-            if (result.type.indexOf('image/') === 0) {
-                data = data.replace(url, '![' + url + '](' + url + ')');
+            if (error) {
+                console.log('[WARN] failed to fetch external content %s', url);
+            } else {
+                if (result.type.indexOf('image/') === 0) {
+                    obj = { url: url, type: exports.TYPE_IMAGE };
+                }
+
+                console.log('[INFO] external content type %s - %s', obj.type, obj.url);
             }
+
+            externalContent.push(obj);
 
             callback(null);
         });
     }, function () {
+        callback(null, externalContent);
+    });
+}
+
+function facelift(thing, callback) {
+    var data = thing.content;
+    var tagObjects = thing.tags;
+    var externalContent = thing.externalContent;
+
+    function wrapper() {
+
+        // Enrich with tag links
         tagObjects.forEach(function (tag) {
             data = data.replace(new RegExp('#' + tag, 'gmi'), '[#' + tag + '](#search?#' + tag + ')');
         });
 
-        callback(data);
+        // Enrich with image links
+        externalContent.forEach(function (obj) {
+            if (obj.type === exports.TYPE_IMAGE) {
+                data = data.replace(new RegExp(obj.url, 'gmi'), '![' + obj.url + '](' + obj.url + ')');
+            }
+        });
+
+        callback(null, data);
+    }
+
+    if (Array.isArray(externalContent)) return wrapper();
+
+    // old entry extract external content first
+    extractExternalContent(thing.content, function (error, result) {
+        if (error) {
+            console.error('Failed to extract external content:', error);
+
+            externalContent = [];
+
+            return wrapper();
+        }
+
+        // set for wrapper()
+        externalContent = result;
+
+        console.log('[INFO] update %s with new external content.', thing._id, result);
+
+        g_things.update({_id: new ObjectId(thing._id) }, { $set: { externalContent: result } }, function (error) {
+            if (error) console.error('Failed to update external content:', error);
+
+            wrapper();
+        });
     });
 }
 
@@ -101,9 +158,10 @@ function getAll(query, skip, limit, callback) {
         if (!result) return callback(null, []);
 
         async.each(result, function (thing, callback) {
-            var tagObjects = extractTags(thing.content);
-            facelift(thing.content, tagObjects, function (data) {
-                thing.richContent = data;
+            facelift(thing, function (error, data) {
+                if (error) console.error('Failed to facelift:', error);
+
+                thing.richContent = data || thing.content;
 
                 callback(null);
             });
@@ -119,35 +177,45 @@ function get(id, callback) {
         if (result.length === 0) return callback(new Error('not found'));
 
         var thing = result[0];
-        facelift(thing.content, extractTags(thing.content), function (data) {
-            thing.richContent = data;
+        facelift(thing, function (error, data) {
+            if (error) console.error('Failed to facelift:', error);
+
+            thing.richContent = data || thing.content;
+
             callback(null, thing);
         });
     });
 }
 
 function add(content, callback) {
-    var tagObjects = extractTags(content);
-    var data = content;
 
-    var doc = {
-        content: data,
-        createdAt: new Date(),
-        modifiedAt: new Date(),
-        tags: tagObjects
-    };
-
-    async.eachSeries(tagObjects, tags.update, function (error) {
+    extractExternalContent(content, function (error, result) {
         if (error) return callback(error);
 
-        g_things.insert(doc, function (error, result) {
-            if (error) return callback(error);
-            if (!result) return callback(new Error('no result returned'));
+        var doc = {
+            content: content,
+            createdAt: new Date(),
+            modifiedAt: new Date(),
+            tags: extractTags(content),
+            externalContent: result
+        };
 
-            var thing = result.ops[0];
-            facelift(thing.content, extractTags(thing.content), function (data) {
-                thing.richContent = data;
-                callback(null, thing);
+        async.eachSeries(doc.tags, tags.update, function (error) {
+            if (error) return callback(error);
+
+            g_things.insert(doc, function (error, result) {
+                if (error) return callback(error);
+                if (!result) return callback(new Error('no result returned'));
+
+                var thing = result.ops[0];
+
+                facelift(thing, function (error, data) {
+                    if (error) console.error('Failed to facelift:', error);
+
+                    thing.richContent = data || thing.content;
+
+                    callback(null, thing);
+                });
             });
         });
     });
@@ -155,15 +223,25 @@ function add(content, callback) {
 
 function put(id, content, callback) {
     var tagObjects = extractTags(content);
-    var data = content;
 
     async.eachSeries(tagObjects, tags.update, function (error) {
         if (error) return callback(error);
 
-        g_things.update({_id: new ObjectId(id) }, { $set: { content: data, tags: tagObjects, modifiedAt: new Date() } }, function (error) {
-            if (error) return callback(error);
+        extractExternalContent(content, function (error, result) {
+            if (error) console.error('Failed to extract external content:', error);
 
-            get(id, callback);
+            var data = {
+                content: content,
+                tags: tagObjects,
+                modifiedAt: new Date(),
+                externalContent: result
+            };
+
+            g_things.update({_id: new ObjectId(id) }, { $set: data }, function (error) {
+                if (error) return callback(error);
+
+                get(id, callback);
+            });
         });
     });
 }
