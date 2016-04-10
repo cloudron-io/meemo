@@ -157,6 +157,63 @@
         </div>
       </div>
 
+      <div class="modal fade" id="modalCheatSheet">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4>Markdown Cheatsheet</h4>
+            </div>
+            <div class="modal-body">
+              <pre>
+Emphasis:
+*italic*
+**bold**
+~~strikethrough~~
+
+Heading:
+# heading
+## heading2
+### heading3
+
+Horizontal line:
+___
+
+
+Blockquotes:
+> Quotes
+>> more Quotes
+
+
+Lists:
+* blabla
+* more of this awesomeness
+* fantastic stuff
+
+1. one
+2. two
+3. three
+
+
+Emojis:
+:-)
+:fish:
+
+Code:
+```
+function () {
+    alert('Hello World');
+}
+```
+              </pre>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div id="mainNavigationBar" class="container-fluid navigation shadow">
         <form v-on:submit.prevent>
           <div class="input-group">
@@ -175,6 +232,7 @@
               <ul class="dropdown-menu settings-menu" style="right: 0; left: none !important;">
                   <li><a href="javascript:void(0)" data-toggle="modal" data-target="#modalSettings">Settings</a></li>
                   <li><a href="javascript:void(0)" data-toggle="modal" data-target="#modalExtensions">Browser Extensions</a></li>
+                  <li><a href="javascript:void(0)" data-toggle="modal" data-target="#modalCheatSheet">Cheatsheet</a></li>
                   <li class="divider"></li>
                   <li><a href="javascript:void(0)" data-toggle="modal" data-target="#modalImport">Import</a></li>
                   <li><a href="#" class="hand" v-on:click.stop.prevent="exportThings()">Export</a></li>
