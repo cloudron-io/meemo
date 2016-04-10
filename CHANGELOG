@@ -22,3 +22,6 @@
 [0.4.0]
 * Browser extensions are now in the stores
 
+[0.4.1]
+* Improve performance on external link fetching
+
