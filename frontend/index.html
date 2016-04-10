@@ -254,7 +254,7 @@ function () {
                   <span>
                     <a class="btn btn-default" title="Cheatsheet" href="javascript:void(0)" data-toggle="modal" data-target="#modalCheatSheet"><i class="fa fa-keyboard-o"></i></a>
                     &nbsp;
-                    <button class="btn btn-default" v-on:click="addThing()" title="Add"><i class="fa fa-check"></i></button>
+                    <button class="btn btn-default" v-on:click="addThing()" title="Add (Ctrl+S)"><i class="fa fa-check"></i></button>
                   </span>
                 </div>
                 <textarea id="addTextarea" class="new-thing" v-el:addinput placeholder="Add something..." v-model="thingContent" v-bind:class="{ active: !!thingContent }"></textarea>
@@ -269,7 +269,7 @@ function () {
                     &nbsp;
                     <button class="btn btn-default" v-on:click="cancelEdit(thing)" title="Cancel"><i class="fa fa-times"></i></button>
                     &nbsp;
-                    <button class="btn btn-default" v-on:click="saveEdit(thing)" title="Save"><i class="fa fa-check"></i></button>
+                    <button class="btn btn-default" v-on:click="saveEdit(thing)" title="Save (Ctrl+S)"><i class="fa fa-check"></i></button>
                   </span>
                   <span v-show="!thing.edit">
                     <button class="btn btn-default" v-on:click="showThingShare(thing)" title="Share"><i class="fa fa-share-alt"></i></button>
