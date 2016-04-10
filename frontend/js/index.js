@@ -116,8 +116,9 @@ var vue = new Vue({
                 var margin = 20;
 
                 $('#textarea-' + thing.id).focus();
-                $('#textarea-' + thing.id).height($(window).height() - $('.navigation').height() - (margin*2) - 60);
-                window.scroll(0, $('#card-' + thing.id).offset().top - $('.navigation').height() - margin);
+                $('#textarea-' + thing.id).height($(window).height() - $('#mainNavigationBar').height() - (margin*2) - 60);
+
+                window.scroll(0, $('#card-' + thing.id).offset().top - $('#mainNavigationBar').height() - margin);
             });
         },
         activateProposedTag: function (tag) {
