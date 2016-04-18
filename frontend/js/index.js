@@ -121,6 +121,44 @@ var vue = new Vue({
                 window.scroll(0, $('#card-' + thing.id).offset().top - $('#mainNavigationBar').height() - margin);
             });
         },
+        showTags: function (element, event) {
+            if (event.code === 'Escape') {
+                $('#tagsDropdown').hide();
+            } else {
+                $('#tagsDropdown').show();
+                if (event.code === 'ArrowDown' &&  $('.dropdown-tags>.item>a')[0]) $('.dropdown-tags>.item>a')[0].focus();
+            }
+        },
+        keyNavigateTags: function (element, event) {
+            var tagColumns = 4;
+            var index = element.$index;
+
+            switch (event.code) {
+                case 'ArrowRight':
+                    ++index;
+                    break;
+                case 'ArrowLeft':
+                    --index;
+                    break;
+                case 'ArrowUp':
+                    if (index < tagColumns) {
+                        $('#searchBarInput').focus();
+                        return;
+                    }
+                    index -= tagColumns;
+                    break;
+                case 'ArrowDown':
+                    index += tagColumns;
+                    break;
+                case 'Escape':
+                    $('#tagsDropdown').hide();
+                    $('#searchBarInput').focus();
+                    break;
+                default: return;
+            }
+
+            if ($('.dropdown-tags>.item>a')[index]) $('.dropdown-tags>.item>a')[index].focus();
+        },
         activateProposedTag: function (tag) {
             var word = getCurrentSearchWord();
 
@@ -212,6 +250,7 @@ var vue = new Vue({
             refresh();
         },
         doSearch: function () {
+            $('#tagsDropdown').hide();
             window.location.href = '/#search?' + encodeURIComponent(this.search);
         },
         tagSearch: function (tag) {

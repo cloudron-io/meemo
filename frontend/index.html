@@ -220,12 +220,12 @@ function () {
             <div class="input-group-btn">
               <button type="button" class="btn btn-default" v-on:click.stop="doSearch()" title="Search"><i class="fa fa-search"></i></button>
             </div>
-            <input type="text" class="form-control search" placeholder="Search..." data-toggle="dropdown" v-el:searchinput v-model="search" v-on:keyup.enter="doSearch()">
-            <ul class="dropdown-menu dropdown-tags" id="tagsDropdown">
-              <li v-for="tag in tags | proposeTags">
-                <a href="#" v-on:click.stop.prevent="activateProposedTag(tag)">#{{ tag.name }}</a>
-              </li>
-            </ul>
+            <input type="text" class="form-control search" id="searchBarInput" autocomplete="off" placeholder="Search..." data-toggle="dropdown" v-el:searchinput v-model="search" v-on:keyup="showTags(this, $event)" v-on:keyup.enter="doSearch()">
+            <div class="dropdown-menu dropdown-tags" id="tagsDropdown">
+              <div class="item" v-for="tag in tags | proposeTags">
+                <a href="#" id="tagItem" v-on:click.stop.prevent="activateProposedTag(tag)" v-on:keyup="keyNavigateTags(this, $event)">#{{ tag.name }}</a>
+              </div>
+            </div>
             <div class="input-group-btn">
               <button type="button" class="btn btn-default" v-on:click.stop="clearSearch()" title="Clear"><i class="fa fa-times"></i></button>
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">{{ displayName }} <b class="caret"></b></button>

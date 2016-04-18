@@ -149,6 +149,28 @@ textarea {
     left: 36px;
     border: 0;
     border-radius: 0;
+    width: 400px;
+
+    .item {
+        display: inline-block;
+        width: 100px;
+
+        a {
+            display: block;
+            padding: 3px 20px;
+            clear: both;
+            font-weight: 400;
+            line-height: 1.42857143;
+            color: #333;
+            white-space: nowrap;
+
+            &:hover, &:focus {
+                color: #262626;
+                text-decoration: none;
+                background-color: #f5f5f5;
+            }
+        }
+    }
 }
 
 .login-form {
