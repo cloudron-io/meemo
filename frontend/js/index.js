@@ -337,6 +337,8 @@ function reset() {
 }
 
 function main() {
+    vue.mainView = 'loader';
+
     Core.session.profile(function (error, profile) {
         if (error) return console.error(error);
 

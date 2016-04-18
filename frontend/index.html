@@ -19,6 +19,17 @@
   </head>
   <body id="application">
 
+    <div class="container" v-show="mainView === 'loader'" v-cloak>
+      <div class="container-fluid navigation shadow">
+        <a href="http://guacamoly.rocks" target="_blank" class="brand-link"><img src="/favicon.png" height="28px"/> Guacamoly</a>
+      </div>
+      <br/>
+      <br/>
+      <center>
+        <i class="spinner large"></i>
+      </center>
+    </div>
+
     <div class="container" v-show="mainView === 'login'" v-cloak>
       <div class="container-fluid navigation shadow">
         <a href="http://guacamoly.rocks" target="_blank" class="brand-link"><img src="/favicon.png" height="28px"/> Guacamoly</a>
