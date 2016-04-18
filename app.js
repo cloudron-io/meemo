@@ -12,6 +12,7 @@ var express = require('express'),
     cors = require('cors'),
     multer  = require('multer'),
     routes = require('./src/routes.js'),
+    tags = require('./src/tags.js'),
     things = require('./src/things.js'),
     morgan = require('morgan'),
     lastmile = require('connect-lastmile'),
@@ -78,6 +79,10 @@ routes.init(function (error) {
             var port = server.address().port;
 
             console.log('App listening at http://%s:%s', host, port);
+
+            tags.cleanup();
+
+            setInterval(tags.cleanup, 1000 * 60);
         });
     });
 });

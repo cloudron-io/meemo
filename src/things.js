@@ -15,6 +15,7 @@ var MongoClient = require('mongodb').MongoClient,
 exports = module.exports = {
     init: init,
     getAll: getAll,
+    getAllLean: getAllLean,
     get: get,
     add: add,
     put: put,
@@ -23,6 +24,7 @@ exports = module.exports = {
     imp: imp,
     publicLink: publicLink,
     getByShareId: getByShareId,
+    extractTags: extractTags,
 
     TYPE_IMAGE: 'image',
     TYPE_UNKNOWN: 'unknown'
@@ -168,6 +170,13 @@ function getAll(query, skip, limit, callback) {
         }, function () {
             callback(null, result);
         });
+    });
+}
+
+function getAllLean(callback) {
+    g_things.find({}).toArray(function (error, result) {
+        if (error) return callback(error);
+        callback(null, result || []);
     });
 }
 
