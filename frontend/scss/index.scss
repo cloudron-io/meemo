@@ -29,7 +29,7 @@ body {
 .well {
     overflow: hidden;
     padding: 10px !important;
-    border: 0 solid;
+    border: 1px solid #E4E4E4;
     background-color: white;
     border-radius: 2px;
 
@@ -81,7 +81,7 @@ body {
 }
 
 .shadow {
-    box-shadow: 0 0 10px 0 rgba(0,0,0,.2),0 6px 20px 0 rgba(0,0,0,.19);
+    box-shadow: 0 0 10px 0 rgba(0,0,0,.2),0 0 5px 0 rgba(0,0,0,.19);
     // box-shadow: 0 4px 17px 0 rgba(0,0,0,.2),0 6px 20px 0 rgba(0,0,0,.19);
 }
 
