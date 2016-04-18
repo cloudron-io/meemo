@@ -107,6 +107,8 @@ var vue = new Vue({
                 if (error) return console.error(error);
                 vue.thingContent = '';
                 vue.things.unshift(thing);
+
+                refreshTags();
             });
         },
         showThingEdit: function (thing) {
@@ -176,6 +178,8 @@ var vue = new Vue({
                 // update the enhanced content from the server
                 thing.richContent = result.richContent;
                 thing.edit = false;
+
+                refreshTags();
             });
         },
         cancelEdit: function (thing) {
@@ -336,6 +340,16 @@ function reset() {
     Vue.nextTick(function () { $('#inputUsername').focus(); });
 }
 
+function refreshTags(callback) {
+    Core.tags.get(function (error, tags) {
+        if (error) return console.error(error);
+
+        vue.tags = tags;
+
+        if (callback) callback();
+    });
+}
+
 function main() {
     vue.mainView = 'loader';
 
@@ -347,10 +361,7 @@ function main() {
         Core.settings.get(function (error) {
             if (error) return console.error(error);
 
-            Core.tags.get(function (error, tags) {
-                if (error) return console.error(error);
-
-                vue.tags = tags;
+            refreshTags(function () {
                 vue.mainView = 'content';
 
                 window.setTimeout(function () { vue.$els.searchinput.focus(); }, 0);
