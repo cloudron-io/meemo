@@ -2,16 +2,6 @@
 
 'use strict';
 
-var MongoClient = require('mongodb').MongoClient,
-    ObjectId = require('mongodb').ObjectID,
-    async = require('async'),
-    fs = require('fs'),
-    os = require('os'),
-    config = require('./config.js'),
-    tags = require('./tags.js'),
-    path = require('path'),
-    superagent = require('superagent');
-
 exports = module.exports = {
     init: init,
     getAll: getAll,
@@ -29,6 +19,16 @@ exports = module.exports = {
     TYPE_IMAGE: 'image',
     TYPE_UNKNOWN: 'unknown'
 };
+
+var MongoClient = require('mongodb').MongoClient,
+    ObjectId = require('mongodb').ObjectID,
+    async = require('async'),
+    fs = require('fs'),
+    os = require('os'),
+    config = require('./config.js'),
+    tags = require('./tags.js'),
+    path = require('path'),
+    superagent = require('superagent');
 
 var g_db, g_things, g_publicLinks;
 

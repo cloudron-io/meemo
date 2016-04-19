@@ -2,17 +2,6 @@
 
 'use strict';
 
-var fs = require('fs'),
-    async = require('async'),
-    uuid = require('uuid'),
-    tags = require('./tags.js'),
-    things = require('./things.js'),
-    tokens = require('./tokens.js'),
-    settings = require('./settings.js'),
-    superagent = require('superagent'),
-    HttpError = require('connect-lastmile').HttpError,
-    HttpSuccess = require('connect-lastmile').HttpSuccess;
-
 exports = module.exports = {
     init: init,
     auth: auth,
@@ -33,6 +22,17 @@ exports = module.exports = {
     importThings: importThings,
     healthcheck: healthcheck
 };
+
+var fs = require('fs'),
+    async = require('async'),
+    uuid = require('uuid'),
+    tags = require('./tags.js'),
+    things = require('./things.js'),
+    tokens = require('./tokens.js'),
+    settings = require('./settings.js'),
+    superagent = require('superagent'),
+    HttpError = require('connect-lastmile').HttpError,
+    HttpSuccess = require('connect-lastmile').HttpSuccess;
 
 function init(callback) {
     async.series([

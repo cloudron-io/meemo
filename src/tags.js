@@ -2,12 +2,6 @@
 
 'use strict';
 
-var MongoClient = require('mongodb').MongoClient,
-    ObjectId = require('mongodb').ObjectID,
-    async = require('async'),
-    things = require('./things.js'),
-    config = require('./config.js');
-
 exports = module.exports = {
     init: init,
     get: get,
@@ -15,6 +9,12 @@ exports = module.exports = {
     update: update,
     cleanup: cleanup
 };
+
+var MongoClient = require('mongodb').MongoClient,
+    ObjectId = require('mongodb').ObjectID,
+    async = require('async'),
+    things = require('./things.js'),
+    config = require('./config.js');
 
 var g_db, g_tags;
 

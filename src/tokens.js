@@ -2,16 +2,16 @@
 
 'use strict';
 
-var assert = require('assert'),
-    MongoClient = require('mongodb').MongoClient,
-    config = require('./config.js');
-
 exports = module.exports = {
     init: init,
     get: get,
     remove: remove,
     add: add
 };
+
+var assert = require('assert'),
+    MongoClient = require('mongodb').MongoClient,
+    config = require('./config.js');
 
 var g_db, g_tokens;
 

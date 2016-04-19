@@ -2,14 +2,14 @@
 
 'use strict';
 
-var MongoClient = require('mongodb').MongoClient,
-    config = require('./config.js');
-
 exports = module.exports = {
     init: init,
     get: get,
     put: put
 };
+
+var MongoClient = require('mongodb').MongoClient,
+    config = require('./config.js');
 
 var g_db, g_settings;
 
