@@ -14,6 +14,7 @@ exports = module.exports = {
     imp: imp,
     publicLink: publicLink,
     getByShareId: getByShareId,
+    extractURLs: extractURLs,
     extractTags: extractTags,
 
     TYPE_IMAGE: 'image',
@@ -31,6 +32,7 @@ var MongoClient = require('mongodb').MongoClient,
     superagent = require('superagent');
 
 var g_db, g_things, g_publicLinks;
+var GET_URL = new RegExp('(^|[ \t\r\n])((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){2,}(#([a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))', 'g');
 
 function init(callback) {
     MongoClient.connect(config.databaseUrl, function (error, db) {
@@ -48,25 +50,49 @@ function init(callback) {
     });
 }
 
-function extractExternalContent(content, callback) {
-    var geturl = new RegExp('(^|[ \t\r\n])((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){2,}(#([a-zA-Z0-9][a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))', 'g');
-
+function extractURLs(content) {
     var lines = content.split('\n');
     var urls = [];
-    var externalContent = [];
 
     lines.forEach(function (line) {
-        var tmp = line.match(geturl);
+        var tmp = line.match(GET_URL);
         if (tmp === null) return;
 
-        urls = tmp.map(function (url) {
+        urls = urls.concat(tmp.map(function (url) {
             return url.trim();
-        }).concat(urls);
+        }));
     });
 
-    urls = urls.filter(function (item, pos, self) {
+    return urls.filter(function (item, pos, self) {
         return self.indexOf(item) === pos;
     });
+}
+
+function extractTags(content) {
+    var tagObjects = [];
+
+    // first replace all urls which might contain # with placeholders
+    var urls = extractURLs(content);
+    urls.forEach(function (u) {
+        content = content.replace(new RegExp(u, 'gmi'), ' --URL_PLACEHOLDER-- ');
+    });
+
+    var lines = content.split('\n');
+    lines.forEach(function (line) {
+        var tmp = line.match(/#(\w+)/g);
+        if (tmp === null) return;
+
+        tagObjects = tagObjects.concat(tmp.map(function (tag) {
+            return tag.slice(1).toLowerCase();
+        }));
+    });
+
+    return tagObjects;
+}
+
+function extractExternalContent(content, callback) {
+    var urls = extractURLs(content);
+    var externalContent = [];
 
     async.each(urls, function (url, callback) {
         superagent.get(url).end(function (error, result) {
@@ -136,22 +162,6 @@ function facelift(thing, callback) {
             wrapper();
         });
     });
-}
-
-function extractTags(data) {
-    var lines = data.split('\n');
-    var tagObjects = [];
-
-    lines.forEach(function (line) {
-        var tmp = line.match(/\B#(\w+)/g);
-        if (tmp === null) return;
-
-        tagObjects = tmp.map(function (tag) {
-            return tag.slice(1).toLowerCase();
-        }).concat(tagObjects);
-    });
-
-    return tagObjects;
 }
 
 function getAll(query, skip, limit, callback) {
