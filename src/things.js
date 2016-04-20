@@ -239,17 +239,7 @@ function add(content, attachments, callback) {
                 if (error) return callback(error);
                 if (!result) return callback(new Error('no result returned'));
 
-                // TODO replace with get()
-                var thing = result.ops[0];
-
-                facelift(thing, function (error, data) {
-                    if (error) console.error('Failed to facelift:', error);
-
-                    thing.attachments = thing.attachments || [];
-                    thing.richContent = data || thing.content;
-
-                    callback(null, thing);
-                });
+                get(result.ops[0]._id, callback);
             });
         });
     });
