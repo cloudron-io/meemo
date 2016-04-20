@@ -146,14 +146,23 @@ textarea {
 }
 
 .dropdown-tags {
+    display: none;
+    position: absolute;
+    top: 100%;
     left: 36px;
-    border: 0;
-    border-radius: 0;
     width: 600px;
+    padding: 0;
+    z-index: 1000;
+    float: left;
+    min-width: 160px;
+    margin: 2px 0 0;
+    background-color: #fff;
+    box-shadow: 0 6px 12px rgba(0,0,0,.175);
 
     .item {
         display: inline-block;
         width: 150px;
+        padding: 5px;
 
         a {
             display: block;
