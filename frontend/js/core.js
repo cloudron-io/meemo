@@ -32,13 +32,14 @@ function token() {
     return g_token;
 }
 
-function Thing(id, createdAt, tags, content, richContent) {
+function Thing(id, createdAt, tags, content, richContent, attachments) {
     this.id = id;
     this.createdAt = createdAt || 0;
     this.tags = tags || [];
     this.content = content;
     this.edit = false;
     this.richContent = richContent;
+    this.attachments = attachments || [];
 }
 
 function ThingsApi() {
@@ -73,7 +74,7 @@ ThingsApi.prototype.get = function (filter, callback) {
         if (result.status !== 200) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
 
         var tmp = result.body.things.map(function (thing) {
-            return new Thing(thing._id, new Date(thing.createdAt).getTime(), thing.tags, thing.content, thing.richContent);
+            return new Thing(thing._id, new Date(thing.createdAt).getTime(), thing.tags, thing.content, thing.richContent, thing.attachments);
         });
 
         // update skip for fetch more call
@@ -94,7 +95,7 @@ ThingsApi.prototype.fetchMore = function (callback) {
         if (result.status !== 200) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
 
         var tmp = result.body.things.map(function (thing) {
-            return new Thing(thing._id, new Date(thing.createdAt).getTime(), thing.tags, thing.content, thing.richContent);
+            return new Thing(thing._id, new Date(thing.createdAt).getTime(), thing.tags, thing.content, thing.richContent, thing.attachments);
         });
 
         // update skip for next call
@@ -117,14 +118,14 @@ ThingsApi.prototype.add = function (content, callback) {
 
         var thing = result.body.thing;
 
-        callback(null, new Thing(thing._id, new Date(thing.createdAt).getTime(), thing.tags, thing.content, thing.richContent));
+        callback(null, new Thing(thing._id, new Date(thing.createdAt).getTime(), thing.tags, thing.content, thing.richContent, thing.attachments));
     }));
 };
 
 ThingsApi.prototype.edit = function (thing, callback) {
     var that = this;
 
-    superagent.put(url('/api/things/' + thing.id)).send({ content: thing.content }).end(errorWrapper(function (error, result) {
+    superagent.put(url('/api/things/' + thing.id)).send({ content: thing.content, attachments: thing.attachments || [] }).end(errorWrapper(function (error, result) {
         if (error) return callback(error);
         if (result.status !== 201) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
 
@@ -167,7 +168,7 @@ ThingsApi.prototype.getPublic = function (shareId, callback) {
 
         var thing = result.body.thing;
 
-        callback(null, new Thing(thing._id, new Date(thing.createdAt).getTime(), thing.tags, thing.content, thing.richContent));
+        callback(null, new Thing(thing._id, new Date(thing.createdAt).getTime(), thing.tags, thing.content, thing.richContent, thing.attachments));
     }));
 };
 
@@ -181,8 +182,7 @@ ThingsApi.prototype.import = function (formData, callback) {
 ThingsApi.prototype.uploadFile = function (formData, callback) {
     superagent.post(url('/api/files')).send(formData).end(function (error, result) {
         if (error) return callback(error);
-        console.log(result);
-        callback(null);
+        callback(null, result.body);
     });
 };
 

@@ -257,7 +257,6 @@ function () {
       </div>
 
       <input v-el:uploadfile type="file" v-on:change="uploadFileChanged()" class="hide">
-      <button class="btn btn-raised" v-on:click="triggerUploadFileInput()">Upload File</button>
 
       <div class="container">
         <div class="row">
@@ -266,6 +265,8 @@ function () {
               <div class="card-content align-right">
                 <div class="card-actions" v-show="thingContent">
                   <span>
+                    <button class="btn btn-default" v-on:click="triggerUploadFileInput()"><i class="fa fa-image"></i></button>
+                    &nbsp;
                     <a class="btn btn-default" title="Cheatsheet" href="javascript:void(0)" data-toggle="modal" data-target="#modalCheatSheet"><i class="fa fa-keyboard-o"></i></a>
                     &nbsp;
                     <button class="btn btn-default" v-on:click="addThing()" title="Add (Ctrl+S)"><i class="fa fa-check"></i></button>
@@ -279,6 +280,8 @@ function () {
                 <div class="card-actions">
                   {{ thing.createdAt | prettyDateOffset }}
                   <span v-show="thing.edit">
+                    <button class="btn btn-default" v-on:click="triggerUploadFileInput(thing)"><i class="fa fa-image"></i></button>
+                    &nbsp;
                     <a class="btn btn-default" title="Cheatsheet" href="javascript:void(0)" data-toggle="modal" data-target="#modalCheatSheet"><i class="fa fa-keyboard-o"></i></a>
                     &nbsp;
                     <button class="btn btn-default" v-on:click="cancelEdit(thing)" title="Cancel"><i class="fa fa-times"></i></button>

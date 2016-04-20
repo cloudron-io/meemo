@@ -96,7 +96,8 @@ var vue = new Vue({
         thingContent: '',
         activeThing: {},
         shareThingLink: '',
-        importFile: null
+        importFile: null,
+        activeEditThing: {}
     },
     methods: {
         giveAddFocus: function () {
@@ -112,6 +113,7 @@ var vue = new Vue({
             });
         },
         showThingEdit: function (thing) {
+            this.activeEditThing = thing;
             thing.edit = true;
 
             Vue.nextTick(function() {
@@ -297,14 +299,19 @@ var vue = new Vue({
             this.$els.importfile.click();
         },
         uploadFileChanged: function () {
+            var that = this;
             var data = new FormData();
             data.append('file', this.$els.uploadfile.files[0]);
 
-            Core.things.uploadFile(data, function (error) {
+            Core.things.uploadFile(data, function (error, result) {
                 if (error) console.error(error);
+
+                that.activeEditThing.content += ' ' + result.fileName + ' ';
+                that.activeEditThing.attachments.push(result);
             });
         },
-        triggerUploadFileInput: function () {
+        triggerUploadFileInput: function (thing) {
+            this.activeEditThing = thing;
             this.$els.uploadfile.click();
         }
     }

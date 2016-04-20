@@ -173,6 +173,7 @@ function getAll(query, skip, limit, callback) {
             facelift(thing, function (error, data) {
                 if (error) console.error('Failed to facelift:', error);
 
+                thing.attachments = thing.attachments || [];
                 thing.richContent = data || thing.content;
 
                 callback(null);
@@ -199,6 +200,7 @@ function get(id, callback) {
         facelift(thing, function (error, data) {
             if (error) console.error('Failed to facelift:', error);
 
+            thing.attachments = thing.attachments || [];
             thing.richContent = data || thing.content;
 
             callback(null, thing);
@@ -206,7 +208,7 @@ function get(id, callback) {
     });
 }
 
-function add(content, callback) {
+function add(content, attachments, callback) {
 
     extractExternalContent(content, function (error, result) {
         if (error) return callback(error);
@@ -216,7 +218,8 @@ function add(content, callback) {
             createdAt: new Date(),
             modifiedAt: new Date(),
             tags: extractTags(content),
-            externalContent: result
+            externalContent: result,
+            attachments: attachments
         };
 
         async.eachSeries(doc.tags, tags.update, function (error) {
@@ -226,11 +229,13 @@ function add(content, callback) {
                 if (error) return callback(error);
                 if (!result) return callback(new Error('no result returned'));
 
+                // TODO replace with get()
                 var thing = result.ops[0];
 
                 facelift(thing, function (error, data) {
                     if (error) console.error('Failed to facelift:', error);
 
+                    thing.attachments = thing.attachments || [];
                     thing.richContent = data || thing.content;
 
                     callback(null, thing);
@@ -240,7 +245,7 @@ function add(content, callback) {
     });
 }
 
-function put(id, content, callback) {
+function put(id, content, attachments, callback) {
     var tagObjects = extractTags(content);
 
     async.eachSeries(tagObjects, tags.update, function (error) {
@@ -253,7 +258,8 @@ function put(id, content, callback) {
                 content: content,
                 tags: tagObjects,
                 modifiedAt: new Date(),
-                externalContent: result
+                externalContent: result,
+                attachments: attachments
             };
 
             g_things.update({_id: new ObjectId(id) }, { $set: data }, function (error) {
@@ -282,7 +288,8 @@ function exp(callback) {
             return {
                 createdAt: thing.createdAt,
                 modifiedAt: thing.modifiedAt,
-                content: thing.content
+                content: thing.content,
+                attachments: thing.attachments || []
             };
         });
         fs.writeFileSync(fileName, JSON.stringify({ things : out }, null, 4));
@@ -300,7 +307,8 @@ function imp(data, callback) {
             content: data,
             createdAt: thing.createdAt,
             modifiedAt: thing.modifiedAt || thing.createdAt,
-            tags: tagObjects
+            tags: tagObjects,
+            attachments: thing.attachments || []
         };
 
         async.eachSeries(tagObjects, tags.update, function (error) {

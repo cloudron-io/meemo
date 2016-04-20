@@ -151,14 +151,14 @@ function get(req, res, next) {
 function add(req, res, next) {
     if (typeof req.body.content !== 'string' || !req.body.content) return next(new HttpError(400, 'content must be a string'));
 
-    things.add(req.body.content, function (error, result) {
+    things.add(req.body.content, req.body.attachments || [], function (error, result) {
         if (error) return next(new HttpError(500, error));
         next(new HttpSuccess(201, { thing: result }));
     });
 }
 
 function put(req, res, next) {
-    things.put(req.params.id, req.body.content, function (error, result) {
+    things.put(req.params.id, req.body.content, req.body.attachments || [], function (error, result) {
         if (error) return next(new HttpError(500, error));
         next(new HttpSuccess(201, { thing: result }));
     });
