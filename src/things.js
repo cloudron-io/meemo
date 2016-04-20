@@ -121,6 +121,7 @@ function facelift(thing, callback) {
     var data = thing.content;
     var tagObjects = thing.tags;
     var externalContent = thing.externalContent;
+    var attachments = thing.attachments || [];
 
     function wrapper() {
 
@@ -133,6 +134,15 @@ function facelift(thing, callback) {
         externalContent.forEach(function (obj) {
             if (obj.type === exports.TYPE_IMAGE) {
                 data = data.replace(new RegExp(obj.url, 'gmi'), '![' + obj.url + '](' + obj.url + ')');
+            }
+        });
+
+        // Enrich with attachments
+        attachments.forEach(function (a) {
+            if (a.type === exports.TYPE_IMAGE) {
+                data = data.replace(new RegExp(a.fileName, 'gmi'), '![/api/files/' + a.identifier + '](/api/files/' + a.identifier + ')');
+            } else {
+                data = data.replace(new RegExp(a.fileName, 'gmi'), '[/api/files/' + a.identifier + '](/api/files/' + a.identifier + ')');
             }
         });
 

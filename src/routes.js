@@ -21,7 +21,8 @@ exports = module.exports = {
     exportThings: exportThings,
     importThings: importThings,
     healthcheck: healthcheck,
-    fileAdd: fileAdd
+    fileAdd: fileAdd,
+    fileGet: fileGet
 };
 
 var fs = require('fs'),
@@ -245,6 +246,12 @@ function fileAdd(req, res, next) {
     fs.writeFile(path.join(config.attachmentDir, fileName), file.buffer, function (error) {
         if (error) return next(new HttpError(500, error));
 
-        next(new HttpSuccess(201, { identifier: fileName, fileName: file.originalname }));
+        var type = file.mimetype.indexOf('image/') === 0 ? things.TYPE_IMAGE : things.TYPE_UNKNOWN;
+
+        next(new HttpSuccess(201, { identifier: fileName, fileName: file.originalname, type: type }));
     });
+}
+
+function fileGet(req, res) {
+    res.sendFile(req.params.identifier, { root: config.attachmentDir });
 }
