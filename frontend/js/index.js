@@ -123,13 +123,19 @@ var vue = new Vue({
                 window.scroll(0, $('#card-' + thing.id).offset().top - $('#mainNavigationBar').height() - margin);
             });
         },
-        showTags: function (element, event) {
+        handleSearchKeyInput: function (element, event) {
             if (event.code === 'Escape') {
                 $('#tagsDropdown').hide();
             } else {
                 $('#tagsDropdown').show();
                 if (event.code === 'ArrowDown' &&  $('.dropdown-tags>.item>a')[0]) $('.dropdown-tags>.item>a')[0].focus();
             }
+        },
+        showTags: function () {
+            $('#tagsDropdown').show();
+        },
+        hideTags: function () {
+            $('#tagsDropdown').hide();
         },
         keyNavigateTags: function (element, event) {
             var tagColumns = 4;

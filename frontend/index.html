@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="index.min.css"/>
 
   </head>
-  <body id="application">
+  <body id="application" v-on:click="hideTags()">
 
     <div class="container" v-show="mainView === 'loader'" v-cloak>
       <div class="container-fluid navigation shadow">
@@ -231,7 +231,7 @@ function () {
             <div class="input-group-btn">
               <button type="button" class="btn btn-default" v-on:click.stop="doSearch()" title="Search"><i class="fa fa-search"></i></button>
             </div>
-            <input type="text" class="form-control search" id="searchBarInput" autocomplete="off" placeholder="Search..." data-toggle="dropdown" v-el:searchinput v-model="search" v-on:keyup="showTags(this, $event)" v-on:keyup.enter="doSearch()">
+            <input type="text" class="form-control search" id="searchBarInput" autocomplete="off" placeholder="Search..." v-el:searchinput v-model="search" v-on:click.stop="showTags()" v-on:keyup="handleSearchKeyInput(this, $event)" v-on:keyup.enter="doSearch()">
             <div class="dropdown-menu dropdown-tags" id="tagsDropdown">
               <div class="item" v-for="tag in tags | proposeTags">
                 <a href="#" id="tagItem" v-on:click.stop.prevent="activateProposedTag(tag)" v-on:keyup="keyNavigateTags(this, $event)">#{{ tag.name }}</a>
