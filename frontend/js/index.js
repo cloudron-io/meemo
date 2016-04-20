@@ -310,10 +310,10 @@ var vue = new Vue({
 
                 // if activeEditThing is not set, we are currently adding a new one
                 if (that.activeEditThing) {
-                    that.activeEditThing.content += ' ' + result.fileName + ' ';
+                    that.activeEditThing.content += ' [' + result.fileName + '] ';
                     that.activeEditThing.attachments.push(result);
                 } else {
-                    that.thingContent += ' ' + result.fileName + ' ';
+                    that.thingContent += ' [' + result.fileName + '] ';
                     that.thingAttachments.push(result);
                 }
             });
