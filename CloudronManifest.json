@@ -11,7 +11,8 @@
   "httpPort": 3000,
   "addons": {
     "mongodb": {},
-    "simpleauth": {}
+    "simpleauth": {},
+    "localstorage": {}
   },
   "developmentMode": false,
   "singleUser": true,
