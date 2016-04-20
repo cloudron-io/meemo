@@ -20,12 +20,16 @@ exports = module.exports = {
     settingsGet: settingsGet,
     exportThings: exportThings,
     importThings: importThings,
-    healthcheck: healthcheck
+    healthcheck: healthcheck,
+    fileAdd: fileAdd
 };
 
 var fs = require('fs'),
+    path = require('path'),
     async = require('async'),
+    checksum = require('checksum'),
     uuid = require('uuid'),
+    config = require('./config.js'),
     tags = require('./tags.js'),
     things = require('./things.js'),
     tokens = require('./tokens.js'),
@@ -229,5 +233,18 @@ function importThings(req, res, next) {
     things.imp(data, function (error) {
         if (error) return next(new HttpError(500, error));
         next(new HttpSuccess(200, {}));
+    });
+}
+
+function fileAdd(req, res, next) {
+    if (!req.files || !req.files[0]) return next(new HttpError('400', 'missing file'));
+
+    var file = req.files[0];
+    var fileName = checksum(file.buffer) + path.extname(file.originalname);
+
+    fs.writeFile(path.join(config.attachmentDir, fileName), file.buffer, function (error) {
+        if (error) return next(new HttpError(500, error));
+
+        next(new HttpSuccess(201, { identifier: fileName, fileName: file.originalname }));
     });
 }

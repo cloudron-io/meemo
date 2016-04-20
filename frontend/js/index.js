@@ -295,6 +295,17 @@ var vue = new Vue({
         },
         triggerImportInput: function () {
             this.$els.importfile.click();
+        },
+        uploadFileChanged: function () {
+            var data = new FormData();
+            data.append('file', this.$els.uploadfile.files[0]);
+
+            Core.things.uploadFile(data, function (error) {
+                if (error) console.error(error);
+            });
+        },
+        triggerUploadFileInput: function () {
+            this.$els.uploadfile.click();
         }
     }
 });

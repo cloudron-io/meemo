@@ -30,6 +30,8 @@ router.put ('/api/things/:id', routes.auth, routes.put);
 router.del ('/api/things/:id', routes.auth, routes.del);
 router.post('/api/things/:id/public', routes.auth, routes.makePublic);
 
+router.post('/api/files', routes.auth, multer().any(), routes.fileAdd);
+
 router.get ('/api/share/:shareId', routes.getPublic);
 
 router.get ('/api/tags', routes.auth, routes.getTags);

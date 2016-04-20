@@ -178,6 +178,14 @@ ThingsApi.prototype.import = function (formData, callback) {
     });
 };
 
+ThingsApi.prototype.uploadFile = function (formData, callback) {
+    superagent.post(url('/api/files')).send(formData).end(function (error, result) {
+        if (error) return callback(error);
+        console.log(result);
+        callback(null);
+    });
+};
+
 ThingsApi.prototype.onAdded = function (callback) {
     this._addCallbacks.push(callback);
 };

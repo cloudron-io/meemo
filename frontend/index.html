@@ -256,6 +256,9 @@ function () {
         </form>
       </div>
 
+      <input v-el:uploadfile type="file" v-on:change="uploadFileChanged()" class="hide">
+      <button class="btn btn-raised" v-on:click="triggerUploadFileInput()">Upload File</button>
+
       <div class="container">
         <div class="row">
           <div class="col-md-10 col-md-offset-1">
