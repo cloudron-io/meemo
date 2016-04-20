@@ -105,10 +105,10 @@ ThingsApi.prototype.fetchMore = function (callback) {
     }));
 };
 
-ThingsApi.prototype.add = function (content, callback) {
+ThingsApi.prototype.add = function (content, attachments, callback) {
     var that = this;
 
-    superagent.post(url('/api/things')).send({ content: content }).end(errorWrapper(function (error, result) {
+    superagent.post(url('/api/things')).send({ content: content, attachments: attachments }).end(errorWrapper(function (error, result) {
         if (error) return callback(error);
         if (result.status !== 201) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
 

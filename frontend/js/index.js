@@ -94,6 +94,7 @@ var vue = new Vue({
         settings: Core.settings.data,
         mainView: '',
         thingContent: '',
+        thingAttachments: [],
         activeThing: {},
         shareThingLink: '',
         importFile: null,
@@ -104,9 +105,10 @@ var vue = new Vue({
             this.$els.addinput.focus();
         },
         addThing: function () {
-            Core.things.add(this.thingContent, function (error, thing) {
+            Core.things.add(this.thingContent, this.thingAttachments, function (error, thing) {
                 if (error) return console.error(error);
                 vue.thingContent = '';
+                vue.thingAttachments = [];
                 vue.things.unshift(thing);
 
                 refreshTags();
@@ -306,12 +308,20 @@ var vue = new Vue({
             Core.things.uploadFile(data, function (error, result) {
                 if (error) console.error(error);
 
-                that.activeEditThing.content += ' ' + result.fileName + ' ';
-                that.activeEditThing.attachments.push(result);
+                // if activeEditThing is not set, we are currently adding a new one
+                if (that.activeEditThing) {
+                    that.activeEditThing.content += ' ' + result.fileName + ' ';
+                    that.activeEditThing.attachments.push(result);
+                } else {
+                    that.thingContent += ' ' + result.fileName + ' ';
+                    that.thingAttachments.push(result);
+                }
             });
         },
         triggerUploadFileInput: function (thing) {
-            this.activeEditThing = thing;
+            // if thing is not set it means we are adding a new one
+            this.activeEditThing = thing || null;
+
             this.$els.uploadfile.click();
         }
     }
