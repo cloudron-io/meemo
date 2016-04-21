@@ -141,11 +141,14 @@ var vue = new Vue({
         hideTags: function () {
             $('#tagsDropdown').hide();
         },
-        keyNavigateTags: function (element, event) {
+        keyNavigateTags: function (element, tag, event) {
             var tagColumns = 4;
             var index = element.$index;
 
             switch (event.code) {
+                case 'Enter':
+                    this.activateProposedTag(tag);
+                    return;
                 case 'ArrowRight':
                     ++index;
                     break;
@@ -169,7 +172,9 @@ var vue = new Vue({
                 default: return;
             }
 
-            if ($('.dropdown-tags>.item>a')[index]) $('.dropdown-tags>.item>a')[index].focus();
+            if ($('.dropdown-tags>.item>a')[index]) {
+                Vue.nextTick(function () { $('.dropdown-tags>.item>a')[index].focus(); });
+            }
         },
         activateProposedTag: function (tag) {
             var word = getCurrentSearchWord();
@@ -179,7 +184,7 @@ var vue = new Vue({
 
             if (vue.search === '#' + tag.name) window.location.href = '/#search?#' + tag.name;
 
-            vue.$els.searchinput.focus();
+            Vue.nextTick(function () { vue.$els.searchinput.focus(); });
         },
         saveEdit: function (thing) {
             Core.things.edit(thing, function (error, result) {

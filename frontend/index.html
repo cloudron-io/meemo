@@ -234,7 +234,7 @@ function () {
             <input type="text" class="form-control search" id="searchBarInput" autocomplete="off" placeholder="Search..." v-el:searchinput v-model="search" v-on:click.stop="showTags()" v-on:keyup="handleSearchKeyInput(this, $event)" v-on:keyup.enter="doSearch()">
             <div class="dropdown-tags" id="tagsDropdown">
               <div class="item" v-for="tag in tags | proposeTags">
-                <a href="#" id="tagItem" v-on:click.stop.prevent="activateProposedTag(tag)" v-on:keydown.stop.prevent="keyNavigateTags(this, $event)">#{{ tag.name }}</a>
+                <a href="#" id="tagItem" v-on:click.stop.prevent="activateProposedTag(tag)" v-on:keydown.stop.prevent="keyNavigateTags(this, tag, $event)">#{{ tag.name }}</a>
               </div>
             </div>
             <div class="input-group-btn">
