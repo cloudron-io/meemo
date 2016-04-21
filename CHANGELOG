@@ -32,3 +32,7 @@
 [0.5.1]
 * Fix bug in hash tag handling with URLs
 
+[0.6.0]
+* Introduce file/image attachments
+* Fix focus handling for tags
+
