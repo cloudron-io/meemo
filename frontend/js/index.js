@@ -187,12 +187,18 @@ var vue = new Vue({
             Vue.nextTick(function () { vue.$els.searchinput.focus(); });
         },
         saveEdit: function (thing) {
+            var that = this;
+
             Core.things.edit(thing, function (error, result) {
                 if (error) return console.error(error);
 
                 // update the enhanced content from the server
                 thing.richContent = result.richContent;
                 thing.edit = false;
+
+                // move to first spot
+                that.things.splice(0, 0, that.things.splice(that.things.indexOf(thing), 1)[0]);
+                Vue.nextTick(function () { window.scrollTo(0,0); });
 
                 refreshTags();
             });
