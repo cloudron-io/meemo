@@ -88,6 +88,10 @@ body {
 
 .thing-content {
     overflow: auto;
+
+    img {
+        max-width: 100%;
+    }
 }
 
 .new-thing {
