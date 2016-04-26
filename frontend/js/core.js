@@ -14,7 +14,7 @@ function guid() {
 
 function errorWrapper(callback) {
     return function (error, result) {
-        if (error && error.status === 401) return window.Guacamoly.Core.loginFailed();
+        if (error && error.status === 401) return window.Guacamoly.Core.onAuthFailure();
 
         callback(error, result);
     };
@@ -306,7 +306,7 @@ SessionApi.prototype.profile = function (callback) {
 
 window.Guacamoly = window.Guacamoly || {};
 window.Guacamoly.Core = {
-    loginFailed: function () {},
+    onAuthFailure: function () {},
     onLogout: function () {},
     url: url,
     origin: origin,

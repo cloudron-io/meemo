@@ -437,7 +437,7 @@ function refresh(search) {
     });
 }
 
-Core.loginFailed = reset;
+Core.onAuthFailure = reset;
 Core.onLogout = reset;
 
 // Main
