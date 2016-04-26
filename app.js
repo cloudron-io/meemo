@@ -55,7 +55,7 @@ router.post('/api/friends', routes.auth, routes.friendsAdd);
 router.get ('/api/friends', routes.auth, routes.friendsGetAll);
 
 // API only for other guacamoly instances
-// router.post('/api/external/receiveInvite', routes.receiveInvite);
+router.post('/api/external/receiveInvite', routes.receiveInvite);
 // router.post('/api/external/acceptInvite', routes.acceptInvite);
 
 // A. invite friend (url) -> call B with own url and token

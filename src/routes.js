@@ -24,7 +24,8 @@ exports = module.exports = {
     fileAdd: fileAdd,
     fileGet: fileGet,
     friendsGetAll: friendsGetAll,
-    friendsAdd: friendsAdd
+    friendsAdd: friendsAdd,
+    receiveInvite: receiveInvite
 };
 
 var fs = require('fs'),
@@ -36,6 +37,7 @@ var fs = require('fs'),
     tags = require('./tags.js'),
     things = require('./things.js'),
     friends = require('./friends.js'),
+    connections = require('./connections.js'),
     tokens = require('./tokens.js'),
     settings = require('./settings.js'),
     superagent = require('superagent'),
@@ -48,7 +50,8 @@ function init(callback) {
         things.init,
         tags.init,
         settings.init,
-        friends.init
+        friends.init,
+        connections.init
     ], callback);
 }
 
@@ -103,7 +106,9 @@ function login(req, res, next) {
         if (!result) return next(new HttpError(401, 'invalid credentials'));
 
         var token = uuid.v4();
-        tokens.add(token, result.accessToken, '', function (error) {
+        var identifier = 'user-' + req.body.username;
+
+        tokens.add(token, result.accessToken, identifier, function (error) {
             if (error) return next(new HttpError(500, error));
             next(new HttpSuccess(201, { token: token, user: result.user }));
         });
@@ -267,21 +272,39 @@ function friendsGetAll(req, res, next) {
     });
 }
 
+// This will call the route below on a different app instance
 function friendsAdd(req, res, next) {
     if (typeof req.body.url !== 'string' || !req.body.url) return next(new HttpError(400, 'url must be a string'));
     if (typeof req.body.name !== 'string' || !req.body.name) return next(new HttpError(400, 'name must be a string'));
 
     var token = uuid.v4();
-    // call the url with the token if success go add to db
 
-    friends.add(req.body.url, req.body.name, function (error, result) {
-        if (error) return next(new HttpError(500, error));
+    var url = req.body.url + '/api/external/receiveInvite';
+    superagent.post(url).send({ origin: config.origin, token: token }).end(function (error, result) {
+        if (error) next(new HttpError(502, error));
 
-        var identifier = 'friend-' + result._id;
+        if (error) console.log('----', error)
+        else console.log('====', result.status, result.text, result.body);
 
-        tokens.add(token, '', identifier, function (error) {
+        friends.add(req.body.url, req.body.name, function (error, result) {
             if (error) return next(new HttpError(500, error));
-            next(new HttpSuccess(201, {}));
+
+            var identifier = 'friend-' + result._id;
+
+            tokens.add(token, '', identifier, function (error) {
+                if (error) return next(new HttpError(500, error));
+                next(new HttpSuccess(201, {}));
+            });
         });
+    });
+}
+
+function receiveInvite(req, res, next) {
+    if (typeof req.body.origin !== 'string' || !req.body.origin) return next(new HttpError(400, 'origin must be a string'));
+    if (typeof req.body.token !== 'string' || !req.body.token) return next(new HttpError(400, 'token must be a string'));
+
+    connections.add(req.body.origin, req.body.token, function (error) {
+        if (error) return next(new HttpError(500, error));
+        next(new HttpSuccess(201, {}));
     });
 }
