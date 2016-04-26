@@ -39,7 +39,7 @@
       <div class="row">
         <div class="col-md-4 col-md-offset-4 login-form shadow">
           <h2 class="modal-title">Login</h2>
-          <form v-on:submit.prevent="doLogin">
+          <form v-on:submit.prevent="login()">
             <div class="form-group" :class="{ 'has-error': loginError }">
               <label class="control-label" for="inputUsername">Username</label>
               <input type="text" class="form-control" id="inputUsername" v-model="username" v-bind="{ disabled: busyLogin }" required autofocus/>
@@ -289,9 +289,9 @@ function () {
                     <button class="btn btn-default" v-on:click="saveEdit(thing)" title="Save (Ctrl+S)"><i class="fa fa-check"></i></button>
                   </span>
                   <span v-show="!thing.edit">
-                    <button class="btn btn-default" v-on:click="showThingShare(thing)" title="Share"><i class="fa fa-share-alt"></i></button>
-                    <button class="btn btn-default" v-on:click="showThingEdit(thing)" title="Edit"><i class="fa fa-pencil"></i></button>
-                    <button class="btn btn-default" v-on:click="showThingDel(thing)" title="Delete"><i class="fa fa-trash"></i></button>
+                    <button class="btn btn-default" v-on:click="showShareLink(thing)" title="Share"><i class="fa fa-share-alt"></i></button>
+                    <button class="btn btn-default" v-on:click="showEdit(thing)" title="Edit"><i class="fa fa-pencil"></i></button>
+                    <button class="btn btn-default" v-on:click="showDelete(thing)" title="Delete"><i class="fa fa-trash"></i></button>
                   </span>
                 </div>
                 <div class="card-content">

@@ -114,19 +114,6 @@ var vue = new Vue({
                 refreshTags();
             });
         },
-        showThingEdit: function (thing) {
-            this.activeEditThing = thing;
-            thing.edit = true;
-
-            Vue.nextTick(function() {
-                var margin = 20;
-
-                $('#textarea-' + thing.id).focus();
-                $('#textarea-' + thing.id).height($(window).height() - $('#mainNavigationBar').height() - (margin*2) - 60);
-
-                window.scroll(0, $('#card-' + thing.id).offset().top - $('#mainNavigationBar').height() - margin);
-            });
-        },
         handleSearchKeyInput: function (element, event) {
             if (event.code === 'Escape') {
                 $('#tagsDropdown').hide();
@@ -186,6 +173,19 @@ var vue = new Vue({
 
             Vue.nextTick(function () { vue.$els.searchinput.focus(); });
         },
+        showEdit: function (thing) {
+            this.activeEditThing = thing;
+            thing.edit = true;
+
+            Vue.nextTick(function() {
+                var margin = 20;
+
+                $('#textarea-' + thing.id).focus();
+                $('#textarea-' + thing.id).height($(window).height() - $('#mainNavigationBar').height() - (margin*2) - 60);
+
+                window.scroll(0, $('#card-' + thing.id).offset().top - $('#mainNavigationBar').height() - margin);
+            });
+        },
         saveEdit: function (thing) {
             var that = this;
 
@@ -206,7 +206,7 @@ var vue = new Vue({
         cancelEdit: function (thing) {
             thing.edit = false;
         },
-        showThingDel: function (thing) {
+        showDelete: function (thing) {
             this.activeThing = thing;
             $('#modalDel').modal('show');
         },
@@ -231,7 +231,7 @@ var vue = new Vue({
                 $('#modalDel').modal('hide');
             });
         },
-        showThingShare: function (thing) {
+        showShareLink: function (thing) {
             Core.things.publicLink(thing, function (error, publicLinkId) {
                 if (error) return console.error(error);
 
@@ -251,7 +251,7 @@ var vue = new Vue({
         logout: function () {
             Core.session.logout();
         },
-        doLogin: function () {
+        login: function () {
             vue.busyLogin = true;
             vue.loginError = false;
 
@@ -271,15 +271,9 @@ var vue = new Vue({
                 main();
             });
         },
-        refresh: function () {
-            refresh();
-        },
         doSearch: function () {
             $('#tagsDropdown').hide();
             window.location.href = '/#search?' + encodeURIComponent(this.search);
-        },
-        tagSearch: function (tag) {
-            window.location.href = '/#search?#' + encodeURIComponent(tag.name);
         },
         clearSearch: function () {
             vue.search = '';
@@ -340,11 +334,6 @@ var vue = new Vue({
 
 window.app = vue;
 
-Core.settings.onChanged(function (data) {
-    if (data.title) window.document.title = data.title;
-    if (data.backgroundUrl) window.document.body.style.backgroundImage = 'url("' + data.backgroundUrl + '")';
-});
-
 function hashChangeHandler() {
     var action = window.location.hash.split('?')[0];
     var params = window.location.hash.indexOf('?') > 0 ? decodeURIComponent(window.location.hash.slice(window.location.hash.indexOf('?') + 1)) : null;
@@ -359,9 +348,7 @@ function hashChangeHandler() {
     }
 }
 
-window.addEventListener('hashchange', hashChangeHandler, false);
-
-function handleSaveShortcut() {
+function shortcutSaveHandler() {
     if (document.activeElement && document.activeElement.id && document.activeElement.id.split('-')[1]) {
         var thing = findById(document.activeElement.id.split('-')[1]);
         if (thing) vue.saveEdit(thing);
@@ -370,8 +357,28 @@ function handleSaveShortcut() {
     }
 }
 
-shortcut.add('Ctrl+s', handleSaveShortcut, {});
-shortcut.add('Ctrl+Enter', handleSaveShortcut, {});
+function settingsChangeHandler(data) {
+    if (data.title) window.document.title = data.title;
+    if (data.backgroundUrl) window.document.body.style.backgroundImage = 'url("' + data.backgroundUrl + '")';
+}
+
+function scrollHandler() {
+    // add 1 full pixel to be on the safe side for zoom settings, where pixel values might be floats
+    if ($(window).height() + $(window).scrollTop() + 1 >= $(document).height()) {
+        // prevent from refetching while in progress
+        if (vue.busyFetchMore) return;
+
+        vue.busyFetchMore = true;
+
+        Core.things.fetchMore(function (error, result) {
+            vue.busyFetchMore = false;
+
+            if (error) return console.error(error);
+
+            vue.things = vue.things.concat(result);
+        });
+    }
+}
 
 function reset() {
     vue.mainView = 'login';
@@ -437,28 +444,18 @@ function refresh(search) {
     });
 }
 
-Core.onAuthFailure = reset;
-Core.onLogout = reset;
-
 // Main
 main();
 
-window.addEventListener('scroll', function () {
-    // add 1 full pixel to be on the safe side for zoom settings, where pixel values might be floats
-    if ($(window).height() + $(window).scrollTop() + 1 >= $(document).height()) {
-        // prevent from refetching while in progress
-        if (vue.busyFetchMore) return;
+// Register event handlers
+shortcut.add('Ctrl+s', shortcutSaveHandler, {});
+shortcut.add('Ctrl+Enter', shortcutSaveHandler, {});
 
-        vue.busyFetchMore = true;
+Core.onAuthFailure = reset;
+Core.onLogout = reset;
+Core.settings.onChanged(settingsChangeHandler);
 
-        Core.things.fetchMore(function (error, result) {
-            vue.busyFetchMore = false;
-
-            if (error) return console.error(error);
-
-            vue.things = vue.things.concat(result);
-        });
-    }
-});
+window.addEventListener('hashchange', hashChangeHandler, false);
+window.addEventListener('scroll', scrollHandler, false);
 
 })();
