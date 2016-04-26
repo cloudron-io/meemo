@@ -225,6 +225,32 @@ function () {
         </div>
       </div>
 
+      <div class="modal fade" id="modalFriendAdd">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <form v-on:submit.prevent="addFriend()">
+              <div class="modal-header">
+              </div>
+              <div class="modal-body">
+                <h4>Add a Friend</h4>
+                <div class="form-group">
+                  <label class="control-label">Friends Guacamoly Domain</label>
+                  <input type="text" class="form-control" v-model="friendDomain" v-bind="{ disabled: busyAddFriend }" required autofocus/>
+                </div>
+                <div class="form-group">
+                  <label class="control-label">Name</label>
+                  <input type="text" class="form-control" v-model="friendName" v-bind="{ disabled: busyAddFriend }" required/>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-success" v-bind="{ disabled: busyAddFriend }"><i class="spinner alt" v-show="busyAddFriend"></i> Add</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
       <div id="mainNavigationBar" class="container-fluid navigation shadow">
         <form v-on:submit.prevent>
           <div class="input-group">
@@ -244,6 +270,7 @@ function () {
                   <li><a href="javascript:void(0)" data-toggle="modal" data-target="#modalSettings">Settings</a></li>
                   <li><a href="javascript:void(0)" data-toggle="modal" data-target="#modalExtensions">Browser Extensions</a></li>
                   <li><a href="javascript:void(0)" data-toggle="modal" data-target="#modalCheatSheet">Cheatsheet</a></li>
+                  <li><a href="javascript:void(0)" data-toggle="modal" data-target="#modalFriendAdd">Add Friend</a></li>
                   <li class="divider"></li>
                   <li><a href="javascript:void(0)" data-toggle="modal" data-target="#modalImport">Import</a></li>
                   <li><a href="#" class="hand" v-on:click.stop.prevent="exportThings()">Export</a></li>

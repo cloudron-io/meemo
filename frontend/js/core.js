@@ -304,6 +304,19 @@ SessionApi.prototype.profile = function (callback) {
     }));
 };
 
+function FriendsApi() {}
+
+FriendsApi.prototype.add = function (domain, name, callback) {
+    // TODO do some sanity checks on domain
+
+    superagent.post(url('/api/friends')).send({ url: 'https://' + domain, name: name }).end(function (error, result) {
+        if (error) return callback(error);
+        if (result.status !== 201) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
+
+        callback(null);
+    });
+};
+
 window.Guacamoly = window.Guacamoly || {};
 window.Guacamoly.Core = {
     onAuthFailure: function () {},
@@ -315,7 +328,8 @@ window.Guacamoly.Core = {
     session: new SessionApi(),
     settings: new SettingsApi(),
     things: new ThingsApi(),
-    tags: new TagsApi()
+    tags: new TagsApi(),
+    friends: new FriendsApi()
 };
 
 })();

@@ -22,7 +22,9 @@ exports = module.exports = {
     importThings: importThings,
     healthcheck: healthcheck,
     fileAdd: fileAdd,
-    fileGet: fileGet
+    fileGet: fileGet,
+    friendsGetAll: friendsGetAll,
+    friendsAdd: friendsAdd
 };
 
 var fs = require('fs'),
@@ -33,6 +35,7 @@ var fs = require('fs'),
     config = require('./config.js'),
     tags = require('./tags.js'),
     things = require('./things.js'),
+    friends = require('./friends.js'),
     tokens = require('./tokens.js'),
     settings = require('./settings.js'),
     superagent = require('superagent'),
@@ -44,7 +47,8 @@ function init(callback) {
         tokens.init,
         things.init,
         tags.init,
-        settings.init
+        settings.init,
+        friends.init
     ], callback);
 }
 
@@ -99,7 +103,7 @@ function login(req, res, next) {
         if (!result) return next(new HttpError(401, 'invalid credentials'));
 
         var token = uuid.v4();
-        tokens.add(token, result.accessToken, function (error) {
+        tokens.add(token, result.accessToken, '', function (error) {
             if (error) return next(new HttpError(500, error));
             next(new HttpSuccess(201, { token: token, user: result.user }));
         });
@@ -254,4 +258,30 @@ function fileAdd(req, res, next) {
 
 function fileGet(req, res) {
     res.sendFile(req.params.identifier, { root: config.attachmentDir });
+}
+
+function friendsGetAll(req, res, next) {
+    friends.getAll(function (error, result) {
+        if (error) return next(new HttpError(500, error));
+        next(new HttpSuccess(200, { friends: result }));
+    });
+}
+
+function friendsAdd(req, res, next) {
+    if (typeof req.body.url !== 'string' || !req.body.url) return next(new HttpError(400, 'url must be a string'));
+    if (typeof req.body.name !== 'string' || !req.body.name) return next(new HttpError(400, 'name must be a string'));
+
+    var token = uuid.v4();
+    // call the url with the token if success go add to db
+
+    friends.add(req.body.url, req.body.name, function (error, result) {
+        if (error) return next(new HttpError(500, error));
+
+        var identifier = 'friend-' + result._id;
+
+        tokens.add(token, '', identifier, function (error) {
+            if (error) return next(new HttpError(500, error));
+            next(new HttpSuccess(201, {}));
+        });
+    });
 }

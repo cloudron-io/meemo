@@ -51,6 +51,18 @@ router.get ('/api/profile', routes.auth, routes.profile);
 
 router.get ('/api/healthcheck', routes.healthcheck);
 
+router.post('/api/friends', routes.auth, routes.friendsAdd);
+router.get ('/api/friends', routes.auth, routes.friendsGetAll);
+
+// API only for other guacamoly instances
+// router.post('/api/external/receiveInvite', routes.receiveInvite);
+// router.post('/api/external/acceptInvite', routes.acceptInvite);
+
+// A. invite friend (url) -> call B with own url and token
+// B. accept invite -> store A url and token
+// A. share things with friend -> store sharing token with things
+// B. fetch all things from A using token
+
 app.use(morgan('dev', { immediate: false, stream: { write: function (str) { console.log(str.slice(0, -1)); } } }));
 app.use(serveStatic(__dirname + '/public', { etag: false }));
 app.use(cors());

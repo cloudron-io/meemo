@@ -50,12 +50,13 @@ function remove(value, callback) {
     });
 }
 
-function add(value, cloudronToken, callback) {
+function add(value, cloudronToken, identifier, callback) {
     assert.strictEqual(typeof value, 'string');
     assert.strictEqual(typeof cloudronToken, 'string');
+    assert.strictEqual(typeof identifier, 'string');
     assert.strictEqual(typeof callback, 'function');
 
-    g_tokens.insert({ value: value, cloudronToken: cloudronToken }, function (error, result) {
+    g_tokens.insert({ value: value, cloudronToken: cloudronToken, identifier: identifier }, function (error, result) {
         if (error) return callback(error);
         if (!result) return callback(new Error('no result returned'));
 

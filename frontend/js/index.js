@@ -328,6 +328,21 @@ var vue = new Vue({
             this.activeEditThing = thing || null;
 
             this.$els.uploadfile.click();
+        },
+        addFriend: function () {
+            var that = this;
+
+            this.busyAddFriend = true;
+
+            Core.friends.add(this.friendDomain, this.friendName, function (error) {
+                if (error) return console.error(error);
+
+                $('#modalFriendAdd').modal('hide');
+
+                that.friendDomain = '';
+                that.friendName = '';
+                that.busyAddFriend = false;
+            });
         }
     }
 });
