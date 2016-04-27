@@ -213,6 +213,7 @@ SettingsApi.prototype.reset = function () {
 
     this.data.title = 'Guacamoly';
     this.data.backgroundUrl =  '';
+    this.data.wide = false;
 
     this._changeCallbacks.forEach(function (callback) {
         setTimeout(callback.bind(null, that.data), 0);
@@ -246,6 +247,7 @@ SettingsApi.prototype.set = function (data) {
 
     this.data.title = data.title;
     this.data.backgroundUrl = data.backgroundUrl;
+    this.data.wide = data.wide;
 
     this._changeCallbacks.forEach(function (callback) {
         setTimeout(callback.bind(null, that.data), 0);

@@ -82,15 +82,21 @@
             <div class="modal-body">
               <form class="form-horizontal">
                 <div class="form-group">
-                  <label htmlFor="inputTitle" class="col-xs-4 control-label">Title</label>
+                  <label class="col-xs-4 control-label">Title</label>
                   <div class="col-xs-7">
-                    <input type="text" class="form-control" id="inputTitle" v-model="settings.title" placeholder="Title" />
+                    <input type="text" class="form-control" v-model="settings.title" placeholder="Title" />
                   </div>
                 </div>
                 <div class="form-group">
-                  <label htmlFor="inputBackgroundImage" class="col-xs-4 control-label">Background</label>
+                  <label class="col-xs-4 control-label">Background</label>
                   <div class="col-xs-7">
-                    <input type="text" class="form-control" id="inputBackgroundImage" v-model="settings.backgroundUrl" placeholder="url" />
+                    <input type="text" class="form-control" v-model="settings.backgroundUrl" placeholder="url" />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-xs-4 control-label">Wide Layout</label>
+                  <div class="col-xs-7">
+                    <input type="checkbox" v-model="settings.wide" />
                   </div>
                 </div>
               </form>
@@ -102,7 +108,6 @@
           </div>
         </div>
       </div>
-
 
       <div class="modal fade" tabindex="-1" role="dialog" id="modalImport">
         <div class="modal-dialog">
@@ -258,9 +263,9 @@ function () {
 
       <input v-el:uploadfile type="file" v-on:change="uploadFileChanged()" class="hide">
 
-      <div class="container">
+      <div :class="{ 'container': !settings.wide, 'container-fluid': settings.wide }">
         <div class="row">
-          <div class="col-md-10 col-md-offset-1">
+          <div :class="{ 'col-md-10': !settings.wide, 'col-md-offset-1': !settings.wide, 'col-md-12': settings.wide }">
             <div class="well" v-on:click="giveAddFocus()">
               <div class="card-content align-right">
                 <div class="card-actions" v-show="thingContent">
