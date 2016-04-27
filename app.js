@@ -14,6 +14,7 @@ var express = require('express'),
     routes = require('./src/routes.js'),
     tags = require('./src/tags.js'),
     things = require('./src/things.js'),
+    config = require('./src/config.js'),
     morgan = require('morgan'),
     lastmile = require('connect-lastmile'),
     serveStatic = require('serve-static');
@@ -90,7 +91,7 @@ routes.init(function (error) {
     welcomeIfNeeded(function (error) {
         if (error) exit(error);
 
-        var server = app.listen(3000, function () {
+        var server = app.listen(config.port, function () {
             var host = server.address().address;
             var port = server.address().port;
 

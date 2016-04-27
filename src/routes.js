@@ -67,6 +67,7 @@ function auth(req, res, next) {
 
         req.token = req.query.token;
         req.cloudronToken = result.cloudronToken;
+        req.tokenIdentifier = result.identifier;
 
         next();
     });
@@ -140,6 +141,10 @@ function getAll(req, res, next) {
         query = {
             $text: { $search: req.query.filter }
         };
+    }
+
+    if (req.tokenIdentifier) {
+        query.access = { $elemMatch: req.tokenIdentifier };
     }
 
     var skip = isNaN(parseInt(req.query.skip)) ? 0 : parseInt(req.query.skip);
@@ -282,9 +287,6 @@ function friendsAdd(req, res, next) {
     var url = req.body.url + '/api/external/receiveInvite';
     superagent.post(url).send({ origin: config.origin, token: token }).end(function (error, result) {
         if (error) next(new HttpError(502, error));
-
-        if (error) console.log('----', error)
-        else console.log('====', result.status, result.text, result.body);
 
         friends.add(req.body.url, req.body.name, function (error, result) {
             if (error) return next(new HttpError(500, error));
