@@ -300,7 +300,7 @@ function () {
                   </span>
                 </div>
                 <div class="card-content">
-                  <div v-show="thing.edit"><textarea v-model="thing.content" id="{{ 'textarea-' + thing.id }}" style="height: 200px" @keyup.27.stop.prevent="cancelEdit(thing)"></textarea></div>
+                  <div v-show="thing.edit"><textarea v-model="thing.content" id="{{ 'textarea-' + thing.id }}" style="height: 200px" @keyup.esc.stop.prevent="cancelEdit(thing)"></textarea></div>
                   <div class="thing-content" v-show="!thing.edit">{{{ thing.richContent | markdown }}}</div>
                 </div>
               </div>
