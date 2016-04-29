@@ -63,34 +63,32 @@
       <modal-cheatsheet id="modalCheatSheet"></modal-cheatsheet>
 
       <div id="mainNavigationBar" class="container-fluid navigation shadow">
-        <form @submit.prevent>
-          <div class="input-group">
-            <div class="input-group-btn">
-              <button type="button" class="btn btn-default" @click.stop="doSearch()" title="Search"><i class="fa fa-search"></i></button>
-            </div>
-            <input type="text" class="form-control search" id="searchBarInput" autocomplete="off" placeholder="Search..." v-el:searchinput v-model="search" @click.stop="showTags()" @keyup="handleSearchKeyInput(this, $event)" @keyup.enter="doSearch()">
-            <div class="dropdown-tags" id="tagsDropdown">
-              <div class="item" v-for="tag in tags | proposeTags">
-                <a href="#" id="tagItem" @click.prevent="activateProposedTag(tag)" @keydown.stop.prevent="keyNavigateTags(this, tag, $event)">#{{ tag.name }}</a>
-              </div>
-            </div>
-            <div class="input-group-btn">
-              <button type="button" class="btn btn-default" @click.stop="clearSearch()" title="Clear"><i class="fa fa-times"></i></button>
-              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">{{ displayName }} <b class="caret"></b></button>
-              <ul class="dropdown-menu settings-menu" style="right: 0; left: none !important;">
-                  <li><a href="#modalSettings" data-toggle="modal">Settings</a></li>
-                  <li><a href="#modalExtensions" data-toggle="modal">Browser Extensions</a></li>
-                  <li><a href="#modalCheatSheet" data-toggle="modal">Cheatsheet</a></li>
-                  <li class="divider"></li>
-                  <li><a href="#" data-toggle="modal" data-target="#modalImport">Import</a></li>
-                  <li><a href="#" @click.prevent="exportThings()">Export</a></li>
-                  <li class="divider"></li>
-                  <li><a href="http://guacamoly.rocks" target="_blank">About</a></li>
-                  <li><a href="#" @click.prevent="logout()">Logout</a></li>
-                </ul>
+        <div class="input-group">
+          <div class="input-group-btn">
+            <button type="button" class="btn btn-default" @click.stop="doSearch()" title="Search"><i class="fa fa-search"></i></button>
+          </div>
+          <input type="text" class="form-control search" id="searchBarInput" autocomplete="off" placeholder="Search..." v-el:searchinput v-model="search" @click.stop="showTags()" @keyup="handleSearchKeyInput(this, $event)" @keyup.enter="doSearch()">
+          <div class="dropdown-tags" id="tagsDropdown">
+            <div class="item" v-for="tag in tags | proposeTags">
+              <a href="#" id="tagItem" @click.prevent="activateProposedTag(tag)" @keydown.stop.prevent="keyNavigateTags(this, tag, $event)">#{{ tag.name }}</a>
             </div>
           </div>
-        </form>
+          <div class="input-group-btn">
+            <button type="button" class="btn btn-default" @click.stop="clearSearch()" title="Clear"><i class="fa fa-times"></i></button>
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">{{ displayName }} <b class="caret"></b></button>
+            <ul class="dropdown-menu settings-menu" style="right: 0; left: none !important;">
+                <li><a href="#modalSettings" data-toggle="modal">Settings</a></li>
+                <li><a href="#modalExtensions" data-toggle="modal">Browser Extensions</a></li>
+                <li><a href="#modalCheatSheet" data-toggle="modal">Cheatsheet</a></li>
+                <li class="divider"></li>
+                <li><a href="#" data-toggle="modal" data-target="#modalImport">Import</a></li>
+                <li><a href="#" @click.prevent="exportThings()">Export</a></li>
+                <li class="divider"></li>
+                <li><a href="http://guacamoly.rocks" target="_blank">About</a></li>
+                <li><a href="#" @click.prevent="logout()">Logout</a></li>
+              </ul>
+          </div>
+        </div>
       </div>
 
       <div :class="{ 'container': !settings.wide, 'container-fluid': settings.wide }">
