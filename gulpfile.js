@@ -88,8 +88,9 @@ gulp.task('clean', function () {
 
 gulp.task('watch', ['default'], function () {
     gulp.watch('frontend/scss/*.scss', ['styles']);
-    gulp.watch('frontend/**/*.js', ['javascript']);
-    gulp.watch('frontend/**/*.html', ['html']);
+    gulp.watch('frontend/js/*.js', ['javascript']);
+    gulp.watch('frontend/*.html', ['html']);
+    gulp.watch('frontend/templates/*', ['html']);
     gulp.watch('frontend/img/*', ['images']);
     gulp.watch('webextension/*', ['extensions']);
 });
