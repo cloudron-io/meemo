@@ -94,13 +94,15 @@ var vue = new Vue({
             $('#addTextarea').focus();
         },
         addThing: function () {
+            var that = this;
+
             Core.things.add(this.thingContent, this.thingAttachments, function (error, thing) {
                 if (error) return console.error(error);
-                vue.thingContent = '';
-                vue.thingAttachments = [];
-                vue.things.unshift(thing);
+                that.thingContent = '';
+                that.thingAttachments = [];
+                that.things.unshift(thing);
 
-                refreshTags();
+                that.refreshTags();
             });
         },
         handleSearchKeyInput: function (element, event) {
@@ -190,14 +192,39 @@ var vue = new Vue({
             window.location.href = '/#search?' + encodeURIComponent(this.search);
         },
         clearSearch: function () {
-            vue.search = '';
-            refresh();
+            this.search = '';
+            this.refresh();
+
             $('#inputSearch').focus();
         },
         exportThings: function () {
             Core.things.export();
         },
-        refreshTags: refreshTags,
+        refreshTags: function (callback) {
+            var that = this;
+
+            Core.tags.get(function (error, tags) {
+                if (error) return console.error(error);
+
+                that.tags = tags;
+
+                if (callback) callback();
+            });
+        },
+        refresh: function (search) {
+            var that = this;
+
+            this.busyThings = true;
+
+            window.location.href = '/#search?' + (search ? encodeURIComponent(search) : '');
+
+            Core.things.get(search || '', function (error, data) {
+                if (error) return console.error(error);
+
+                that.things = data;
+                that.busyThings = false;
+            });
+        },
         triggerAttachmentUpload: function () {
             $('#addAttachment').click();
         },
@@ -221,19 +248,15 @@ var vue = new Vue({
     }
 });
 
-window.app = vue;
-
 function hashChangeHandler() {
     var action = window.location.hash.split('?')[0];
     var params = window.location.hash.indexOf('?') > 0 ? decodeURIComponent(window.location.hash.slice(window.location.hash.indexOf('?') + 1)) : null;
 
-    if (action === '#add') {
-        vue.showThingAdd();
-    } else if (action === '#search' && params !== null) {
-        vue.search = params;
-        refresh(vue.search);
+    if (action === '#search') {
+        if (params !== null) vue.search = params;
+        vue.refresh(vue.search);
     } else {
-        refresh(vue.search);
+        window.location.href = '/#search?';
     }
 }
 
@@ -262,18 +285,9 @@ function reset() {
     vue.search = '';
     vue.username = '';
     vue.password = '';
+    vue.settings = {};
 
     Vue.nextTick(function () { $('#inputUsername').focus(); });
-}
-
-function refreshTags(callback) {
-    Core.tags.get(function (error, tags) {
-        if (error) return console.error(error);
-
-        vue.tags = tags;
-
-        if (callback) callback();
-    });
 }
 
 function main() {
@@ -292,7 +306,7 @@ function main() {
             if (settings.title) window.document.title = settings.title;
             if (settings.backgroundUrl) window.document.body.style.backgroundImage = 'url("' + settings.backgroundUrl + '")';
 
-            refreshTags(function () {
+            vue.refreshTags(function () {
                 vue.mainView = 'content';
 
                 window.setTimeout(function () { vue.$els.searchinput.focus(); }, 0);
@@ -307,19 +321,6 @@ function main() {
                 });
             });
         });
-    });
-}
-
-function refresh(search) {
-    vue.busyThings = true;
-
-    window.location.href = '/#search?' + (search ? encodeURIComponent(search) : '');
-
-    Core.things.get(search || '', function (error, data) {
-        if (error) return console.error(error);
-
-        vue.things = data;
-        vue.busyThings = false;
     });
 }
 
