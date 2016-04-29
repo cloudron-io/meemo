@@ -48,7 +48,6 @@ function ThingsApi() {
     this._delCallbacks = [];
     this._operation = '';
     this._query = null;
-    this._things = [];
 }
 
 ThingsApi.prototype.get = function (filter, callback) {
@@ -80,8 +79,6 @@ ThingsApi.prototype.get = function (filter, callback) {
 
         // update skip for fetch more call
         that._query.skip += result.body.things.length;
-
-        that._things = tmp;
 
         callback(null, tmp);
     }));
