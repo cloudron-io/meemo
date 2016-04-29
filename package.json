@@ -47,6 +47,6 @@
     "twemoji": "^1.4.1",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
-    "vue": "^1.0.11"
+    "vue": "^1.0.21"
   }
 }
