@@ -208,54 +208,39 @@ ThingsApi.prototype.export = function () {
 
 function SettingsApi() {
     this._changeCallbacks = [];
-    this.data = {};
-    this.reset();
 }
 
 SettingsApi.prototype.reset = function () {
-    var that = this;
+    var data = {};
+    data.title = 'Guacamoly';
+    data.backgroundUrl =  '';
+    data.wide = false;
 
-    this.data.title = 'Guacamoly';
-    this.data.backgroundUrl =  '';
-    this.data.wide = false;
-
-    this._changeCallbacks.forEach(function (callback) {
-        setTimeout(callback.bind(null, that.data), 0);
-    });
+    this.save(data, function () {});
 };
 
-SettingsApi.prototype.save = function (callback) {
-    superagent.post(url('/api/settings')).send({ settings: this.data }).end(errorWrapper(function (error, result) {
+SettingsApi.prototype.save = function (data, callback) {
+    var that = this;
+
+    superagent.post(url('/api/settings')).send({ settings: data }).end(errorWrapper(function (error, result) {
         if (error) return callback(error);
         if (result.status !== 202) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
+
+        that._changeCallbacks.forEach(function (callback) {
+            setTimeout(callback.bind(null, data), 0);
+        });
 
         callback(null);
     }));
 };
 
 SettingsApi.prototype.get = function (callback) {
-    var that = this;
-
     superagent.get(url('/api/settings')).end(errorWrapper(function (error, result) {
         if (error) return callback(error);
         if (result.status !== 200) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
 
-        that.set(result.body.settings);
-
         callback(null, result.body.settings);
     }));
-};
-
-SettingsApi.prototype.set = function (data) {
-    var that = this;
-
-    this.data.title = data.title;
-    this.data.backgroundUrl = data.backgroundUrl;
-    this.data.wide = data.wide;
-
-    this._changeCallbacks.forEach(function (callback) {
-        setTimeout(callback.bind(null, that.data), 0);
-    });
 };
 
 SettingsApi.prototype.onChanged = function (callback) {

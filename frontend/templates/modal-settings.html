@@ -1,0 +1,41 @@
+<template id="modal-settings-template">
+  <div class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+          <h4>Settings</h4>
+        </div>
+        <div class="modal-body">
+          <form class="form-horizontal" @submit.prevent="save()">
+            <div class="form-group">
+              <label class="col-xs-4 control-label">Title</label>
+              <div class="col-xs-7">
+                <input type="text" class="form-control" v-model="title" placeholder="Title" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-xs-4 control-label">Background</label>
+              <div class="col-xs-7">
+                <input type="text" class="form-control" v-model="backgroundUrl" placeholder="url" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-xs-4 control-label">Wide Layout</label>
+              <div class="col-xs-7">
+                <input type="checkbox" v-model="wide" />
+              </div>
+            </div>
+            <input type="submit" class="hide" />
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-default" data-dismiss="modal">Cancel</button>
+          <button class="btn btn-success" @click="save()">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script type="text/javascript"><%- include modal-settings.js %></script>

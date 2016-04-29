@@ -62,14 +62,6 @@ function getCurrentSearchWord() {
     return word;
 }
 
-function findById(id) {
-    for (var i = 0; i < vue.things.length; ++i) {
-        if (vue.things[i].id === id) return vue.things[i];
-    }
-
-    return null;
-}
-
 Vue.filter('proposeTags', function (options) {
     var word = getCurrentSearchWord().replace(/^#/, '');
 
@@ -92,7 +84,7 @@ var vue = new Vue({
         username: '',
         password: '',
         displayName: '',
-        settings: Core.settings.data,
+        settings: {},
         mainView: '',
         thingContent: '',
         thingAttachments: []
@@ -170,14 +162,6 @@ var vue = new Vue({
 
             Vue.nextTick(function () { vue.$els.searchinput.focus(); });
         },
-        saveSettings: function () {
-            Core.settings.set(this.settings);
-            Core.settings.save(function (error) {
-                if (error) return console.error(error);
-
-                $('#modalSettings').modal('hide');
-            });
-        },
         logout: function () {
             Core.session.logout();
         },
@@ -253,11 +237,6 @@ function hashChangeHandler() {
     }
 }
 
-function settingsChangeHandler(data) {
-    if (data.title) window.document.title = data.title;
-    if (data.backgroundUrl) window.document.body.style.backgroundImage = 'url("' + data.backgroundUrl + '")';
-}
-
 function scrollHandler() {
     // add 1 full pixel to be on the safe side for zoom settings, where pixel values might be floats
     if ($(window).height() + $(window).scrollTop() + 1 >= $(document).height()) {
@@ -283,7 +262,6 @@ function reset() {
     vue.search = '';
     vue.username = '';
     vue.password = '';
-    Core.settings.reset();
 
     Vue.nextTick(function () { $('#inputUsername').focus(); });
 }
@@ -306,8 +284,13 @@ function main() {
 
         vue.displayName = profile.displayName || profile.username || profile.email;
 
-        Core.settings.get(function (error) {
+        Core.settings.get(function (error, settings) {
             if (error) return console.error(error);
+
+            // set initial settings
+            vue.settings = settings;
+            if (settings.title) window.document.title = settings.title;
+            if (settings.backgroundUrl) window.document.body.style.backgroundImage = 'url("' + settings.backgroundUrl + '")';
 
             refreshTags(function () {
                 vue.mainView = 'content';
@@ -315,6 +298,13 @@ function main() {
                 window.setTimeout(function () { vue.$els.searchinput.focus(); }, 0);
 
                 hashChangeHandler();
+
+                // add global object for browser extensions
+                document.getElementById('guacamoly-settings-node').textContent = JSON.stringify({
+                    origin: Core.origin(),
+                    token: Core.token(),
+                    title: settings.title
+                });
             });
         });
     });
@@ -330,13 +320,6 @@ function refresh(search) {
 
         vue.things = data;
         vue.busyThings = false;
-
-        // add global object for browser extensions
-        document.getElementById('guacamoly-settings-node').textContent = JSON.stringify({
-            origin: Core.origin(),
-            token: Core.token(),
-            title: Core.settings.data.title
-        });
     });
 }
 
@@ -345,7 +328,16 @@ main();
 
 Core.onAuthFailure = reset;
 Core.onLogout = reset;
-Core.settings.onChanged(settingsChangeHandler);
+
+Core.settings.onChanged(function (data) {
+    vue.settings.title = data.title || 'Guacamoly';
+    vue.settings.backgroundUrl = data.backgroundUrl;
+    vue.settings.wide = data.wide;
+
+    window.document.title = data.title;
+
+    if (data.backgroundUrl) window.document.body.style.backgroundImage = 'url("' + data.backgroundUrl + '")';
+});
 
 Core.things.onDeleted(function (thing) {
     // remove if found

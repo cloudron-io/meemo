@@ -57,7 +57,7 @@
 
     <div v-show="mainView === 'content'" v-cloak>
 
-      <div class="modal fade" tabindex="-1" role="dialog" id="modalSettings">
+     <!--  <div class="modal fade" tabindex="-1" role="dialog" id="modalSettings">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
@@ -92,8 +92,9 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
 
+      <modal-settings id="modalSettings"></modal-settings>
       <modal-browser-extensions id="modalExtensions"></modal-browser-extensions>
       <modal-import id="modalImport"></modal-import>
       <modal-cheatsheet id="modalCheatSheet"></modal-cheatsheet>
@@ -168,6 +169,7 @@
 
     <script type="text/javascript" src="js/core.js"></script>
 
+    <%- include templates/modal-settings.html %>
     <%- include templates/modal-browser-extensions.html %>
     <%- include templates/modal-cheatsheet.html %>
     <%- include templates/modal-import.html %>
