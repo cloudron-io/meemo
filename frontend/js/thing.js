@@ -77,8 +77,6 @@ function main() {
         }
 
         vue.thing = result;
-
-        console.log(vue.thing)
     });
 }
 
