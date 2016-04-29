@@ -1,16 +1,15 @@
 'use strict';
 
-var gulp = require('gulp'),
-    source = require('vinyl-source-stream'),
-    sourcemaps = require('gulp-sourcemaps'),
-    sass = require('gulp-sass'),
-    minifycss = require('gulp-cssnano'),
-    autoprefixer = require('gulp-autoprefixer'),
+var autoprefixer = require('gulp-autoprefixer'),
     del = require('del'),
+    ejs = require('gulp-ejs'),
+    gulp = require('gulp'),
+    gutil = require('gulp-util'),
+    minifycss = require('gulp-cssnano'),
     rename = require('gulp-rename'),
-    browserify = require('browserify'),
-    buffer = require('vinyl-buffer'),
-    run = require('gulp-run');
+    run = require('gulp-run'),
+    sass = require('gulp-sass'),
+    sourcemaps = require('gulp-sourcemaps');
 
 gulp.task('styles', function () {
     return gulp.src('frontend/scss/index.scss')
@@ -24,12 +23,14 @@ gulp.task('styles', function () {
 });
 
 gulp.task('javascript', function () {
-    return gulp.src('frontend/**/*.js')
-    .pipe(gulp.dest('public/'));
+    return gulp.src('frontend/js/*.js')
+        .pipe(gulp.dest('public/js/'));
 });
 
 gulp.task('html', function () {
-    return gulp.src('frontend/*.html').pipe(gulp.dest('public/'));
+    return gulp.src('frontend/*.html')
+        .pipe(ejs({}).on('error', gutil.log))
+        .pipe(gulp.dest('public/'));
 });
 
 gulp.task('favicon', function () {
