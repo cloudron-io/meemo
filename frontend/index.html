@@ -281,7 +281,7 @@ function () {
               </div>
             </div>
             <div v-show="!busyThings">
-              <div class="well" v-for="thing in things" id="{{ 'card-' + thing.id }}" :class="{ edit: thing.edit }">
+              <div class="well" v-for="thing in things" track-by="id" id="{{ 'card-' + thing.id }}" :class="{ edit: thing.edit }">
                 <div class="card-actions">
                   {{ thing.createdAt | prettyDateOffset }}
                   <span v-show="thing.edit">
