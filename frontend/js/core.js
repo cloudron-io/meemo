@@ -48,6 +48,7 @@ function ThingsApi() {
     this._delCallbacks = [];
     this._operation = '';
     this._query = null;
+    this._things = [];
 }
 
 ThingsApi.prototype.get = function (filter, callback) {
@@ -79,6 +80,8 @@ ThingsApi.prototype.get = function (filter, callback) {
 
         // update skip for fetch more call
         that._query.skip += result.body.things.length;
+
+        that._things = tmp;
 
         callback(null, tmp);
     }));
@@ -112,13 +115,14 @@ ThingsApi.prototype.add = function (content, attachments, callback) {
         if (error) return callback(error);
         if (result.status !== 201) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
 
+        var tmp = result.body.thing;
+        var thing = new Thing(tmp._id, new Date(tmp.createdAt).getTime(), tmp.tags, tmp.content, tmp.richContent, tmp.attachments);
+
         that._addCallbacks.forEach(function (callback) {
-            setTimeout(callback, 0);
+            setTimeout(callback.bind(null, thing), 0);
         });
 
-        var thing = result.body.thing;
-
-        callback(null, new Thing(thing._id, new Date(thing.createdAt).getTime(), thing.tags, thing.content, thing.richContent, thing.attachments));
+        callback(null, thing);
     }));
 };
 
@@ -130,7 +134,7 @@ ThingsApi.prototype.edit = function (thing, callback) {
         if (result.status !== 201) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
 
         that._editCallbacks.forEach(function (callback) {
-            setTimeout(callback, 0);
+            setTimeout(callback.bind(null, thing), 0);
         });
 
         callback(null, result.body.thing);
@@ -145,7 +149,7 @@ ThingsApi.prototype.del = function (thing, callback) {
         if (result.status !== 200) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
 
         that._delCallbacks.forEach(function (callback) {
-            setTimeout(callback, 0);
+            setTimeout(callback.bind(null, thing), 0);
         });
 
         callback(null);

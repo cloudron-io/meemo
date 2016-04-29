@@ -1,24 +1,57 @@
 <template id="thing-template">
+
+  <div class="modal fade" id="modalShare-{{ thing.id }}">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+        </div>
+        <div class="modal-body">
+          This note is publicly available at <a href="{{ shareLink }}" target="_blank">{{ shareLink }}</a>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="modalDel-{{ thing.id }}">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+        </div>
+        <div class="modal-body">
+          <h4>Really delete this Note?</h4>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+          <button type="button" class="btn btn-danger" @click="deleteThing()">Yes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="well" id="card-{{ thing.id }}" :class="{ edit: thing.edit }">
     <div class="card-actions">
       {{ thing.createdAt | prettyDateOffset }}
       <span v-show="thing.edit">
-        <button class="btn btn-default" title="Insert Image" @click="triggerUploadFileInput(thing)"><i class="fa fa-image"></i></button>
+        <button class="btn btn-default" title="Insert Image" @click="triggerUploadFileInput()"><i class="fa fa-image"></i></button>
         &nbsp;
         <a class="btn btn-default" title="Cheatsheet" href="#modalCheatSheet" data-toggle="modal"><i class="fa fa-keyboard-o"></i></a>
         &nbsp;
-        <button class="btn btn-default" @click="cancelEdit(thing)" title="Cancel"><i class="fa fa-times"></i></button>
+        <button class="btn btn-default" @click="cancelEdit()" title="Cancel"><i class="fa fa-times"></i></button>
         &nbsp;
-        <button class="btn btn-default" @click="saveEdit(thing)" title="Save (Ctrl+S)"><i class="fa fa-check"></i></button>
+        <button class="btn btn-default" @click="saveEdit()" title="Save (Ctrl+S)"><i class="fa fa-check"></i></button>
       </span>
       <span v-show="!thing.edit">
-        <button class="btn btn-default" @click="showShareLink(thing)" title="Share"><i class="fa fa-share-alt"></i></button>
-        <button class="btn btn-default" @click="showEdit(thing)" title="Edit"><i class="fa fa-pencil"></i></button>
-        <button class="btn btn-default" @click="showDelete(thing)" title="Delete"><i class="fa fa-trash"></i></button>
+        <button class="btn btn-default" @click="showShareLink()" title="Share"><i class="fa fa-share-alt"></i></button>
+        <button class="btn btn-default" @click="showEdit()" title="Edit"><i class="fa fa-pencil"></i></button>
+        <button class="btn btn-default" @click="showDelete()" title="Delete"><i class="fa fa-trash"></i></button>
       </span>
     </div>
     <div class="card-content">
-      <div v-show="thing.edit"><textarea v-model="thing.content" id="{{ 'textarea-' + thing.id }}" style="height: 200px" @keyup.esc.stop.prevent="cancelEdit(thing)"></textarea></div>
+      <input type="file" id="fileUpload-{{ thing.id }}" @change="uploadFileChanged($event)" class="hide">
+      <div v-show="thing.edit"><textarea v-model="thing.content" id="{{ 'textarea-' + thing.id }}" style="height: 200px" @keyup.esc.stop.prevent="cancelEdit()"></textarea></div>
       <div class="thing-content" v-show="!thing.edit">{{{ thing.richContent | markdown }}}</div>
     </div>
   </div>

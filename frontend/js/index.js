@@ -95,14 +95,11 @@ var vue = new Vue({
         settings: Core.settings.data,
         mainView: '',
         thingContent: '',
-        thingAttachments: [],
-        activeThing: {},
-        shareThingLink: '',
-        activeEditThing: {}
+        thingAttachments: []
     },
     methods: {
         giveAddFocus: function () {
-            this.$els.addinput.focus();
+            $('#addTextarea').focus();
         },
         addThing: function () {
             Core.things.add(this.thingContent, this.thingAttachments, function (error, thing) {
@@ -173,73 +170,6 @@ var vue = new Vue({
 
             Vue.nextTick(function () { vue.$els.searchinput.focus(); });
         },
-        showEdit: function (thing) {
-            this.activeEditThing = thing;
-            thing.edit = true;
-
-            Vue.nextTick(function() {
-                var margin = 20;
-
-                $('#textarea-' + thing.id).focus();
-                $('#textarea-' + thing.id).height($(window).height() - $('#mainNavigationBar').height() - (margin*2) - 60);
-
-                window.scroll(0, $('#card-' + thing.id).offset().top - $('#mainNavigationBar').height() - margin);
-            });
-        },
-        saveEdit: function (thing) {
-            var that = this;
-
-            Core.things.edit(thing, function (error, result) {
-                if (error) return console.error(error);
-
-                // update the enhanced content from the server
-                thing.richContent = result.richContent;
-                thing.edit = false;
-
-                // move to first spot
-                that.things.splice(0, 0, that.things.splice(that.things.indexOf(thing), 1)[0]);
-                Vue.nextTick(function () { window.scrollTo(0,0); });
-
-                refreshTags();
-            });
-        },
-        cancelEdit: function (thing) {
-            thing.edit = false;
-        },
-        showDelete: function (thing) {
-            this.activeThing = thing;
-            $('#modalDel').modal('show');
-        },
-        deleteThing: function () {
-            var that = this;
-
-            if (!this.activeThing) return;
-
-            Core.things.del(this.activeThing, function (error) {
-                if (error) return console.error(error);
-
-                var i;
-                for (i = 0; i < that.things.length; ++i) {
-                    if (that.things[i].id === that.activeThing.id) break;
-                }
-
-                // remove if found
-                if (i < that.things.length) that.things.splice(i, 1);
-
-                that.activeThing = null;
-
-                $('#modalDel').modal('hide');
-            });
-        },
-        showShareLink: function (thing) {
-            Core.things.publicLink(thing, function (error, publicLinkId) {
-                if (error) return console.error(error);
-
-                vue.shareThingLink = location.origin + '/thing.html?id=' + publicLinkId;
-
-                $('#modalShare').modal('show');
-            });
-        },
         saveSettings: function () {
             Core.settings.set(this.settings);
             Core.settings.save(function (error) {
@@ -283,30 +213,27 @@ var vue = new Vue({
         exportThings: function () {
             Core.things.export();
         },
-        uploadFileChanged: function () {
+        refreshTags: refreshTags,
+        triggerAttachmentUpload: function () {
+            $('#addAttachment').click();
+        },
+        attachmentChanged: function (event) {
             var that = this;
             var data = new FormData();
-            data.append('file', this.$els.uploadfile.files[0]);
+            data.append('file', event.target.files[0]);
 
-            Core.things.uploadFile(data, function (error, result) {
+            this.$root.Core.things.uploadFile(data, function (error, result) {
                 if (error) console.error(error);
 
-                // if activeEditThing is not set, we are currently adding a new one
-                if (that.activeEditThing) {
-                    that.activeEditThing.content += ' [' + result.fileName + '] ';
-                    that.activeEditThing.attachments.push(result);
-                } else {
-                    that.thingContent += ' [' + result.fileName + '] ';
-                    that.thingAttachments.push(result);
-                }
+                that.thingContent += ' [' + result.fileName + '] ';
+                that.thingAttachments.push(result);
             });
-        },
-        triggerUploadFileInput: function (thing) {
-            // if thing is not set it means we are adding a new one
-            this.activeEditThing = thing || null;
-
-            this.$els.uploadfile.click();
         }
+    },
+    ready: function () {
+        // Register event handlers
+        shortcut.add('Ctrl+s', this.addThing.bind(this), { target: 'addTextarea' });
+        shortcut.add('Ctrl+Enter', this.addThing.bind(this), { target: 'addTextarea' });
     }
 });
 
@@ -323,15 +250,6 @@ function hashChangeHandler() {
         refresh(vue.search);
     } else {
         refresh(vue.search);
-    }
-}
-
-function shortcutSaveHandler() {
-    if (document.activeElement && document.activeElement.id && document.activeElement.id.split('-')[1]) {
-        var thing = findById(document.activeElement.id.split('-')[1]);
-        if (thing) vue.saveEdit(thing);
-    } else if (document.activeElement && document.activeElement.id === 'addTextarea') {
-        vue.addThing();
     }
 }
 
@@ -425,13 +343,24 @@ function refresh(search) {
 // Main
 main();
 
-// Register event handlers
-shortcut.add('Ctrl+s', shortcutSaveHandler, {});
-shortcut.add('Ctrl+Enter', shortcutSaveHandler, {});
-
 Core.onAuthFailure = reset;
 Core.onLogout = reset;
 Core.settings.onChanged(settingsChangeHandler);
+
+Core.things.onDeleted(function (thing) {
+    // remove if found
+    for (var i = 0; i < vue.things.length; ++i) {
+        if (vue.things[i].id === thing.id) {
+            vue.things.splice(i, 1);
+            return;
+        }
+    }
+});
+
+Core.things.onEdited(function (thing) {
+    // move to first spot
+    vue.things.splice(0, 0, vue.things.splice(vue.things.indexOf(thing), 1)[0]);
+});
 
 window.addEventListener('hashchange', hashChangeHandler, false);
 window.addEventListener('scroll', scrollHandler, false);

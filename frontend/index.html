@@ -56,21 +56,6 @@
 
 
     <div v-show="mainView === 'content'" v-cloak>
-      <div class="modal fade" id="modalDel">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-            </div>
-            <div class="modal-body">
-              <h4>Really delete this Note?</h4>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-              <button type="button" class="btn btn-danger" @click="deleteThing()">Yes</button>
-            </div>
-          </div>
-        </div>
-      </div>
 
       <div class="modal fade" tabindex="-1" role="dialog" id="modalSettings">
         <div class="modal-dialog">
@@ -104,21 +89,6 @@
             <div class="modal-footer">
               <button class="btn btn-default" data-dismiss="modal">Cancel</button>
               <button class="btn btn-success" @click="saveSettings()">Save</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="modal fade" id="modalShare">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-            </div>
-            <div class="modal-body">
-              This note is publicly available at <a href="{{ shareThingLink }}" target="_blank">{{ shareThingLink }}</a>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
           </div>
         </div>
@@ -159,63 +129,26 @@
         </form>
       </div>
 
-      <input v-el:uploadfile type="file" @change="uploadFileChanged()" class="hide">
-
       <div :class="{ 'container': !settings.wide, 'container-fluid': settings.wide }">
         <div class="row">
           <div :class="{ 'col-md-10': !settings.wide, 'col-md-offset-1': !settings.wide, 'col-md-12': settings.wide }">
             <div class="well" @click="giveAddFocus()">
               <div class="card-content align-right">
+                <input id="addAttachment" type="file" @change="attachmentChanged($event)" class="hide">
                 <div class="card-actions" v-show="thingContent">
                   <span>
-                    <button class="btn btn-default" title="Insert Image" @click="triggerUploadFileInput()"><i class="fa fa-image"></i></button>
+                    <button class="btn btn-default" title="Insert Image" @click="triggerAttachmentUpload()"><i class="fa fa-image"></i></button>
                     &nbsp;
-                    <a class="btn btn-default" title="Cheatsheet" href="javascript:void(0)" data-toggle="modal" data-target="#modalCheatSheet"><i class="fa fa-keyboard-o"></i></a>
+                    <a class="btn btn-default" title="Cheatsheet" href="#modalCheatSheet" data-toggle="modal"><i class="fa fa-keyboard-o"></i></a>
                     &nbsp;
                     <button class="btn btn-default" @click="addThing()" title="Add (Ctrl+S)"><i class="fa fa-check"></i></button>
                   </span>
                 </div>
-                <textarea id="addTextarea" class="new-thing" v-el:addinput placeholder="Add something..." v-model="thingContent" :class="{ active: !!thingContent }"></textarea>
+                <textarea id="addTextarea" class="new-thing" placeholder="Add something..." v-model="thingContent" :class="{ active: !!thingContent }"></textarea>
               </div>
             </div>
             <div v-show="!busyThings">
               <thing v-for="item in things" :thing="item" track-by="id"></thing>
-              <!-- <div class="well" v-for="thing in things" track-by="id" id="{{ 'card-' + thing.id }}" :class="{ edit: thing.edit }">
-                <div class="card-actions">
-                  {{ thing.createdAt | prettyDateOffset }}
-                  <span v-show="thing.edit">
-                    <button class="btn btn-default" title="Insert Image" @click="triggerUploadFileInput(thing)"><i class="fa fa-image"></i></button>
-                    &nbsp;
-                    <a class="btn btn-default" title="Cheatsheet" href="javascript:void(0)" data-toggle="modal" data-target="#modalCheatSheet"><i class="fa fa-keyboard-o"></i></a>
-                    &nbsp;
-                    <button class="btn btn-default" @click="cancelEdit(thing)" title="Cancel"><i class="fa fa-times"></i></button>
-                    &nbsp;
-                    <button class="btn btn-default" @click="saveEdit(thing)" title="Save (Ctrl+S)"><i class="fa fa-check"></i></button>
-                  </span>
-                  <span v-show="!thing.edit">
-                    <button class="btn btn-default" @click="showShareLink(thing)" title="Share"><i class="fa fa-share-alt"></i></button>
-                    <button class="btn btn-default" @click="showEdit(thing)" title="Edit"><i class="fa fa-pencil"></i></button>
-                    <button class="btn btn-default" @click="showDelete(thing)" title="Delete"><i class="fa fa-trash"></i></button>
-                  </span>
-                </div>
-                <div class="card-content">
-                  <div v-show="thing.edit"><textarea v-model="thing.content" id="{{ 'textarea-' + thing.id }}" style="height: 200px" @keyup.esc.stop.prevent="cancelEdit(thing)"></textarea></div>
-                  <div class="thing-content" v-show="!thing.edit">{{{ thing.richContent | markdown }}}</div>
-                </div>
-              </div>
-            </div>
-            <div>
-              <br/>
-              <br/>
-              <center>
-                <i class="spinner large" v-show="busyThings || busyFetchMore"></i>
-                <span v-show="(!busyThings && !busyFetchMore) && things.length" class="text-muted">That is all</span>
-                <span v-show="(!busyThings && !busyFetchMore) && !things.length" class="text-muted">No things found</span>
-              </center>
-              <br/>
-              <br/>
-              <br/>
-            </div> -->
           </div>
         </div>
       </div>
