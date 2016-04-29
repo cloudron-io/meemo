@@ -124,7 +124,7 @@
                 </div>
                 <div v-show="importFile">
                   <p>This will add all data from {{ importFile && importFile.name }} to your current set.</p>
-                  <a href="#" @click.stop.prevent="importFile = null;">Choose other file</a>
+                  <a href="#" @click.prevent="importFile = null;">Choose other file</a>
                 </div>
               </p>
             </div>
@@ -239,7 +239,7 @@ function () {
             <input type="text" class="form-control search" id="searchBarInput" autocomplete="off" placeholder="Search..." v-el:searchinput v-model="search" @click.stop="showTags()" @keyup="handleSearchKeyInput(this, $event)" @keyup.enter="doSearch()">
             <div class="dropdown-tags" id="tagsDropdown">
               <div class="item" v-for="tag in tags | proposeTags">
-                <a href="#" id="tagItem" @click.stop.prevent="activateProposedTag(tag)" @keydown.stop.prevent="keyNavigateTags(this, tag, $event)">#{{ tag.name }}</a>
+                <a href="#" id="tagItem" @click.prevent="activateProposedTag(tag)" @keydown.stop.prevent="keyNavigateTags(this, tag, $event)">#{{ tag.name }}</a>
               </div>
             </div>
             <div class="input-group-btn">
@@ -251,10 +251,10 @@ function () {
                   <li><a href="javascript:void(0)" data-toggle="modal" data-target="#modalCheatSheet">Cheatsheet</a></li>
                   <li class="divider"></li>
                   <li><a href="javascript:void(0)" data-toggle="modal" data-target="#modalImport">Import</a></li>
-                  <li><a href="#" class="hand" @click.stop.prevent="exportThings()">Export</a></li>
+                  <li><a href="#" class="hand" @click.prevent="exportThings()">Export</a></li>
                   <li class="divider"></li>
                   <li><a href="http://guacamoly.rocks" target="_blank">About</a></li>
-                  <li><a href="#" @click.stop.prevent="logout()">Logout</a></li>
+                  <li><a href="#" @click.prevent="logout()">Logout</a></li>
                 </ul>
             </div>
           </div>
