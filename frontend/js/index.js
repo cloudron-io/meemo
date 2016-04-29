@@ -81,6 +81,7 @@ Vue.filter('proposeTags', function (options) {
 var vue = new Vue({
     el: '#application',
     data: {
+        Core: window.Guacamoly.Core,
         tags: [],
         things: [],
         busyLogin: false,
@@ -282,28 +283,6 @@ var vue = new Vue({
         },
         exportThings: function () {
             Core.things.export();
-        },
-        importFileChanged: function () {
-            this.importFile = this.$els.importfile.files[0];
-        },
-        importThings: function () {
-            var data = new FormData();
-            data.append('import', this.$els.importfile.files[0]);
-
-            Core.things.import(data, function (error) {
-                if (error) console.error(error);
-
-                // vueSettings.hide();
-                vue.importFile = null;
-
-                // TODO refresh
-            });
-        },
-        importThingsCancel: function () {
-            this.importFile = null;
-        },
-        triggerImportInput: function () {
-            this.$els.importfile.click();
         },
         uploadFileChanged: function () {
             var that = this;

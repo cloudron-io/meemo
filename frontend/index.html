@@ -109,33 +109,6 @@
         </div>
       </div>
 
-      <div class="modal fade" tabindex="-1" role="dialog" id="modalImport">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-              <h4>Import</h4>
-            </div>
-            <div class="modal-body">
-              <p>
-                <div v-show="!importFile">
-                  <input id="inputImport" v-el:importfile type="file" @change="importFileChanged()" class="hide">
-                  <button class="btn btn-raised" @click="triggerImportInput()">Select File</button>
-                </div>
-                <div v-show="importFile">
-                  <p>This will add all data from {{ importFile && importFile.name }} to your current set.</p>
-                  <a href="#" @click.prevent="importFile = null;">Choose other file</a>
-                </div>
-              </p>
-            </div>
-            <div class="modal-footer">
-              <button class="btn btn-default" data-dismiss="modal">Cancel</button>
-              <button class="btn btn-success" v-show="!!importFile" @click="importThings()">Import</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <div class="modal fade" id="modalShare">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -173,62 +146,8 @@
         </div>
       </div>
 
-      <div class="modal fade" id="modalCheatSheet">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-              <h4>Markdown Cheatsheet</h4>
-            </div>
-            <div class="modal-body">
-              <pre>
-Emphasis:
-*italic*
-**bold**
-~~strikethrough~~
-
-Heading:
-# heading
-## heading2
-### heading3
-
-Horizontal line:
-___
-
-
-Blockquotes:
-> Quotes
->> more Quotes
-
-
-Lists:
-* blabla
-* more of this awesomeness
-* fantastic stuff
-
-1. one
-2. two
-3. three
-
-
-Emojis:
-:-)
-:fish:
-
-Code:
-```
-function () {
-    alert('Hello World');
-}
-```
-              </pre>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <modal-import id="modalImport"></modal-import>
+      <modal-cheatsheet id="modalCheatSheet"></modal-cheatsheet>
 
       <div id="mainNavigationBar" class="container-fluid navigation shadow">
         <form @submit.prevent>
@@ -250,7 +169,7 @@ function () {
                   <li><a href="javascript:void(0)" data-toggle="modal" data-target="#modalExtensions">Browser Extensions</a></li>
                   <li><a href="javascript:void(0)" data-toggle="modal" data-target="#modalCheatSheet">Cheatsheet</a></li>
                   <li class="divider"></li>
-                  <li><a href="javascript:void(0)" data-toggle="modal" data-target="#modalImport">Import</a></li>
+                  <li><a href="#" data-toggle="modal" data-target="#modalImport">Import</a></li>
                   <li><a href="#" class="hand" @click.prevent="exportThings()">Export</a></li>
                   <li class="divider"></li>
                   <li><a href="http://guacamoly.rocks" target="_blank">About</a></li>
@@ -335,6 +254,10 @@ function () {
     <script type="text/javascript" src="3rdparty/js/superagent.js"></script>
 
     <script type="text/javascript" src="js/core.js"></script>
+
+    <%- include templates/modal-cheatsheet.html %>
+    <%- include templates/modal-import.html %>
+
     <script type="text/javascript" src="js/index.js"></script>
 
   </body>

@@ -1,0 +1,30 @@
+
+<template id="modal-import-template">
+  <div class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" @click="cancel()"><span>&times;</span></button>
+          <h4>Import</h4>
+        </div>
+        <div class="modal-body">
+          <p>
+            <div v-show="!importFile">
+              <input type="file" @change="fileChanged($event)">
+            </div>
+            <div v-else>
+              <p>This will add all data from <b>{{ importFile.name }}</b> to your current set.</p>
+              <a href="#" @click.prevent="importFile = null;">Choose other file</a>
+            </div>
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-default" @click="cancel()">Cancel</button>
+          <button class="btn btn-success" :disabled="!importFile" @click="import()">Import</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script type="text/javascript"><%- include modal-import.js %></script>

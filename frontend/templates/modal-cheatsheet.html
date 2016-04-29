@@ -1,0 +1,61 @@
+
+<template id="modal-cheatsheet-template">
+  <div class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+          <h4>Markdown Cheatsheet</h4>
+        </div>
+        <div class="modal-body">
+          <pre>
+Emphasis:
+*italic*
+**bold**
+~~strikethrough~~
+
+Heading:
+# heading
+## heading2
+### heading3
+
+Horizontal line:
+___
+
+
+Blockquotes:
+> Quotes
+>> more Quotes
+
+
+Lists:
+* blabla
+* more of this awesomeness
+* fantastic stuff
+
+1. one
+2. two
+3. three
+
+
+Emojis:
+:-)
+:fish:
+
+Code:
+```
+function () {
+    alert('Hello World');
+}
+```
+          </pre>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script type="text/javascript"><%- include modal-cheatsheet.js %></script>
