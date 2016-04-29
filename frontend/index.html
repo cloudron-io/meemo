@@ -42,13 +42,13 @@
           <form v-on:submit.prevent="login()">
             <div class="form-group" :class="{ 'has-error': loginError }">
               <label class="control-label" for="inputUsername">Username</label>
-              <input type="text" class="form-control" id="inputUsername" v-model="username" v-bind="{ disabled: busyLogin }" required autofocus/>
+              <input type="text" class="form-control" id="inputUsername" v-model="username" :disabled="busyLogin" required autofocus/>
             </div>
             <div class="form-group" :class="{ 'has-error': loginError }">
               <label class="control-label" for="inputPassword">Password</label>
-              <input type="password" class="form-control" id="inputPassword" v-model="password" v-bind="{ disabled: busyLogin }" required/>
+              <input type="password" class="form-control" id="inputPassword" v-model="password" :disabled="busyLogin" required/>
             </div>
-            <button type="submit" class="btn btn-success" v-bind="{ disabled: busyLogin }"><i class="spinner alt" v-show="busyLogin"></i> Login</button>
+            <button type="submit" class="btn btn-success" :disabled="busyLogin"><i class="spinner alt" v-show="busyLogin"></i> Login</button>
           </form>
         </div>
       </div>
@@ -277,11 +277,11 @@ function () {
                     <button class="btn btn-default" v-on:click="addThing()" title="Add (Ctrl+S)"><i class="fa fa-check"></i></button>
                   </span>
                 </div>
-                <textarea id="addTextarea" class="new-thing" v-el:addinput placeholder="Add something..." v-model="thingContent" v-bind:class="{ active: !!thingContent }"></textarea>
+                <textarea id="addTextarea" class="new-thing" v-el:addinput placeholder="Add something..." v-model="thingContent" :class="{ active: !!thingContent }"></textarea>
               </div>
             </div>
             <div v-show="!busyThings">
-              <div class="well" v-for="thing in things" id="{{ 'card-' + thing.id }}" v-bind:class="{ edit: thing.edit }">
+              <div class="well" v-for="thing in things" id="{{ 'card-' + thing.id }}" :class="{ edit: thing.edit }">
                 <div class="card-actions">
                   {{ thing.createdAt | prettyDateOffset }}
                   <span v-show="thing.edit">
