@@ -165,12 +165,12 @@
               <button type="button" class="btn btn-default" @click.stop="clearSearch()" title="Clear"><i class="fa fa-times"></i></button>
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">{{ displayName }} <b class="caret"></b></button>
               <ul class="dropdown-menu settings-menu" style="right: 0; left: none !important;">
-                  <li><a href="javascript:void(0)" data-toggle="modal" data-target="#modalSettings">Settings</a></li>
-                  <li><a href="javascript:void(0)" data-toggle="modal" data-target="#modalExtensions">Browser Extensions</a></li>
-                  <li><a href="javascript:void(0)" data-toggle="modal" data-target="#modalCheatSheet">Cheatsheet</a></li>
+                  <li><a href="#modalSettings" data-toggle="modal">Settings</a></li>
+                  <li><a href="#modalExtensions" data-toggle="modal">Browser Extensions</a></li>
+                  <li><a href="#modalCheatSheet" data-toggle="modal">Cheatsheet</a></li>
                   <li class="divider"></li>
                   <li><a href="#" data-toggle="modal" data-target="#modalImport">Import</a></li>
-                  <li><a href="#" class="hand" @click.prevent="exportThings()">Export</a></li>
+                  <li><a href="#" @click.prevent="exportThings()">Export</a></li>
                   <li class="divider"></li>
                   <li><a href="http://guacamoly.rocks" target="_blank">About</a></li>
                   <li><a href="#" @click.prevent="logout()">Logout</a></li>

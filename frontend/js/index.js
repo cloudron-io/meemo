@@ -98,7 +98,6 @@ var vue = new Vue({
         thingAttachments: [],
         activeThing: {},
         shareThingLink: '',
-        importFile: null,
         activeEditThing: {}
     },
     methods: {
