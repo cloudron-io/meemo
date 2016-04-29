@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="index.min.css"/>
 
   </head>
-  <body id="application" v-on:click="hideTags()">
+  <body id="application" @click="hideTags()">
 
     <div class="container" v-show="mainView === 'loader'" v-cloak>
       <div class="container-fluid navigation shadow">
@@ -39,7 +39,7 @@
       <div class="row">
         <div class="col-md-4 col-md-offset-4 login-form shadow">
           <h2 class="modal-title">Login</h2>
-          <form v-on:submit.prevent="login()">
+          <form @submit.prevent="login()">
             <div class="form-group" :class="{ 'has-error': loginError }">
               <label class="control-label" for="inputUsername">Username</label>
               <input type="text" class="form-control" id="inputUsername" v-model="username" :disabled="busyLogin" required autofocus/>
@@ -66,7 +66,7 @@
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-              <button type="button" class="btn btn-danger" v-on:click="deleteThing()">Yes</button>
+              <button type="button" class="btn btn-danger" @click="deleteThing()">Yes</button>
             </div>
           </div>
         </div>
@@ -103,7 +103,7 @@
             </div>
             <div class="modal-footer">
               <button class="btn btn-default" data-dismiss="modal">Cancel</button>
-              <button class="btn btn-success" v-on:click="saveSettings()">Save</button>
+              <button class="btn btn-success" @click="saveSettings()">Save</button>
             </div>
           </div>
         </div>
@@ -119,18 +119,18 @@
             <div class="modal-body">
               <p>
                 <div v-show="!importFile">
-                  <input id="inputImport" v-el:importfile type="file" v-on:change="importFileChanged()" class="hide">
-                  <button class="btn btn-raised" v-on:click="triggerImportInput()">Select File</button>
+                  <input id="inputImport" v-el:importfile type="file" @change="importFileChanged()" class="hide">
+                  <button class="btn btn-raised" @click="triggerImportInput()">Select File</button>
                 </div>
                 <div v-show="importFile">
                   <p>This will add all data from {{ importFile && importFile.name }} to your current set.</p>
-                  <a href="#" v-on:click.stop.prevent="importFile = null;">Choose other file</a>
+                  <a href="#" @click.stop.prevent="importFile = null;">Choose other file</a>
                 </div>
               </p>
             </div>
             <div class="modal-footer">
               <button class="btn btn-default" data-dismiss="modal">Cancel</button>
-              <button class="btn btn-success" v-show="!!importFile" v-on:click="importThings()">Import</button>
+              <button class="btn btn-success" v-show="!!importFile" @click="importThings()">Import</button>
             </div>
           </div>
         </div>
@@ -231,19 +231,19 @@ function () {
       </div>
 
       <div id="mainNavigationBar" class="container-fluid navigation shadow">
-        <form v-on:submit.prevent>
+        <form @submit.prevent>
           <div class="input-group">
             <div class="input-group-btn">
-              <button type="button" class="btn btn-default" v-on:click.stop="doSearch()" title="Search"><i class="fa fa-search"></i></button>
+              <button type="button" class="btn btn-default" @click.stop="doSearch()" title="Search"><i class="fa fa-search"></i></button>
             </div>
-            <input type="text" class="form-control search" id="searchBarInput" autocomplete="off" placeholder="Search..." v-el:searchinput v-model="search" v-on:click.stop="showTags()" v-on:keyup="handleSearchKeyInput(this, $event)" v-on:keyup.enter="doSearch()">
+            <input type="text" class="form-control search" id="searchBarInput" autocomplete="off" placeholder="Search..." v-el:searchinput v-model="search" @click.stop="showTags()" @keyup="handleSearchKeyInput(this, $event)" @keyup.enter="doSearch()">
             <div class="dropdown-tags" id="tagsDropdown">
               <div class="item" v-for="tag in tags | proposeTags">
-                <a href="#" id="tagItem" v-on:click.stop.prevent="activateProposedTag(tag)" v-on:keydown.stop.prevent="keyNavigateTags(this, tag, $event)">#{{ tag.name }}</a>
+                <a href="#" id="tagItem" @click.stop.prevent="activateProposedTag(tag)" @keydown.stop.prevent="keyNavigateTags(this, tag, $event)">#{{ tag.name }}</a>
               </div>
             </div>
             <div class="input-group-btn">
-              <button type="button" class="btn btn-default" v-on:click.stop="clearSearch()" title="Clear"><i class="fa fa-times"></i></button>
+              <button type="button" class="btn btn-default" @click.stop="clearSearch()" title="Clear"><i class="fa fa-times"></i></button>
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">{{ displayName }} <b class="caret"></b></button>
               <ul class="dropdown-menu settings-menu" style="right: 0; left: none !important;">
                   <li><a href="javascript:void(0)" data-toggle="modal" data-target="#modalSettings">Settings</a></li>
@@ -251,30 +251,30 @@ function () {
                   <li><a href="javascript:void(0)" data-toggle="modal" data-target="#modalCheatSheet">Cheatsheet</a></li>
                   <li class="divider"></li>
                   <li><a href="javascript:void(0)" data-toggle="modal" data-target="#modalImport">Import</a></li>
-                  <li><a href="#" class="hand" v-on:click.stop.prevent="exportThings()">Export</a></li>
+                  <li><a href="#" class="hand" @click.stop.prevent="exportThings()">Export</a></li>
                   <li class="divider"></li>
                   <li><a href="http://guacamoly.rocks" target="_blank">About</a></li>
-                  <li><a href="#" v-on:click.stop.prevent="logout()">Logout</a></li>
+                  <li><a href="#" @click.stop.prevent="logout()">Logout</a></li>
                 </ul>
             </div>
           </div>
         </form>
       </div>
 
-      <input v-el:uploadfile type="file" v-on:change="uploadFileChanged()" class="hide">
+      <input v-el:uploadfile type="file" @change="uploadFileChanged()" class="hide">
 
       <div :class="{ 'container': !settings.wide, 'container-fluid': settings.wide }">
         <div class="row">
           <div :class="{ 'col-md-10': !settings.wide, 'col-md-offset-1': !settings.wide, 'col-md-12': settings.wide }">
-            <div class="well" v-on:click="giveAddFocus()">
+            <div class="well" @click="giveAddFocus()">
               <div class="card-content align-right">
                 <div class="card-actions" v-show="thingContent">
                   <span>
-                    <button class="btn btn-default" title="Insert Image" v-on:click="triggerUploadFileInput()"><i class="fa fa-image"></i></button>
+                    <button class="btn btn-default" title="Insert Image" @click="triggerUploadFileInput()"><i class="fa fa-image"></i></button>
                     &nbsp;
                     <a class="btn btn-default" title="Cheatsheet" href="javascript:void(0)" data-toggle="modal" data-target="#modalCheatSheet"><i class="fa fa-keyboard-o"></i></a>
                     &nbsp;
-                    <button class="btn btn-default" v-on:click="addThing()" title="Add (Ctrl+S)"><i class="fa fa-check"></i></button>
+                    <button class="btn btn-default" @click="addThing()" title="Add (Ctrl+S)"><i class="fa fa-check"></i></button>
                   </span>
                 </div>
                 <textarea id="addTextarea" class="new-thing" v-el:addinput placeholder="Add something..." v-model="thingContent" :class="{ active: !!thingContent }"></textarea>
@@ -285,22 +285,22 @@ function () {
                 <div class="card-actions">
                   {{ thing.createdAt | prettyDateOffset }}
                   <span v-show="thing.edit">
-                    <button class="btn btn-default" title="Insert Image" v-on:click="triggerUploadFileInput(thing)"><i class="fa fa-image"></i></button>
+                    <button class="btn btn-default" title="Insert Image" @click="triggerUploadFileInput(thing)"><i class="fa fa-image"></i></button>
                     &nbsp;
                     <a class="btn btn-default" title="Cheatsheet" href="javascript:void(0)" data-toggle="modal" data-target="#modalCheatSheet"><i class="fa fa-keyboard-o"></i></a>
                     &nbsp;
-                    <button class="btn btn-default" v-on:click="cancelEdit(thing)" title="Cancel"><i class="fa fa-times"></i></button>
+                    <button class="btn btn-default" @click="cancelEdit(thing)" title="Cancel"><i class="fa fa-times"></i></button>
                     &nbsp;
-                    <button class="btn btn-default" v-on:click="saveEdit(thing)" title="Save (Ctrl+S)"><i class="fa fa-check"></i></button>
+                    <button class="btn btn-default" @click="saveEdit(thing)" title="Save (Ctrl+S)"><i class="fa fa-check"></i></button>
                   </span>
                   <span v-show="!thing.edit">
-                    <button class="btn btn-default" v-on:click="showShareLink(thing)" title="Share"><i class="fa fa-share-alt"></i></button>
-                    <button class="btn btn-default" v-on:click="showEdit(thing)" title="Edit"><i class="fa fa-pencil"></i></button>
-                    <button class="btn btn-default" v-on:click="showDelete(thing)" title="Delete"><i class="fa fa-trash"></i></button>
+                    <button class="btn btn-default" @click="showShareLink(thing)" title="Share"><i class="fa fa-share-alt"></i></button>
+                    <button class="btn btn-default" @click="showEdit(thing)" title="Edit"><i class="fa fa-pencil"></i></button>
+                    <button class="btn btn-default" @click="showDelete(thing)" title="Delete"><i class="fa fa-trash"></i></button>
                   </span>
                 </div>
                 <div class="card-content">
-                  <div v-show="thing.edit"><textarea v-model="thing.content" id="{{ 'textarea-' + thing.id }}" style="height: 200px" v-on:keyup.27.stop.prevent="cancelEdit(thing)"></textarea></div>
+                  <div v-show="thing.edit"><textarea v-model="thing.content" id="{{ 'textarea-' + thing.id }}" style="height: 200px" @keyup.27.stop.prevent="cancelEdit(thing)"></textarea></div>
                   <div class="thing-content" v-show="!thing.edit">{{{ thing.richContent | markdown }}}</div>
                 </div>
               </div>
