@@ -76,14 +76,10 @@ var vue = new Vue({
         Core: window.Guacamoly.Core,
         tags: [],
         things: [],
-        busyLogin: false,
         busyThings: true,
         busyFetchMore: false,
-        loginError: false,
         search: '',
-        username: '',
-        password: '',
-        displayName: '',
+        profile: {},
         settings: {},
         mainView: '',
         thingContent: '',
@@ -167,26 +163,6 @@ var vue = new Vue({
         logout: function () {
             Core.session.logout();
         },
-        login: function () {
-            vue.busyLogin = true;
-            vue.loginError = false;
-
-            Core.session.login(this.username, this.password, function (error, user) {
-                vue.busyLogin = false;
-
-                if (error) {
-                    vue.loginError = true;
-                    vue.username = '';
-                    vue.password = '';
-                    Vue.nextTick(function () { $('#inputUsername').focus(); });
-
-                    return console.error('Login failed:', error.status ? error.status : error);
-                }
-
-                vue.loginError = false;
-                main();
-            });
-        },
         doSearch: function () {
             $('#tagsDropdown').hide();
             window.location.href = '/#search?' + encodeURIComponent(this.search);
@@ -239,12 +215,49 @@ var vue = new Vue({
                 that.thingContent += ' [' + result.fileName + '] ';
                 that.thingAttachments.push(result);
             });
+        },
+        main: function () {
+            var that = this;
+
+            this.mainView = 'loader';
+
+            Core.session.profile(function (error, profile) {
+                if (error) return console.error(error);
+
+                that.profile = profile;
+
+                Core.settings.get(function (error, settings) {
+                    if (error) return console.error(error);
+
+                    // set initial settings
+                    that.settings = settings;
+                    if (settings.title) window.document.title = settings.title;
+                    if (settings.backgroundUrl) window.document.body.style.backgroundImage = 'url("' + settings.backgroundUrl + '")';
+
+                    that.refreshTags(function () {
+                        that.mainView = 'content';
+
+                        window.setTimeout(function () { that.$els.searchinput.focus(); }, 0);
+
+                        hashChangeHandler();
+
+                        // add global object for browser extensions
+                        document.getElementById('guacamoly-settings-node').textContent = JSON.stringify({
+                            origin: Core.origin(),
+                            token: Core.token(),
+                            title: settings.title
+                        });
+                    });
+                });
+            });
         }
     },
     ready: function () {
         // Register event handlers
         shortcut.add('Ctrl+s', this.addThing.bind(this), { target: 'addTextarea' });
         shortcut.add('Ctrl+Enter', this.addThing.bind(this), { target: 'addTextarea' });
+
+        this.main();
     }
 });
 
@@ -283,49 +296,8 @@ function reset() {
     vue.things = [];
     vue.tags = [];
     vue.search = '';
-    vue.username = '';
-    vue.password = '';
     vue.settings = {};
-
-    Vue.nextTick(function () { $('#inputUsername').focus(); });
 }
-
-function main() {
-    vue.mainView = 'loader';
-
-    Core.session.profile(function (error, profile) {
-        if (error) return console.error(error);
-
-        vue.displayName = profile.displayName || profile.username || profile.email;
-
-        Core.settings.get(function (error, settings) {
-            if (error) return console.error(error);
-
-            // set initial settings
-            vue.settings = settings;
-            if (settings.title) window.document.title = settings.title;
-            if (settings.backgroundUrl) window.document.body.style.backgroundImage = 'url("' + settings.backgroundUrl + '")';
-
-            vue.refreshTags(function () {
-                vue.mainView = 'content';
-
-                window.setTimeout(function () { vue.$els.searchinput.focus(); }, 0);
-
-                hashChangeHandler();
-
-                // add global object for browser extensions
-                document.getElementById('guacamoly-settings-node').textContent = JSON.stringify({
-                    origin: Core.origin(),
-                    token: Core.token(),
-                    title: settings.title
-                });
-            });
-        });
-    });
-}
-
-// Main
-main();
 
 Core.onAuthFailure = reset;
 Core.onLogout = reset;
