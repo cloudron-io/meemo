@@ -41,3 +41,5 @@
 * Improve keyboard support
 * Add wide layout option
 
+[0.7.0]
+* Refactor code
