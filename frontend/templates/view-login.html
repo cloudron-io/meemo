@@ -1,24 +1,23 @@
 <template id="view-login-template">
-  <div class="container-fluid navigation shadow">
-    <a href="http://guacamoly.rocks" target="_blank" class="brand-link"><img src="/favicon.png" height="28px"/> Guacamoly</a>
-  </div>
-  <br/>
-  <br/>
-  <div class="container">
-    <div class="row">
-      <div class="col-md-4 col-md-offset-4 login-form shadow">
-        <h2 class="modal-title">Login</h2>
-        <form @submit.prevent="login()">
-          <div class="form-group" :class="{ 'has-error': error }">
-            <label class="control-label">Username</label>
-            <input type="text" class="form-control" v-model="username" :disabled="busy" required autofocus/>
-          </div>
-          <div class="form-group" :class="{ 'has-error': error }">
-            <label class="control-label">Password</label>
-            <input type="password" class="form-control" v-model="password" :disabled="busy" required/>
-          </div>
-          <button type="submit" class="btn btn-success" :disabled="busy"><i class="spinner alt" v-show="busy"></i> Login</button>
-        </form>
+  <div>
+    <br/>
+    <br/>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4 col-md-offset-4 login-form shadow">
+          <h2 class="modal-title">Login</h2>
+          <form @submit.prevent="login()">
+            <div class="form-group" :class="{ 'has-error': error }">
+              <label class="control-label">Username</label>
+              <input type="text" class="form-control" v-model="username" :disabled="busy" required autofocus/>
+            </div>
+            <div class="form-group" :class="{ 'has-error': error }">
+              <label class="control-label">Password</label>
+              <input type="password" class="form-control" v-model="password" :disabled="busy" required/>
+            </div>
+            <button type="submit" class="btn btn-success" :disabled="busy"><i class="spinner alt" v-show="busy"></i> Login</button>
+          </form>
+        </div>
       </div>
     </div>
   </div>

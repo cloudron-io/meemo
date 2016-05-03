@@ -14,7 +14,7 @@ var md = window.markdownit({
 .use(window.markdownitCheckbox);
 
 md.renderer.rules.emoji = function(token, idx) {
-  return twemoji.parse(token[idx].content);
+    return twemoji.parse(token[idx].content);
 };
 
 Vue.filter('markdown', function (value) {
@@ -42,32 +42,6 @@ Vue.filter('prettyDateOffset', function (time) {
         day_diff < 31 && Math.ceil( day_diff / 7 ) + ' weeks ago' ||
         day_diff < 365 && Math.round( day_diff / 30 ) +  ' months ago' ||
                           Math.round( day_diff / 365 ) + ' years ago';
-});
-
-function getCurrentSearchWord() {
-    if (!vue) return '';
-
-    var cursorPos = vue.$els.searchinput.selectionStart;
-    var search = vue.search;
-    var word = '';
-
-    for (var i = 0; i < search.length; ++i) {
-        // break if we went beyond and we hit a space
-        if (i > cursorPos && search[i] === ' ') break;
-
-        if (search[i] === ' ') word = '';
-        else word += search[i];
-    }
-
-    return word;
-}
-
-Vue.filter('proposeTags', function (options) {
-    var word = getCurrentSearchWord().replace(/^#/, '');
-
-    return options.filter(function (o) {
-        return (o.name.indexOf(word) >= 0) && (o.name !== word);
-    });
 });
 
 var vue = new Vue({
@@ -100,81 +74,6 @@ var vue = new Vue({
 
                 that.refreshTags();
             });
-        },
-        handleSearchKeyInput: function (element, event) {
-            if (event.code === 'Escape') {
-                $('#tagsDropdown').hide();
-            } else {
-                $('#tagsDropdown').show();
-                if (event.code === 'ArrowDown' &&  $('.dropdown-tags>.item>a')[0]) $('.dropdown-tags>.item>a')[0].focus();
-            }
-        },
-        showTags: function () {
-            $('#tagsDropdown').show();
-        },
-        hideTags: function () {
-            $('#tagsDropdown').hide();
-        },
-        keyNavigateTags: function (element, tag, event) {
-            var tagColumns = 4;
-            var index = element.$index;
-
-            switch (event.code) {
-                case 'Enter':
-                    this.activateProposedTag(tag);
-                    return;
-                case 'ArrowRight':
-                    ++index;
-                    break;
-                case 'ArrowLeft':
-                    --index;
-                    break;
-                case 'ArrowUp':
-                    if (index < tagColumns) {
-                        $('#searchBarInput').focus();
-                        return;
-                    }
-                    index -= tagColumns;
-                    break;
-                case 'ArrowDown':
-                    index += tagColumns;
-                    break;
-                case 'Escape':
-                    $('#tagsDropdown').hide();
-                    $('#searchBarInput').focus();
-                    break;
-                default: return;
-            }
-
-            if ($('.dropdown-tags>.item>a')[index]) {
-                Vue.nextTick(function () { $('.dropdown-tags>.item>a')[index].focus(); });
-            }
-        },
-        activateProposedTag: function (tag) {
-            var word = getCurrentSearchWord();
-
-            if (!word) vue.search += '#' + tag.name;
-            else vue.search = vue.search.replace(getCurrentSearchWord(), '#' + tag.name);
-
-            if (vue.search === '#' + tag.name) window.location.href = '/#search?#' + tag.name;
-
-            Vue.nextTick(function () { vue.$els.searchinput.focus(); });
-        },
-        logout: function () {
-            Core.session.logout();
-        },
-        doSearch: function () {
-            $('#tagsDropdown').hide();
-            window.location.href = '/#search?' + encodeURIComponent(this.search);
-        },
-        clearSearch: function () {
-            this.search = '';
-            this.refresh();
-
-            $('#inputSearch').focus();
-        },
-        exportThings: function () {
-            Core.things.export();
         },
         refreshTags: function (callback) {
             var that = this;
@@ -237,7 +136,7 @@ var vue = new Vue({
                     that.refreshTags(function () {
                         that.mainView = 'content';
 
-                        window.setTimeout(function () { that.$els.searchinput.focus(); }, 0);
+                        window.setTimeout(function () { $('#searchBarInput').focus(); }, 0);
 
                         hashChangeHandler();
 
