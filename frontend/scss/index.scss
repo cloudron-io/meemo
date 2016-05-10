@@ -154,7 +154,7 @@ textarea {
     position: absolute;
     top: 100%;
     left: 36px;
-    width: 600px;
+    width: 620px;
     padding: 0;
     z-index: 1000;
     float: left;
@@ -162,6 +162,8 @@ textarea {
     margin: 2px 0 0;
     background-color: #fff;
     box-shadow: 0 6px 12px rgba(0,0,0,.175);
+    max-height: 500px;
+    overflow-y: auto;
 
     .item {
         display: inline-block;
