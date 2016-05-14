@@ -43,3 +43,6 @@
 
 [0.7.0]
 * Refactor code
+
+[0.7.1]
+* Fix bug with subtags
