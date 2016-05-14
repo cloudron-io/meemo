@@ -16,6 +16,7 @@ exports = module.exports = {
     getByShareId: getByShareId,
     extractURLs: extractURLs,
     extractTags: extractTags,
+    facelift: facelift,
 
     TYPE_IMAGE: 'image',
     TYPE_UNKNOWN: 'unknown'
@@ -127,7 +128,7 @@ function facelift(thing, callback) {
 
         // Enrich with tag links
         tagObjects.forEach(function (tag) {
-            data = data.replace(new RegExp('#' + tag, 'gmi'), '[#' + tag + '](#search?#' + tag + ')');
+            data = data.replace(new RegExp('#' + tag + '(\\s|$)', 'gmi'), '[#' + tag + '](#search?#' + tag + ') ').trim();
         });
 
         // Enrich with image links

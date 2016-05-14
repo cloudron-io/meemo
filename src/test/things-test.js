@@ -131,5 +131,35 @@ describe('Things', function () {
             expect(tags[0]).to.equal('tag');
             expect(tags[1]).to.equal('bar');
         });
+
+        it('succeeds for tags starting with other tags', function () {
+            var test = '#nad #and #we #do #this #more #often #so #we #can #produce #a #hell #of #a #lot #schlagworte';
+
+            var tags = things.extractTags(test);
+            expect(tags.length).to.equal(17);
+            expect(tags).to.eql(['nad', 'and', 'we', 'do', 'this', 'more', 'often', 'so', 'we', 'can', 'produce', 'a', 'hell', 'of', 'a', 'lot', 'schlagworte' ]);
+        });
+    });
+
+    describe('richContent',  function () {
+        before(setup);
+        after(cleanup);
+
+        it('succeeds for tags starting with other tags', function (done) {
+            var content = '#nad #and #we #do #this #more #often #so #we #can #produce #a #hell #of #a #lot #schlagworte';
+            var thing = {
+                tags: things.extractTags(content),
+                externalContent: [],
+                attachments: [],
+                content: content,
+            };
+
+            things.facelift(thing, function (error, result) {
+                expect(error).to.equal(null);
+                expect(result).to.equal('[#nad](#search?#nad) [#and](#search?#and) [#we](#search?#we) [#do](#search?#do) [#this](#search?#this) [#more](#search?#more) [#often](#search?#often) [#so](#search?#so) [#we](#search?#we) [#can](#search?#can) [#produce](#search?#produce) [#a](#search?#a) [#hell](#search?#hell) [#of](#search?#of) [#a](#search?#a) [#lot](#search?#lot) [#schlagworte](#search?#schlagworte)');
+
+                done();
+            });
+        });
     });
 });
