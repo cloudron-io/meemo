@@ -87,6 +87,13 @@ routes.init(function (error) {
             tags.cleanup();
 
             setInterval(tags.cleanup, 1000 * 60);
+
+            if (process.env.MAIL_IMAP_SERVER) {
+                var mail = require('./src/mail.js');
+                mail.listen(function (error) {
+                    if (error) console.error('Unable to listen to incoming mail:', error);
+                });
+            }
         });
     });
 });
