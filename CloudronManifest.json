@@ -12,7 +12,8 @@
   "addons": {
     "mongodb": {},
     "simpleauth": {},
-    "localstorage": {}
+    "localstorage": {},
+    "recvmail": {}
   },
   "developmentMode": false,
   "singleUser": true,
