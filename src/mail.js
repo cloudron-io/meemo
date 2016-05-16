@@ -93,7 +93,6 @@ function fetchMessages(callback) {
             body: null,
             from: null,
             to: null,
-            date: null,
             multipartBoundry: null
         };
 
