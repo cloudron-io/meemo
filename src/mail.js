@@ -12,13 +12,13 @@ var assert = require('assert'),
 var gConnection = null;
 
 function openInbox(callback) {
-    assert.strictEqual(callback, 'function');
+    assert.strictEqual(typeof callback, 'function');
 
     gConnection.openBox('INBOX', true, callback);
 }
 
 function listen(callback) {
-    assert.strictEqual(callback, 'function');
+    assert.strictEqual(typeof callback, 'function');
 
     gConnection = new Imap({
         user: process.env.MAIL_IMAP_USERNAME,
