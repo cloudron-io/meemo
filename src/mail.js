@@ -37,8 +37,6 @@ function parseMultipart(buffer, boundary) {
     var consume = false;
     var encodingQuotedPrintable = false;
 
-    console.log(parts);
-
     for (var i = 0; i < parts.length; ++i) {
         if (parts[i].indexOf('--' + boundary) === 0) {
             // if we get a second boundary but have already found the plain one, stop
