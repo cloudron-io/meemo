@@ -20,8 +20,23 @@ function cleanupTrash(callback) {
     gConnection.openBox('Trash', function (error, box) {
         if (error) return callback(error);
 
-        // closing box with true argument expunges it on close
-        gConnection.closeBox(true, callback);
+        console.log('TRASH messages', box.messages);
+
+        // fetch one by one to have consistent seq numbers
+        async.whilst(function () {
+            return box.messages.total > 0;
+        }, function (callback) {
+            --box.messages.total;
+
+            fetchMessage(function (message, callback) {
+                gConnection.seq.addFlags(message.seqno, ['\\Deleted'], callback);
+            }, callback);
+        }, function (error) {
+            if (error) console.error(error);
+
+            // closing box with true argument expunges it on close
+            gConnection.closeBox(true, callback);
+        });
     });
 }
 
@@ -89,7 +104,8 @@ function parseMultipart(buffer, boundary) {
 }
 
 
-function fetchMessage(callback) {
+function fetchMessage(handler, callback) {
+    assert.strictEqual(typeof handler, 'function');
     assert.strictEqual(typeof callback, 'function');
 
     var message = {
@@ -149,7 +165,7 @@ function fetchMessage(callback) {
     });
 
     f.once('error', callback);
-    f.once('end', handleMessage.bind(null, message, callback));
+    f.once('end', handler.bind(null, message, callback));
 }
 
 function listen(callback) {
@@ -177,19 +193,12 @@ function listen(callback) {
 
             console.log('INBOX messages', box.messages);
 
-            if (box.messages.total === 0) {
-                console.log('No messages. Done.');
-                return;
-            }
-
-            var count = box.messages.total;
-
             // fetch one by one to have consistent seq numbers
             async.whilst(function () {
-                return count > 0;
+                return box.messages.total > 0;
             }, function (callback) {
-                --count;
-                fetchMessage(callback);
+                --box.messages.total;
+                fetchMessage(handleMessage, callback);
             }, function (error) {
                 if (error) return callback(error);
 
