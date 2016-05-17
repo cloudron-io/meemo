@@ -91,7 +91,7 @@ routes.init(function (error) {
             if (process.env.MAIL_IMAP_SERVER) {
                 var mail = require('./src/mail.js');
                 mail.listen(function (error) {
-                    if (error) console.error('Unable to listen to incoming mail:', error);
+                    if (error) console.error(error);
                 });
             }
         });

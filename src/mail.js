@@ -8,15 +8,21 @@ exports = module.exports = {
 
 var assert = require('assert'),
     async = require('async'),
+    Imap = require('imap'),
     quotedPrintable = require('quoted-printable'),
-    Imap = require('imap');
+    things = require('./things.js');
 
 var gConnection = null;
 
-function openInbox(callback) {
+function cleanupTrash(callback) {
     assert.strictEqual(typeof callback, 'function');
 
-    gConnection.openBox('INBOX', true, callback);
+    gConnection.openBox('Trash', function (error, box) {
+        if (error) return callback(error);
+
+        // closing box with true argument expunges it on close
+        gConnection.closeBox(true, callback);
+    });
 }
 
 function handleMessage(message, callback) {
@@ -25,7 +31,15 @@ function handleMessage(message, callback) {
 
     console.log('handleMessage', message);
 
-    callback(null);
+    // add subject as a header
+    var body = message.subject[0] ? ('## ' + message.subject[0] + '\n\n' ) : '';
+    body += message.body;
+
+    things.add(body, [], function (error, result) {
+        if (error) return callback(error);
+
+        gConnection.seq.move(message.seqno, ['Trash'], callback);
+    });
 }
 
 function parseMultipart(buffer, boundary) {
@@ -75,26 +89,25 @@ function parseMultipart(buffer, boundary) {
 }
 
 
-function fetchMessages(callback) {
+function fetchMessage(callback) {
     assert.strictEqual(typeof callback, 'function');
 
-    var messages = [];
+    var message = {
+        subject: null,
+        body: null,
+        from: null,
+        to: null,
+        multipartBoundry: null,
+        seqno: null
+    };
 
-    var f = gConnection.seq.fetch('1:*', {
+    var f = gConnection.seq.fetch('1:1', {
         bodies: ['HEADER.FIELDS (TO)', 'HEADER.FIELDS (FROM)', 'HEADER.FIELDS (SUBJECT)', 'HEADER.FIELDS (CONTENT-TYPE)', 'TEXT'],
         struct: true
     });
 
     f.on('message', function (msg, seqno) {
-        console.log('Message #%d', seqno);
-
-        var message = {
-            subject: null,
-            body: null,
-            from: null,
-            to: null,
-            multipartBoundry: null
-        };
+        message.seqno = seqno;
 
         msg.on('body', function (stream, info) {
             var buffer = '';
@@ -124,7 +137,7 @@ function fetchMessages(callback) {
             });
         });
 
-        msg.once('attributes', function(attrs) {
+        msg.once('attributes', function (attrs) {
             message.attributes = attrs;
         });
 
@@ -132,18 +145,11 @@ function fetchMessages(callback) {
             if (message.multipartBoundry) {
                 message.body = parseMultipart(message.body, message.multipartBoundry);
             }
-
-            messages.push(message);
         });
     });
 
-    f.once('error', function(err) {
-        console.log('Fetch error: ' + err);
-    });
-
-    f.once('end', function() {
-        async.each(messages, handleMessage, callback);
-    });
+    f.once('error', callback);
+    f.once('end', handleMessage.bind(null, message, callback));
 }
 
 function listen(callback) {
@@ -166,15 +172,36 @@ function listen(callback) {
     gConnection.once('ready', function () {
         console.log('Connection success');
 
-        openInbox(function (error, box) {
+        gConnection.openBox('INBOX', true, function (error, box) {
             if (error) return callback(error);
 
-            console.log(box);
+            console.log('INBOX messages', box.messages);
 
-            fetchMessages(function (error) {
+            if (box.messages.total === 0) {
+                console.log('No messages. Done.');
+                return;
+            }
+
+            var count = box.messages.total;
+
+            // fetch one by one to have consistent seq numbers
+            async.whilst(function () {
+                return count > 0;
+            }, function (callback) {
+                --count;
+                fetchMessage(callback);
+            }, function (error) {
                 if (error) return callback(error);
 
-                console.log('Done');
+                gConnection.closeBox(function (error) {
+                    if (error) return callback(error);
+
+                    cleanupTrash(function (error) {
+                        if (error) return callback(error);
+
+                        console.log('IMAP process done.');
+                    });
+                });
             });
         });
     });
