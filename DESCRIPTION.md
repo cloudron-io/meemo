@@ -6,3 +6,8 @@ The user interface resembles a news feed organized with tags. Full text search f
  * Full text search
  * Markdown support
  * Data import and export
+
+### Email
+
+Guacamoly will automatically add notes if you send it email!
+
