@@ -6,56 +6,18 @@ exports = module.exports = {
     listen: listen
 };
 
+var RECONNECT_TIMEOUT = 10 * 1000;
+var CLEANUP_TRASH_INTERVAL = 10 * 1000;
+
 var assert = require('assert'),
     async = require('async'),
     Imap = require('imap'),
     quotedPrintable = require('quoted-printable'),
     things = require('./things.js');
 
-var gConnection = null;
-
-function cleanupTrash(callback) {
-    assert.strictEqual(typeof callback, 'function');
-
-    gConnection.openBox('Trash', function (error, box) {
-        if (error) return callback(error);
-
-        console.log('TRASH messages', box.messages);
-
-        // fetch one by one to have consistent seq numbers
-        async.whilst(function () {
-            return box.messages.total > 0;
-        }, function (callback) {
-            --box.messages.total;
-
-            fetchMessage(function (message, callback) {
-                gConnection.seq.addFlags(message.seqno, ['\\Deleted'], callback);
-            }, callback);
-        }, function (error) {
-            if (error) console.error(error);
-
-            // closing box with true argument expunges it on close
-            gConnection.closeBox(true, callback);
-        });
-    });
-}
-
-function handleMessage(message, callback) {
-    assert.strictEqual(typeof  message, 'object');
-    assert.strictEqual(typeof callback, 'function');
-
-    console.log('handleMessage', message);
-
-    // add subject as a header
-    var body = message.subject[0] ? ('## ' + message.subject[0] + '\n\n' ) : '';
-    body += message.body;
-
-    things.add(body, [], function (error, result) {
-        if (error) return callback(error);
-
-        gConnection.seq.move(message.seqno, ['Trash'], callback);
-    });
-}
+var gInboxConnection = null;
+var gInbox = null;
+var gInboxActive = false;
 
 function parseMultipart(buffer, boundary) {
     var parts = buffer.split('\r\n');
@@ -104,7 +66,8 @@ function parseMultipart(buffer, boundary) {
 }
 
 
-function fetchMessage(handler, callback) {
+function fetchMessage(connection, handler, callback) {
+    assert.strictEqual(typeof connection, 'object');
     assert.strictEqual(typeof handler, 'function');
     assert.strictEqual(typeof callback, 'function');
 
@@ -117,7 +80,7 @@ function fetchMessage(handler, callback) {
         seqno: null
     };
 
-    var f = gConnection.seq.fetch('1:1', {
+    var f = connection.seq.fetch('1:1', {
         bodies: ['HEADER.FIELDS (TO)', 'HEADER.FIELDS (FROM)', 'HEADER.FIELDS (SUBJECT)', 'HEADER.FIELDS (CONTENT-TYPE)', 'TEXT'],
         struct: true
     });
@@ -165,13 +128,104 @@ function fetchMessage(handler, callback) {
     });
 
     f.once('error', callback);
-    f.once('end', handler.bind(null, message, callback));
+
+    f.once('end', function () {
+        // we had an error
+        if (!message.seqno) return;
+
+        handler(message, callback);
+    });
 }
 
-function listen(callback) {
+function handleNewMessage(message, callback) {
+    assert.strictEqual(typeof  message, 'object');
     assert.strictEqual(typeof callback, 'function');
 
-    gConnection = new Imap({
+    console.log('handleNewMessage', message);
+
+    // add subject as a header
+    var body = message.subject[0] ? ('## ' + message.subject[0] + '\n\n' ) : '';
+    body += message.body;
+
+    things.add(body, [], function (error, result) {
+        if (error) return callback(error);
+
+        // done now move to trash
+        gInboxConnection.seq.move(message.seqno, ['Trash'], callback);
+    });
+}
+
+function checkInbox() {
+    if (gInboxActive) {
+        console.log('Already checking Inbox.');
+        return;
+    }
+
+    gInboxActive = true;
+
+    console.log('Check for new messages...');
+
+    // fetch one by one to have consistent seq numbers
+    async.forever(function (callback) {
+        fetchMessage(gInboxConnection, handleNewMessage, callback);
+    }, function (error) {
+        // since we simply try to fetch more messages, if all are done we fail like this
+        if (error && error.message.indexOf('Invalid messageset') === -1) console.error(error);
+
+        gInboxActive = false;
+
+        console.log('Inbox handling done.');
+    });
+}
+
+function listen() {
+    gInboxConnection = new Imap({
+        user: process.env.MAIL_IMAP_USERNAME,
+        password: process.env.MAIL_IMAP_PASSWORD,
+        host: process.env.MAIL_IMAP_SERVER,
+        port: process.env.MAIL_IMAP_PORT,
+        tls: true,
+        keepalive: {
+            idleInterval: 10 * 1000
+        }
+    });
+
+    gInboxConnection.once('error', function (error) {
+        console.error('IMAP error:', error);
+
+        // reconnect in 10sec
+        setTimeout(listen, RECONNECT_TIMEOUT);
+    });
+
+    gInboxConnection.once('end', function() {
+        console.log('IMAP connection ended');
+
+        // reconnect in 10sec
+        setTimeout(listen, RECONNECT_TIMEOUT);
+    });
+
+    gInboxConnection.once('ready', function () {
+        console.log('IMAP connection success');
+
+        gInboxConnection.openBox('INBOX', true, function (error, box) {
+            if (error) return console.error('Unable to open INBOX:', error);
+
+            gInbox = box;
+
+            // checkInbox();
+        });
+    });
+
+    gInboxConnection.once('mail', function (count) {
+        console.log('--- mail event', count)
+        checkInbox();
+    });
+
+    gInboxConnection.connect();
+}
+
+function cleanupTrash() {
+    var connection = new Imap({
         user: process.env.MAIL_IMAP_USERNAME,
         password: process.env.MAIL_IMAP_PASSWORD,
         host: process.env.MAIL_IMAP_SERVER,
@@ -179,41 +233,46 @@ function listen(callback) {
         tls: true
     });
 
-    gConnection.once('error', callback);
-
-    gConnection.once('end', function() {
-        console.log('Connection ended');
+    connection.once('error', function (error) {
+        console.error('Janitor IMAP error:', error);
     });
 
-    gConnection.once('ready', function () {
-        console.log('Connection success');
+    connection.once('end', function() {
+        console.log('Janitor IMAP connection ended');
+    });
 
-        gConnection.openBox('INBOX', true, function (error, box) {
-            if (error) return callback(error);
+    connection.once('ready', function () {
+        console.log('Janitor IMAP connection success');
 
-            console.log('INBOX messages', box.messages);
+        connection.openBox('Trash', function (error, box) {
+            if (error) return console.error(error);
+
+            console.log('TRASH messages', box.messages);
 
             // fetch one by one to have consistent seq numbers
             async.whilst(function () {
                 return box.messages.total > 0;
             }, function (callback) {
                 --box.messages.total;
-                fetchMessage(handleMessage, callback);
+
+                fetchMessage(connection, function (message, callback) {
+                    console.log('got message')
+                    connection.seq.addFlags(message.seqno, ['\\Deleted'], callback);
+                }, callback);
             }, function (error) {
-                if (error) return callback(error);
+                if (error) console.error(error);
 
-                gConnection.closeBox(function (error) {
-                    if (error) return callback(error);
+                // closing box with true argument expunges it on close
+                connection.closeBox(false, function (error) {
+                    if (error) console.error(error);
 
-                    cleanupTrash(function (error) {
-                        if (error) return callback(error);
-
-                        console.log('IMAP process done.');
-                    });
+                    connection.end();
                 });
             });
         });
     });
 
-    gConnection.connect();
+    connection.connect();
 }
+
+setInterval(cleanupTrash, CLEANUP_TRASH_INTERVAL);
