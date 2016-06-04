@@ -114,13 +114,16 @@ function logout(req, res, next) {
 }
 
 function profile(req, res, next) {
-    if (!simpleAuth) return next(new HttpSuccess(200, { user: { username: 'test', displayName: 'Test', email: 'test@test.com' }}));
+    if (!simpleAuth) return next(new HttpSuccess(200, { mailbox: process.env.MAIL_TO || null, user: { username: 'test', displayName: 'Test', email: 'test@test.com' }}));
 
     superagent.get(process.env.API_ORIGIN + '/api/v1/profile').query({ access_token: req.cloudronToken }).end(function (error, result) {
         if (error && error.status === 401) return next(new HttpError(401, 'invalid credentials'));
         if (error) return next(new HttpError(500, wrapRestError(error)));
 
-        next(new HttpSuccess(200, { user: result.body }));
+        next(new HttpSuccess(200, {
+            user: result.body,
+            mailbox: process.env.MAIL_TO || null
+        }));
     });
 }
 

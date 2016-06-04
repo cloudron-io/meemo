@@ -288,7 +288,7 @@ SessionApi.prototype.profile = function (callback) {
         if (error) return callback(error);
         if (result.status !== 200) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
 
-        callback(null, result.body.user);
+        callback(null, result.body);
     }));
 };
 

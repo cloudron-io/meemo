@@ -54,6 +54,7 @@ var vue = new Vue({
         busyFetchMore: false,
         search: '',
         profile: {},
+        mailbox: '',
         settings: {},
         mainView: '',
         thingContent: '',
@@ -123,7 +124,8 @@ var vue = new Vue({
             Core.session.profile(function (error, profile) {
                 if (error) return console.error(error);
 
-                that.profile = profile;
+                that.profile = profile.user;
+                that.mailbox = profile.mailbox;
 
                 Core.settings.get(function (error, settings) {
                     if (error) return console.error(error);
