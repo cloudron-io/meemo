@@ -57,8 +57,6 @@ function del(id, callback) {
 }
 
 function cleanup() {
-    console.log('Cleanup tags');
-
     things.getAllLean(function (error, result) {
         if (error) return console.error(new Error(error));
 
@@ -78,7 +76,6 @@ function cleanup() {
                 del(tag._id, callback);
             }, function (error) {
                 if (error) console.error('Failed to cleanup tags:', error);
-                else console.log('Tag cleanup done.');
             });
         });
     });
