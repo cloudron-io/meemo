@@ -20,6 +20,7 @@
     "connect-lastmile": "0.0.13",
     "cookie-parser": "^1.4.0",
     "cors": "^2.7.1",
+    "debug": "^2.2.0",
     "express": "^4.13.3",
     "imap": "^0.8.17",
     "mongodb": "^2.0.49",
