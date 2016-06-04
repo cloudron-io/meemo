@@ -9,6 +9,7 @@ var CLEANUP_TRASH_INTERVAL = 60 * 1000;
 
 var assert = require('assert'),
     async = require('async'),
+    debug = require('debug')('mail'),
     Imap = require('imap'),
     quotedPrintable = require('quoted-printable'),
     things = require('./things.js');
@@ -145,22 +146,22 @@ function checkInbox() {
     });
 
     conn.once('end', function() {
-        console.log('IMAP connection ended');
+        debug('IMAP connection ended');
     });
 
     conn.once('ready', function () {
-        console.log('IMAP connection success');
+        debug('IMAP connection success');
 
         conn.openBox('INBOX', true, function (error, box) {
             if (error) return console.error('Unable to open INBOX:', error);
 
-            console.log('Check for new messages...', box.messages.total);
+            debug('Check for new messages...', box.messages.total);
 
             // fetch one by one to have consistent seq numbers
             // box.messages.total is updated by the node module due to the message move
             async.whilst(function () { return box.messages.total > 0; }, function (callback) {
                 fetchMessage(conn, function (message, callback) {
-                    console.log('handleNewMessage', message);
+                    debug('handleNewMessage', message);
 
                     // add subject as a header
                     var body = message.subject[0] ? ('## ' + message.subject[0] + '\n\n' ) : '';
@@ -176,7 +177,7 @@ function checkInbox() {
             }, function (error) {
                 if (error) console.error(error);
 
-                console.log('Inbox handling done.');
+                debug('Inbox handling done.');
 
                 conn.closeBox(function (error) {
                     if (error) console.error(error);
@@ -204,11 +205,11 @@ function cleanupTrash() {
     });
 
     conn.once('end', function() {
-        console.log('Janitor IMAP connection ended');
+        debug('Janitor IMAP connection ended');
     });
 
     conn.once('ready', function () {
-        console.log('Janitor IMAP connection success');
+        debug('Janitor IMAP connection success');
 
         conn.openBox('Trash', function (error, box) {
             if (error) return console.error(error);
