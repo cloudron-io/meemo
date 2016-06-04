@@ -89,10 +89,7 @@ routes.init(function (error) {
             setInterval(tags.cleanup, 1000 * 60);
 
             if (process.env.MAIL_IMAP_SERVER) {
-                var mail = require('./src/mail.js');
-                mail.listen(function (error) {
-                    if (error) console.error(error);
-                });
+                require('./src/mail.js');
             }
         });
     });

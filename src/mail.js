@@ -2,60 +2,16 @@
 
 'use strict';
 
-exports = module.exports = {
-    listen: listen
-};
+exports = module.exports = {};
+
+var CHECK_INBOX_INTERVAL = 60 * 1000;
+var CLEANUP_TRASH_INTERVAL = 60 * 1000;
 
 var assert = require('assert'),
     async = require('async'),
     Imap = require('imap'),
     quotedPrintable = require('quoted-printable'),
     things = require('./things.js');
-
-var gConnection = null;
-
-function cleanupTrash(callback) {
-    assert.strictEqual(typeof callback, 'function');
-
-    gConnection.openBox('Trash', function (error, box) {
-        if (error) return callback(error);
-
-        console.log('TRASH messages', box.messages);
-
-        // fetch one by one to have consistent seq numbers
-        async.whilst(function () {
-            return box.messages.total > 0;
-        }, function (callback) {
-            --box.messages.total;
-
-            fetchMessage(function (message, callback) {
-                gConnection.seq.addFlags(message.seqno, ['\\Deleted'], callback);
-            }, callback);
-        }, function (error) {
-            if (error) console.error(error);
-
-            // closing box with true argument expunges it on close
-            gConnection.closeBox(true, callback);
-        });
-    });
-}
-
-function handleMessage(message, callback) {
-    assert.strictEqual(typeof  message, 'object');
-    assert.strictEqual(typeof callback, 'function');
-
-    console.log('handleMessage', message);
-
-    // add subject as a header
-    var body = message.subject[0] ? ('## ' + message.subject[0] + '\n\n' ) : '';
-    body += message.body;
-
-    things.add(body, [], function (error, result) {
-        if (error) return callback(error);
-
-        gConnection.seq.move(message.seqno, ['Trash'], callback);
-    });
-}
 
 function parseMultipart(buffer, boundary) {
     var parts = buffer.split('\r\n');
@@ -104,7 +60,8 @@ function parseMultipart(buffer, boundary) {
 }
 
 
-function fetchMessage(handler, callback) {
+function fetchMessage(connection, handler, callback) {
+    assert.strictEqual(typeof connection, 'object');
     assert.strictEqual(typeof handler, 'function');
     assert.strictEqual(typeof callback, 'function');
 
@@ -117,7 +74,7 @@ function fetchMessage(handler, callback) {
         seqno: null
     };
 
-    var f = gConnection.seq.fetch('1:1', {
+    var f = connection.seq.fetch('1:1', {
         bodies: ['HEADER.FIELDS (TO)', 'HEADER.FIELDS (FROM)', 'HEADER.FIELDS (SUBJECT)', 'HEADER.FIELDS (CONTENT-TYPE)', 'TEXT'],
         struct: true
     });
@@ -165,13 +122,17 @@ function fetchMessage(handler, callback) {
     });
 
     f.once('error', callback);
-    f.once('end', handler.bind(null, message, callback));
+
+    f.once('end', function () {
+        // we had an error
+        if (!message.seqno) return;
+
+        handler(message, callback);
+    });
 }
 
-function listen(callback) {
-    assert.strictEqual(typeof callback, 'function');
-
-    gConnection = new Imap({
+function checkInbox() {
+    var conn = new Imap({
         user: process.env.MAIL_IMAP_USERNAME,
         password: process.env.MAIL_IMAP_PASSWORD,
         host: process.env.MAIL_IMAP_SERVER,
@@ -179,41 +140,100 @@ function listen(callback) {
         tls: true
     });
 
-    gConnection.once('error', callback);
-
-    gConnection.once('end', function() {
-        console.log('Connection ended');
+    conn.once('error', function (error) {
+        console.error('IMAP error:', error);
     });
 
-    gConnection.once('ready', function () {
-        console.log('Connection success');
+    conn.once('end', function() {
+        console.log('IMAP connection ended');
+    });
 
-        gConnection.openBox('INBOX', true, function (error, box) {
-            if (error) return callback(error);
+    conn.once('ready', function () {
+        console.log('IMAP connection success');
 
-            console.log('INBOX messages', box.messages);
+        conn.openBox('INBOX', true, function (error, box) {
+            if (error) return console.error('Unable to open INBOX:', error);
+
+            console.log('Check for new messages...', box.messages.total);
 
             // fetch one by one to have consistent seq numbers
-            async.whilst(function () {
-                return box.messages.total > 0;
-            }, function (callback) {
-                --box.messages.total;
-                fetchMessage(handleMessage, callback);
-            }, function (error) {
-                if (error) return callback(error);
+            // box.messages.total is updated by the node module due to the message move
+            async.whilst(function () { return box.messages.total > 0; }, function (callback) {
+                fetchMessage(conn, function (message, callback) {
+                    console.log('handleNewMessage', message);
 
-                gConnection.closeBox(function (error) {
-                    if (error) return callback(error);
+                    // add subject as a header
+                    var body = message.subject[0] ? ('## ' + message.subject[0] + '\n\n' ) : '';
+                    body += message.body;
 
-                    cleanupTrash(function (error) {
+                    things.add(body, [], function (error, result) {
                         if (error) return callback(error);
 
-                        console.log('IMAP process done.');
+                        // done now move to trash
+                        conn.seq.move(message.seqno, ['Trash'], callback);
                     });
+                }, callback);
+            }, function (error) {
+                if (error) console.error(error);
+
+                console.log('Inbox handling done.');
+
+                conn.closeBox(function (error) {
+                    if (error) console.error(error);
+
+                    conn.end();
                 });
             });
         });
     });
 
-    gConnection.connect();
+    conn.connect();
 }
+
+function cleanupTrash() {
+    var conn = new Imap({
+        user: process.env.MAIL_IMAP_USERNAME,
+        password: process.env.MAIL_IMAP_PASSWORD,
+        host: process.env.MAIL_IMAP_SERVER,
+        port: process.env.MAIL_IMAP_PORT,
+        tls: true
+    });
+
+    conn.once('error', function (error) {
+        console.error('Janitor IMAP error:', error);
+    });
+
+    conn.once('end', function() {
+        console.log('Janitor IMAP connection ended');
+    });
+
+    conn.once('ready', function () {
+        console.log('Janitor IMAP connection success');
+
+        conn.openBox('Trash', function (error, box) {
+            if (error) return console.error(error);
+
+            // nothing to do
+            if (box.messages.total === 0) return conn.end();
+
+            conn.seq.addFlags('1:*', ['\\Deleted'], function (error) {
+                if (error) console.error(error);
+
+                // closing box with true argument expunges it on close
+                conn.closeBox(true, function (error) {
+                    if (error) console.error(error);
+
+                    conn.end();
+                });
+            });
+        });
+    });
+
+    conn.connect();
+}
+
+checkInbox();
+cleanupTrash();
+
+setInterval(cleanupTrash, CLEANUP_TRASH_INTERVAL);
+setInterval(checkInbox, CHECK_INBOX_INTERVAL);
