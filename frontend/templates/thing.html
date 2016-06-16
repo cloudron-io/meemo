@@ -1,4 +1,4 @@
-<template id="thing-template">
+<script type="text/template" id="thing-template">
 
   <div class="modal fade" id="modalShare-{{ thing.id }}">
     <div class="modal-dialog">
@@ -55,6 +55,6 @@
       <div class="thing-content" v-show="!thing.edit">{{{ thing.richContent | markdown }}}</div>
     </div>
   </div>
-</template>
+</script>
 
 <script type="text/javascript"><%- include thing.js %></script>

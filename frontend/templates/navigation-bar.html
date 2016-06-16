@@ -1,4 +1,4 @@
-<template id="navigation-bar-template">
+<script type="text/template" id="navigation-bar-template">
   <div id="mainNavigationBar" class="container-fluid navigation shadow">
     <div v-if="activeView === 'content'" class="input-group">
       <div class="input-group-btn">
@@ -31,6 +31,6 @@
       <a href="http://guacamoly.rocks" target="_blank" class="brand-link"><img src="/favicon.png" height="28px"/> Guacamoly</a>
     </div>
   </div>
-</template>
+</script>
 
 <script type="text/javascript"><%- include navigation-bar.js %></script>

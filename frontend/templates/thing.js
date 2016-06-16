@@ -7,7 +7,8 @@ Vue.component('thing', {
     template: '#thing-template',
     data: function () {
         return {
-            shareLink: ''
+            shareLink: '',
+            busy: false
         };
     },
     props: {
@@ -34,7 +35,11 @@ Vue.component('thing', {
         saveEdit: function () {
             var that = this;
 
+            this.busy = true;
+
             this.$root.Core.things.edit(this.thing, function (error, result) {
+                that.busy = false;
+
                 if (error) return console.error(error);
 
                 // update the enhanced content from the server
