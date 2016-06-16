@@ -53,3 +53,5 @@
 [0.8.1]
 * Fix email support
 
+[0.8.2]
+* Add support for Edge and IE
