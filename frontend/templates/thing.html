@@ -51,8 +51,9 @@
     </div>
     <div class="card-content">
       <input type="file" id="fileUpload-{{ thing.id }}" @change="uploadFileChanged($event)" class="hide">
-      <div v-show="thing.edit"><textarea v-model="thing.content" id="{{ 'textarea-' + thing.id }}" style="height: 200px" @keyup.esc.stop.prevent="cancelEdit()"></textarea></div>
-      <div class="thing-content" v-show="!thing.edit">{{{ thing.richContent | markdown }}}</div>
+      <div v-show="!busy && thing.edit"><textarea v-model="thing.content" id="{{ 'textarea-' + thing.id }}" style="height: 200px" @keyup.esc.stop.prevent="cancelEdit()"></textarea></div>
+      <div class="thing-content" v-show="!busy && !thing.edit">{{{ thing.richContent | markdown }}}</div>
+      <div v-show="busy"><center><i class="spinner large"></i><br/><br/></center></div>
     </div>
   </div>
 </script>
