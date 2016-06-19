@@ -174,17 +174,17 @@ ThingsApi.prototype.getPublic = function (shareId, callback) {
 };
 
 ThingsApi.prototype.import = function (formData, callback) {
-    superagent.post(url('/api/import')).send(formData).end(function (error, result) {
+    superagent.post(url('/api/import')).send(formData).end(errorWrapper(function (error, result) {
         if (error) return callback(error);
         callback(null);
-    });
+    }));
 };
 
 ThingsApi.prototype.uploadFile = function (formData, callback) {
-    superagent.post(url('/api/files')).send(formData).end(function (error, result) {
+    superagent.post(url('/api/files')).send(formData).end(errorWrapper(function (error, result) {
         if (error) return callback(error);
         callback(null, result.body);
-    });
+    }));
 };
 
 ThingsApi.prototype.onAdded = function (callback) {
