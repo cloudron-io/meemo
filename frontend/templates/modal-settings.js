@@ -7,26 +7,30 @@ Vue.component('modal-settings', {
     data: function () {
         return {
             title: '',
-            backgroundUrl: '',
+            backgroundImage: '',
+            backgroundImageDataUrl: '',
+            backgroundImageError: null,
             wide: false
         };
     },
     methods: {
         onShow: function () {
             this.title = this.$root.settings.title;
-            this.backgroundUrl = this.$root.settings.backgroundUrl;
+            this.backgroundImageDataUrl = this.$root.settings.backgroundImageDataUrl;
+            this.backgroundImage = 'url("' + this.$root.settings.backgroundImageDataUrl + '")';
             this.wide = this.$root.settings.wide;
         },
         onHide: function () {
             this.title = '';
-            this.backgroundUrl = '';
+            this.backgroundImageDataUrl = '';
+            this.backgroundImage = '';
             this.wide = false;
         },
         save: function () {
             var that = this;
             var data = {
                 title: this.title,
-                backgroundUrl: this.backgroundUrl,
+                backgroundImageDataUrl: this.backgroundImageDataUrl,
                 wide: this.wide
             };
 
@@ -35,6 +39,28 @@ Vue.component('modal-settings', {
 
                 $(that.$el).modal('hide');
             });
+        },
+        backgroundImageFileTrigger: function () {
+            $('#backgroundImageInput').click();
+        },
+        backgroundImageFileChanged: function (event) {
+            var that = this;
+
+            that.backgroundImageError = null;
+
+            // limit to 5MB keep in sync with app.js body-parser limits
+            if (event.target.files[0].size > 1024 * 1024 * 5) {
+                that.backgroundImageError = 'This image is too large. Maximum size is 5MB.';
+                return;
+            }
+
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                that.backgroundImageDataUrl = reader.result;
+                that.backgroundImage = 'url(" ' + reader.result + '")';
+            };
+
+            reader.readAsDataURL(event.target.files[0]);
         }
     },
     ready: function () {

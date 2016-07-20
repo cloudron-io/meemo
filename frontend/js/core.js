@@ -210,7 +210,7 @@ function SettingsApi() {
 SettingsApi.prototype.reset = function () {
     var data = {};
     data.title = 'Guacamoly';
-    data.backgroundUrl =  '';
+    data.backgroundImageDataUrl =  '';
     data.wide = false;
 
     this.save(data, function () {});

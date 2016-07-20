@@ -15,15 +15,17 @@
               </div>
             </div>
             <div class="form-group">
-              <label class="col-xs-4 control-label">Background</label>
-              <div class="col-xs-7">
-                <input type="text" class="form-control" v-model="backgroundUrl" placeholder="url" />
-              </div>
-            </div>
-            <div class="form-group">
               <label class="col-xs-4 control-label">Wide Layout</label>
               <div class="col-xs-7">
                 <input type="checkbox" v-model="wide" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-xs-4 control-label">Background</label>
+              <div class="col-xs-7">
+                <div class="image-picker" @click="backgroundImageFileTrigger()" v-bind:style="{ backgroundImage: backgroundImage }"></div>
+                <input type="file" class="hide" id="backgroundImageInput" @change="backgroundImageFileChanged($event)" accept="image/*"/>
+                <div v-show="backgroundImageError" class="text-error">{{ backgroundImageError }}</div>
               </div>
             </div>
             <input type="submit" class="hide" />

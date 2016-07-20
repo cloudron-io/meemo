@@ -133,7 +133,7 @@ var vue = new Vue({
                     // set initial settings
                     that.settings = settings;
                     if (settings.title) window.document.title = settings.title;
-                    if (settings.backgroundUrl) window.document.body.style.backgroundImage = 'url("' + settings.backgroundUrl + '")';
+                    if (settings.backgroundImageDataUrl) window.document.body.style.backgroundImage = 'url("' + settings.backgroundImageDataUrl + '")';
 
                     that.refreshTags(function () {
                         that.mainView = 'content';
@@ -205,12 +205,12 @@ Core.onLogout = reset;
 
 Core.settings.onChanged(function (data) {
     vue.settings.title = data.title || 'Guacamoly';
-    vue.settings.backgroundUrl = data.backgroundUrl;
+    vue.settings.backgroundImageDataUrl = data.backgroundImageDataUrl;
     vue.settings.wide = data.wide;
 
     window.document.title = data.title;
 
-    if (data.backgroundUrl) window.document.body.style.backgroundImage = 'url("' + data.backgroundUrl + '")';
+    if (data.backgroundImageDataUrl) window.document.body.style.backgroundImage = 'url("' + data.backgroundImageDataUrl + '")';
 });
 
 Core.things.onDeleted(function (thing) {
