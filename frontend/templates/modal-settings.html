@@ -9,20 +9,20 @@
         <div class="modal-body settings">
           <form class="form-horizontal" @submit.prevent="save()">
             <div class="form-group">
-              <label class="col-xs-4 control-label">Title</label>
-              <div class="col-xs-7">
+              <label class="col-xs-3 control-label">Title</label>
+              <div class="col-xs-8">
                 <input type="text" class="form-control" v-model="title" placeholder="Title" />
               </div>
             </div>
             <div class="form-group">
-              <label class="col-xs-4 control-label">Wide Layout</label>
-              <div class="col-xs-7">
+              <label class="col-xs-3 control-label">Wide Layout</label>
+              <div class="col-xs-8">
                 <input type="checkbox" v-model="wide" />
               </div>
             </div>
             <div class="form-group">
-              <label class="col-xs-4 control-label">Background</label>
-              <div class="col-xs-7">
+              <label class="col-xs-3 control-label">Background</label>
+              <div class="col-xs-8">
                 <div class="image-picker" @click="backgroundImageFileTrigger()" v-bind:style="{ backgroundImage: backgroundImage }"></div>
                 <input type="file" class="hide" id="backgroundImageInput" @change="backgroundImageFileChanged($event)" accept="image/*"/>
                 <div v-show="backgroundImageError" class="text-error">{{ backgroundImageError }}</div>
