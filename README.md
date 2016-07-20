@@ -5,6 +5,8 @@ The user interface resembles a news feed organized with tags. Full text search f
 
 For better bookmarking, there are chrome and firefox webextensions available.
 
+[![Build Status](https://travis-ci.org/cloudron-io/guacamoly.svg?branch=master)](https://travis-ci.org/cloudron-io/guacamoly)
+
 ## Installation
 
 [![Install](https://cloudron.io/img/button32.png)](https://cloudron.io/button.html?app=de.nebulon.guacamoly)
