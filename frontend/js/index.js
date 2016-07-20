@@ -211,6 +211,7 @@ Core.settings.onChanged(function (data) {
     window.document.title = data.title;
 
     if (data.backgroundImageDataUrl) window.document.body.style.backgroundImage = 'url("' + data.backgroundImageDataUrl + '")';
+    else window.document.body.style.backgroundImage = '';
 });
 
 Core.things.onDeleted(function (thing) {

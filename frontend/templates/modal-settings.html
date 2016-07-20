@@ -23,9 +23,12 @@
             <div class="form-group">
               <label class="col-xs-3 control-label">Background</label>
               <div class="col-xs-8">
-                <div class="image-picker" @click="backgroundImageFileTrigger()" v-bind:style="{ backgroundImage: backgroundImage }"></div>
+                <div class="image-picker" @click="backgroundImageFileTrigger()" v-bind:style="{ backgroundImage: backgroundImage }" title="Click to set background image">
+                  <div class="placeholder" v-show="!backgroundImageDataUrl">Click to set background image</div>
+                </div>
                 <input type="file" class="hide" id="backgroundImageInput" @change="backgroundImageFileChanged($event)" accept="image/*"/>
                 <div v-show="backgroundImageError" class="text-error">{{ backgroundImageError }}</div>
+                <a href="#" @click.stop.prevent="removeBackgroundImage()" v-show="backgroundImageDataUrl">Clear background image</a>
               </div>
             </div>
             <input type="submit" class="hide" />

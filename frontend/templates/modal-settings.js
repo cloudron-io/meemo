@@ -46,6 +46,10 @@ Vue.component('modal-settings', {
                 $(that.$el).modal('hide');
             });
         },
+        removeBackgroundImage: function () {
+            this.backgroundImage = '';
+            this.backgroundImageDataUrl = '';
+        },
         backgroundImageFileTrigger: function () {
             $('#backgroundImageInput').click();
         },
