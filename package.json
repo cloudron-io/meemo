@@ -4,7 +4,7 @@
   "description": "A personal ideas, notes or links manager",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/.bin/mocha src/test/*-test.js"
   },
   "repository": {
     "type": "git",
@@ -48,6 +48,7 @@
     "markdown-it": "^5.0.2",
     "markdown-it-checkbox": "^1.1.0",
     "markdown-it-emoji": "^1.1.0",
+    "mocha": "^2.5.3",
     "twemoji": "^1.4.1",
     "vue": "^1.0.21"
   }
