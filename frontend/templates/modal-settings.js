@@ -6,6 +6,7 @@ Vue.component('modal-settings', {
     template: '#modal-settings-template',
     data: function () {
         return {
+            busy: false,
             title: '',
             backgroundImage: '',
             backgroundImageDataUrl: '',
@@ -15,12 +16,14 @@ Vue.component('modal-settings', {
     },
     methods: {
         onShow: function () {
+            this.busy = false;
             this.title = this.$root.settings.title;
             this.backgroundImageDataUrl = this.$root.settings.backgroundImageDataUrl;
             this.backgroundImage = 'url("' + this.$root.settings.backgroundImageDataUrl + '")';
             this.wide = this.$root.settings.wide;
         },
         onHide: function () {
+            this.busy = false;
             this.title = '';
             this.backgroundImageDataUrl = '';
             this.backgroundImage = '';
@@ -34,7 +37,10 @@ Vue.component('modal-settings', {
                 wide: this.wide
             };
 
+            this.busy = true;
             this.$root.Core.settings.save(data, function (error) {
+                that.busy = false;
+
                 if (error) return console.error(error);
 
                 $(that.$el).modal('hide');
