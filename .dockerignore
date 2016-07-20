@@ -1,6 +1,8 @@
 .git
 .gitignore
 .dockerignore
+.travis.yml
+.jshintrc
 node_modules/
 bower_components/
 public/
