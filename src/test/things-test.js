@@ -83,6 +83,14 @@ describe('Things', function () {
             expect(tags[0]).to.equal('tag');
         });
 
+        it('succeeds with an umlaut tag', function () {
+            var test = 'Kochen in der #küche!';
+
+            var tags = things.extractTags(test);
+            expect(tags.length).to.equal(1);
+            expect(tags[0]).to.equal('küche');
+        });
+
         it('succeeds with multiple tags', function () {
             var test = 'Hello #tag there! more #foobar #house tags';
 
@@ -132,8 +140,16 @@ describe('Things', function () {
             expect(tags[1]).to.equal('bar');
         });
 
-        it('succeeds for tags starting with other tags', function () {
+        it('succeeds for tags at the beginning', function () {
             var test = '#nad #and #we #do #this #more #often #so #we #can #produce #a #hell #of #a #lot #schlagworte';
+
+            var tags = things.extractTags(test);
+            expect(tags.length).to.equal(17);
+            expect(tags).to.eql(['nad', 'and', 'we', 'do', 'this', 'more', 'often', 'so', 'we', 'can', 'produce', 'a', 'hell', 'of', 'a', 'lot', 'schlagworte' ]);
+        });
+
+        it('succeeds for tags starting with other tags', function () {
+            var test = '#nad #and #we #do #this#more #often #so #we #can #produce#a#hell #of #a #lot #schlagworte';
 
             var tags = things.extractTags(test);
             expect(tags.length).to.equal(17);
