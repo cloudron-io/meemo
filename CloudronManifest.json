@@ -24,8 +24,10 @@
   "website": "http://guacamoly.rocks/",
   "contactEmail": "johannes@nebulon.de",
   "mediaLinks": [
-    "https://i.imgur.com/BtD7Rdz.png",
-    "https://i.imgur.com/ufrO5mX.png",
-    "https://i.imgur.com/8ptpKcG.png"
+    "https://github.com/cloudron-io/guacamoly/raw/dcadacaea7930a92ee4340b52840839277d0c019/screenshots/screenshot0.png",
+    "https://github.com/cloudron-io/guacamoly/raw/dcadacaea7930a92ee4340b52840839277d0c019/screenshots/screenshot1.png",
+    "https://github.com/cloudron-io/guacamoly/raw/dcadacaea7930a92ee4340b52840839277d0c019/screenshots/screenshot2.png",
+    "https://github.com/cloudron-io/guacamoly/raw/dcadacaea7930a92ee4340b52840839277d0c019/screenshots/screenshot3.png",
+    "https://github.com/cloudron-io/guacamoly/raw/dcadacaea7930a92ee4340b52840839277d0c019/screenshots/screenshot4.png"
   ]
 }
