@@ -58,3 +58,8 @@
 
 [0.8.3]
 * Allow background images to be uploaded
+
+[0.8.4]
+* Improve edit background
+* Support special characters like umlauts in tags
+
