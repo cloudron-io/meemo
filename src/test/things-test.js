@@ -174,7 +174,7 @@ describe('Things', function () {
 
             things.facelift(thing, function (error, result) {
                 expect(error).to.equal(null);
-                expect(result).to.equal('Hello this is a too long url [example.com/nebulade/status...](' + longUrl + ') yeah');
+                expect(result).to.equal('Hello this is a too long url [example.com/nebulade/status/761263459120...](' + longUrl + ') yeah');
 
                 done();
             });
