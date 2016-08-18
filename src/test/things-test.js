@@ -161,6 +161,25 @@ describe('Things', function () {
         before(setup);
         after(cleanup);
 
+        it('shortens long URLs', function (done) {
+            var longUrl = 'https://example.com/nebulade/status/761263459120115716/761263459120115716/761263459120115716/?bar=bazhashsometihg=foo#more=so';
+            var content = 'Hello this is a too long url ' + longUrl + ' yeah';
+
+            var thing = {
+                tags: things.extractTags(content),
+                externalContent: [{ type: things.TYPE_UNKNOWN, url: longUrl }],
+                attachments: [],
+                content: content,
+            };
+
+            things.facelift(thing, function (error, result) {
+                expect(error).to.equal(null);
+                expect(result).to.equal('Hello this is a too long url [example.com/nebulade/status...](' + longUrl + ') yeah');
+
+                done();
+            });
+        });
+
         it('succeeds for tags starting at the beginning', function (done) {
             var content = '#nad #and #we #do #this #more #often #So #we #can #produce #a #hell #of #a #lot #schlagworte';
             var thing = {

@@ -26,6 +26,7 @@ var MongoClient = require('mongodb').MongoClient,
     ObjectId = require('mongodb').ObjectID,
     async = require('async'),
     fs = require('fs'),
+    url = require('url'),
     os = require('os'),
     config = require('./config.js'),
     tags = require('./tags.js'),
@@ -69,13 +70,17 @@ function extractURLs(content) {
     });
 }
 
+function escapeRegExp(str) {
+    return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+}
+
 function extractTags(content) {
     var tagObjects = [];
 
     // first replace all urls which might contain # with placeholders
     var urls = extractURLs(content);
     urls.forEach(function (u) {
-        content = content.replace(new RegExp(u, 'gmi'), ' --URL_PLACEHOLDER-- ');
+        content = content.replace(new RegExp(escapeRegExp(u), 'gmi'), ' --URL_PLACEHOLDER-- ');
     });
 
     var lines = content.split('\n');
@@ -134,7 +139,15 @@ function facelift(thing, callback) {
         // Enrich with image links
         externalContent.forEach(function (obj) {
             if (obj.type === exports.TYPE_IMAGE) {
-                data = data.replace(new RegExp(obj.url, 'gmi'), '![' + obj.url + '](' + obj.url + ')');
+                data = data.replace(new RegExp(escapeRegExp(obj.url), 'gmi'), '![' + obj.url + '](' + obj.url + ')');
+            } else {
+                // make urls look prettier
+                var tmp = url.parse(obj.url);
+
+                var pretty = obj.url.slice(tmp.protocol.length + 2);
+                if (pretty.length > 30) pretty = pretty.slice(0, 27) + '...';
+
+                data = data.replace(new RegExp(escapeRegExp(obj.url), 'gmi'), '[' + pretty + '](' + obj.url + ')');
             }
         });
 
