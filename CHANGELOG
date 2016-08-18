@@ -62,4 +62,4 @@
 [0.8.4]
 * Improve edit background
 * Support special characters like umlauts in tags
-
+* Improve URL and tag detection
