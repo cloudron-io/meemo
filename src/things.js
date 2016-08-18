@@ -128,7 +128,7 @@ function facelift(thing, callback) {
 
         // Enrich with tag links
         tagObjects.forEach(function (tag) {
-            data = data.replace(new RegExp('#' + tag + '(\\s|$)', 'gmi'), '[#' + tag + '](#search?#' + tag + ') ').trim();
+            data = data.replace(new RegExp('#' + tag + '(#|\\s|$)', 'gmi'), '[#' + tag + '](#search?#' + tag + ')$1').trim();
         });
 
         // Enrich with image links
