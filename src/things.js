@@ -34,7 +34,9 @@ var MongoClient = require('mongodb').MongoClient,
     superagent = require('superagent');
 
 var g_db, g_things, g_publicLinks;
+
 var GET_URL = new RegExp('(^|[ \t\r\n])((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){2,}(#([a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))', 'g');
+var PRETTY_URL_LENGTH = 40;
 
 function init(callback) {
     MongoClient.connect(config.databaseUrl, function (error, db) {
@@ -145,7 +147,7 @@ function facelift(thing, callback) {
                 var tmp = url.parse(obj.url);
 
                 var pretty = obj.url.slice(tmp.protocol.length + 2);
-                if (pretty.length > 30) pretty = pretty.slice(0, 27) + '...';
+                if (pretty.length > PRETTY_URL_LENGTH) pretty = pretty.slice(0, PRETTY_URL_LENGTH) + '...';
 
                 data = data.replace(new RegExp(escapeRegExp(obj.url), 'gmi'), '[' + pretty + '](' + obj.url + ')');
             }
