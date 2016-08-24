@@ -6,12 +6,38 @@ Vue.config.debug = true;
 window.Guacamoly = window.Guacamoly || {};
 var Core = window.Guacamoly.Core;
 
+// https://github.com/markdown-it/markdown-it/blob/master/docs/architecture.md#renderer
+function markdownTargetBlank(md) {
+    // stash the default renderer
+    var defaultRender = md.renderer.rules.link_open || function(tokens, idx, options, env, self) {
+        return self.renderToken(tokens, idx, options);
+    };
+
+    md.renderer.rules.link_open = function (tokens, idx, options, env, self) {
+        var href = tokens[idx].attrs[tokens[idx].attrIndex('href')][1];
+
+        if (href.indexOf('https://') === 0 || href.indexOf('http://') === 0) {
+            // in case another plugin added that attribute already
+            var aIndex = tokens[idx].attrIndex('target');
+
+            if (aIndex < 0) {
+                tokens[idx].attrPush(['target', '_blank']); // add new attribute
+            } else {
+                tokens[idx].attrs[aIndex][1] = '_blank';    // replace value of existing attr
+            }
+        }
+
+        return defaultRender(tokens, idx, options, env, self);
+    };
+}
+
 var md = window.markdownit({
     breaks: true,
     html: true,
     linkify: true
 }).use(window.markdownitEmoji)
-.use(window.markdownitCheckbox);
+.use(window.markdownitCheckbox)
+.use(markdownTargetBlank);
 
 md.renderer.rules.emoji = function(token, idx) {
     return twemoji.parse(token[idx].content);
