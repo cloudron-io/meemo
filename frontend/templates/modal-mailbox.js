@@ -8,6 +8,5 @@ Vue.component('modal-mailbox', {
     	return {};
     },
     ready: function () {
-    	console.log(this.$root)
     }
 });
