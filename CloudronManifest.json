@@ -18,7 +18,7 @@
   "developmentMode": false,
   "singleUser": true,
   "tags": ["notes", "bookmarks", "todo", "ideas"],
-  "changelog": "Initial Version",
+  "changelog": "file://CHANGELOG",
   "targetBoxVersion": "0.4.0",
   "manifestVersion": 1,
   "website": "http://guacamoly.rocks/",
