@@ -63,3 +63,7 @@
 * Improve edit background
 * Support special characters like umlauts in tags
 * Improve URL and tag detection
+
+[0.8.5]
+* Open external links in a new tab
+
