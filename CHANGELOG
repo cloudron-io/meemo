@@ -67,3 +67,6 @@
 [0.8.5]
 * Open external links in a new tab
 
+[0.8.6]
+* Use new base image
+
