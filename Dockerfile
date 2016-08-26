@@ -1,4 +1,4 @@
-FROM cloudron/base:0.8.1
+FROM cloudron/base:0.9.0
 MAINTAINER Johannes Zellner <johannes@nebulon.de>
 
 EXPOSE 3000
@@ -6,7 +6,7 @@ EXPOSE 3000
 RUN mkdir -p /app/code
 WORKDIR /app/code
 
-ENV PATH /usr/local/node-4.2.1/bin:$PATH
+ENV PATH /usr/local/node-4.2.6/bin:$PATH
 
 ADD src/ /app/code/src/
 ADD frontend/ /app/code/frontend/
