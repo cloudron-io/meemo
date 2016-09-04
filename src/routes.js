@@ -32,6 +32,7 @@ var fs = require('fs'),
     uuid = require('uuid'),
     config = require('./config.js'),
     tags = require('./tags.js'),
+    tar = require('tar-fs'),
     things = require('./things.js'),
     tokens = require('./tokens.js'),
     settings = require('./settings.js'),
@@ -211,14 +212,21 @@ function settingsGet(req, res, next) {
 }
 
 function exportThings(req, res, next) {
-    things.exp(function (error, fileName) {
+    things.exp(function (error, result) {
         if (error) return next(new HttpError(500, error));
 
-        res.download(fileName, 'things.json', function (error) {
-            if (error) console.error(error);
-
-            fs.unlink(fileName);
+        var out = tar.pack(config.attachmentDir, {
+            map: function (header) {
+                header.name = 'attachments/' + header.name;
+                return header;
+            }
         });
+
+        // add the db dump
+        out.entry({ name: 'things.json' }, JSON.stringify(result, null, 4));
+
+        res.attachment('guacamoly-export.tar');
+        out.pipe(res);
     });
 }
 

@@ -299,7 +299,6 @@ function exp(callback) {
         if (error) return callback(error);
         if (!result) return (null, '');
 
-        var fileName = path.join(os.tmpdir(), Date.now() + '.json');
         var out = result.map(function (thing) {
             return {
                 createdAt: thing.createdAt,
@@ -308,9 +307,8 @@ function exp(callback) {
                 attachments: thing.attachments || []
             };
         });
-        fs.writeFileSync(fileName, JSON.stringify({ things : out }, null, 4));
 
-        callback(null, fileName);
+        callback(null, { things: out });
     });
 }
 
