@@ -1,6 +1,6 @@
 {
   "name": "holyguacamoly",
-  "version": "0.1.0",
+  "version": "0.8.7",
   "dependencies": {
     "async": {
       "version": "1.5.2",

@@ -1,6 +1,6 @@
 {
   "name": "holyguacamoly",
-  "version": "0.1.0",
+  "version": "0.8.7",
   "description": "A personal ideas, notes or links manager",
   "main": "index.js",
   "scripts": {
