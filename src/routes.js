@@ -246,19 +246,23 @@ function importThings(req, res, next) {
         }
     });
 
-    var outStream = fs.createReadStream(path.join(req.files[0].path));
+    var outStream = fs.createReadStream(req.files[0].path);
 
     outStream.on('end', function () {
-        var data = safe.require(path.join(outputDir, 'things.json'));
-        if (!data) return next(new HttpError(400, 'content is not JSON'));
+        // cleanup uploaded file
+        safe.fs.unlinkSync(req.files[0].path);
 
+        var data = safe.require(path.join(outputDir, 'things.json'));
+
+        // cleanup things.json
+        safe.fs.unlinkSync(path.join(outputDir, 'things.json'));
+
+        // very basic sanity check
+        if (!data) return next(new HttpError(400, 'content is not JSON'));
         if (!Array.isArray(data.things)) return next(new HttpError(400, 'content must have a "things" array'));
 
         things.imp(data, function (error) {
             if (error) return next(new HttpError(500, error));
-
-            safe.fs.unlinkSync(path.join(outputDir, 'things.json'));
-
             next(new HttpSuccess(200, {}));
         });
     });
