@@ -545,9 +545,9 @@
       }
     },
     "multer": {
-      "version": "1.1.0",
-      "from": "multer@>=1.1.0 <2.0.0",
-      "resolved": "https://registry.npmjs.org/multer/-/multer-1.1.0.tgz",
+      "version": "1.2.0",
+      "from": "multer@1.2.0",
+      "resolved": "https://registry.npmjs.org/multer/-/multer-1.2.0.tgz",
       "dependencies": {
         "append-field": {
           "version": "0.1.0",
@@ -601,13 +601,13 @@
           }
         },
         "concat-stream": {
-          "version": "1.5.1",
+          "version": "1.5.2",
           "from": "concat-stream@>=1.5.0 <2.0.0",
-          "resolved": "https://registry.npmjs.org/concat-stream/-/concat-stream-1.5.1.tgz",
+          "resolved": "https://registry.npmjs.org/concat-stream/-/concat-stream-1.5.2.tgz",
           "dependencies": {
             "inherits": {
               "version": "2.0.1",
-              "from": "inherits@2.0.1",
+              "from": "inherits@>=2.0.1 <2.1.0",
               "resolved": "https://registry.npmjs.org/inherits/-/inherits-2.0.1.tgz"
             },
             "typedarray": {
@@ -668,7 +668,7 @@
         },
         "on-finished": {
           "version": "2.3.0",
-          "from": "on-finished@>=2.3.0 <2.4.0",
+          "from": "on-finished@>=2.3.0 <3.0.0",
           "resolved": "https://registry.npmjs.org/on-finished/-/on-finished-2.3.0.tgz",
           "dependencies": {
             "ee-first": {
@@ -680,7 +680,7 @@
         },
         "type-is": {
           "version": "1.6.13",
-          "from": "type-is@>=1.6.12 <1.7.0",
+          "from": "type-is@>=1.6.4 <2.0.0",
           "resolved": "https://registry.npmjs.org/type-is/-/type-is-1.6.13.tgz",
           "dependencies": {
             "media-typer": {
@@ -720,6 +720,11 @@
           "resolved": "https://registry.npmjs.org/utf8/-/utf8-2.1.1.tgz"
         }
       }
+    },
+    "safetydance": {
+      "version": "0.1.1",
+      "from": "safetydance@*",
+      "resolved": "https://registry.npmjs.org/safetydance/-/safetydance-0.1.1.tgz"
     },
     "serve-static": {
       "version": "1.10.3",
