@@ -33,6 +33,7 @@ var fs = require('fs'),
     config = require('./config.js'),
     tags = require('./tags.js'),
     tar = require('tar-fs'),
+    safe = require('safetydance'),
     things = require('./things.js'),
     tokens = require('./tokens.js'),
     settings = require('./settings.js'),
@@ -233,19 +234,36 @@ function exportThings(req, res, next) {
 function importThings(req, res, next) {
     if (!req.files || !req.files[0]) return next(new HttpError('400', 'missing file'));
 
-    var data;
-    try {
-        data = JSON.parse(req.files[0].buffer.toString('utf-8'));
-    } catch (e) {
-        return next(new HttpError(400, 'content is not JSON'));
-    }
+    var outputDir = config.attachmentDir;
 
-    if (!Array.isArray(data.things)) return next(new HttpError(400, 'content must have a "things" array'));
+    var extract = tar.extract(outputDir, {
+        map: function (header) {
+            var prefix = 'attachments/';
 
-    things.imp(data, function (error) {
-        if (error) return next(new HttpError(500, error));
-        next(new HttpSuccess(200, {}));
+            if (header.name.indexOf(prefix) === 0) header.name = header.name.slice(prefix.length);
+
+            return header;
+        }
     });
+
+    var outStream = fs.createReadStream(path.join(req.files[0].path));
+
+    outStream.on('end', function () {
+        var data = safe.require(path.join(outputDir, 'things.json'));
+        if (!data) return next(new HttpError(400, 'content is not JSON'));
+
+        if (!Array.isArray(data.things)) return next(new HttpError(400, 'content must have a "things" array'));
+
+        things.imp(data, function (error) {
+            if (error) return next(new HttpError(500, error));
+
+            safe.fs.unlinkSync(path.join(outputDir, 'things.json'));
+
+            next(new HttpSuccess(200, {}));
+        });
+    });
+
+    outStream.pipe(extract);
 }
 
 function fileAdd(req, res, next) {

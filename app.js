@@ -21,6 +21,10 @@ var express = require('express'),
 var app = express();
 var router = new express.Router();
 
+var storage = multer.diskStorage({});
+var diskUpload = multer({ storage: storage }).any();
+var memoryUpload = multer({ storage: multer.memoryStorage({}) }).any();
+
 router.del = router.delete;
 
 router.post('/api/things', routes.auth, routes.add);
@@ -30,7 +34,7 @@ router.put ('/api/things/:id', routes.auth, routes.put);
 router.del ('/api/things/:id', routes.auth, routes.del);
 router.post('/api/things/:id/public', routes.auth, routes.makePublic);
 
-router.post('/api/files', routes.auth, multer().any(), routes.fileAdd);
+router.post('/api/files', routes.auth, memoryUpload, routes.fileAdd);
 // FIXME should not be public!!! but is required for thing sharing at the moment
 router.get ('/api/files/:identifier', routes.fileGet);
 
@@ -42,7 +46,7 @@ router.post('/api/settings', routes.auth, routes.settingsSave);
 router.get ('/api/settings', routes.auth, routes.settingsGet);
 
 router.get ('/api/export', routes.auth, routes.exportThings);
-router.post('/api/import', routes.auth, multer().any(), routes.importThings);
+router.post('/api/import', routes.auth, diskUpload, routes.importThings);
 
 router.post('/api/login', routes.login);
 router.get ('/api/logout', routes.auth, routes.logout);
