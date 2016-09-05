@@ -236,6 +236,15 @@ function importThings(req, res, next) {
 
     var outputDir = config.attachmentDir;
 
+    function cleanup() {
+        // cleanup things.json
+        safe.fs.unlinkSync(path.join(outputDir, 'things.json'));
+
+        // cleanup uploaded file
+        safe.fs.unlinkSync(req.files[0].path);
+    }
+
+    var outStream = fs.createReadStream(req.files[0].path);
     var extract = tar.extract(outputDir, {
         map: function (header) {
             var prefix = 'attachments/';
@@ -246,16 +255,16 @@ function importThings(req, res, next) {
         }
     });
 
-    var outStream = fs.createReadStream(req.files[0].path);
+    extract.on('error', function (error) {
+        cleanup();
+
+        next(new HttpError(400, error));
+    });
 
     outStream.on('end', function () {
-        // cleanup uploaded file
-        safe.fs.unlinkSync(req.files[0].path);
-
         var data = safe.require(path.join(outputDir, 'things.json'));
 
-        // cleanup things.json
-        safe.fs.unlinkSync(path.join(outputDir, 'things.json'));
+        cleanup();
 
         // very basic sanity check
         if (!data) return next(new HttpError(400, 'content is not JSON'));
