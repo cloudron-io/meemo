@@ -7,12 +7,17 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 require('supererror')({ splatchError: true });
 
-var express = require('express'),
+var async = require('async'),
+    express = require('express'),
     json = require('body-parser').json,
     cors = require('cors'),
     multer  = require('multer'),
     routes = require('./src/routes.js'),
-    things = require('./src/things.js'),
+    settings = require('./src/database/settings.js'),
+    shares = require('./src/database/shares.js'),
+    tags = require('./src/database/tags.js'),
+    things = require('./src/database/things.js'),
+    tokens = require('./src/database/tokens.js'),
     morgan = require('morgan'),
     lastmile = require('connect-lastmile'),
     serveStatic = require('serve-static');
@@ -66,20 +71,26 @@ function exit(error) {
     process.exit(error ? 1 : 0);
 }
 
-function welcomeIfNeeded(callback) {
-    things.getAll({}, 0, 1, function (error, result) {
-        if (error) return callback(error);
-        if (result.length > 0) return callback(null);
+// function welcomeIfNeeded(callback) {
+//     things.getAll({}, 0, 1, function (error, result) {
+//         if (error) return callback(error);
+//         if (result.length > 0) return callback(null);
 
-        things.imp(require(__dirname + '/things.json'), callback);
-    });
-}
+//         things.imp(require(__dirname + '/things.json'), callback);
+//     });
+// }
 
-routes.init(function (error) {
+async.series([
+    tokens.init,
+    things.init,
+    tags.init,
+    shares.init,
+    settings.init
+], function (error) {
     if (error) exit(error);
 
-    welcomeIfNeeded(function (error) {
-        if (error) exit(error);
+    // welcomeIfNeeded(function (error) {
+    //     if (error) exit(error);
 
         var server = app.listen(3000, function () {
             var host = server.address().address;
@@ -95,5 +106,5 @@ routes.init(function (error) {
                 require('./src/mail.js');
             }
         });
-    });
+    // });
 });

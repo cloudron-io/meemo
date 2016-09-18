@@ -3,9 +3,7 @@
 'use strict';
 
 exports = module.exports = {
-    init: init,
     getAll: getAll,
-    getAllLean: getAllLean,
     get: get,
     add: add,
     put: put,
@@ -17,55 +15,21 @@ exports = module.exports = {
     extractURLs: extractURLs,
     extractTags: extractTags,
     facelift: facelift,
+    cleanupTags: cleanupTags,
 
     TYPE_IMAGE: 'image',
     TYPE_UNKNOWN: 'unknown'
 };
 
-var MongoClient = require('mongodb').MongoClient,
-    ObjectId = require('mongodb').ObjectID,
-    async = require('async'),
+var async = require('async'),
     url = require('url'),
-    config = require('./config.js'),
     tags = require('./database/tags.js'),
+    things = require('./database/things.js'),
+    shares = require('./database/shares.js'),
     superagent = require('superagent');
-
-var g_db;
-var g_thingsCollections = {};
-var g_publicLinkCollections = {};
 
 var GET_URL = new RegExp('(^|[ \t\r\n])((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){2,}(#([a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))', 'g');
 var PRETTY_URL_LENGTH = 40;
-
-function init(callback) {
-    MongoClient.connect(config.databaseUrl, function (error, db) {
-        if (error) return callback(error);
-
-        g_db = db;
-
-        callback(null);
-    });
-}
-
-function getThingsCollection(userId) {
-    if (!g_thingsCollections[userId]) {
-        g_db.createCollection(userId + '_things');
-        g_thingsCollections[userId] = g_db.collection(userId + '_things');
-        g_thingsCollections[userId].createIndex({ content: 'text' }, { default_language: 'none' });
-    }
-
-    return g_thingsCollections[userId];
-}
-
-function getPublicLinksCollection(userId) {
-    if (!g_publicLinkCollections[userId]) {
-        g_db.createCollection(userId + '_things');
-        g_publicLinkCollections[userId] = g_db.collection(userId + '_public_links');
-        g_publicLinkCollections[userId].createIndex({ content: 'text' }, { default_language: 'none' });
-    }
-
-    return g_publicLinkCollections[userId];
-}
 
 function extractURLs(content) {
     var lines = content.split('\n');
@@ -138,7 +102,7 @@ function extractExternalContent(content, callback) {
     });
 }
 
-function facelift(thing, callback) {
+function facelift(userId, thing, callback) {
     var data = thing.content;
     var tagObjects = thing.tags;
     var externalContent = thing.externalContent;
@@ -195,7 +159,7 @@ function facelift(thing, callback) {
 
         console.log('[INFO] update %s with new external content.', thing._id, result);
 
-        g_things.update({_id: new ObjectId(thing._id) }, { $set: { externalContent: result } }, function (error) {
+        things.put(userId, thing._id, thing.content, thing.tags, attachments, result, function (error) {
             if (error) console.error('Failed to update external content:', error);
 
             wrapper();
@@ -203,13 +167,13 @@ function facelift(thing, callback) {
     });
 }
 
-function getAll(query, skip, limit, callback) {
-    g_things.find(query).skip(skip).limit(limit).sort({ modifiedAt: -1 }).toArray(function (error, result) {
+function getAll(userId, query, skip, limit, callback) {
+    things.getAll(userId, function (error, result) {
         if (error) return callback(error);
         if (!result) return callback(null, []);
 
         async.each(result, function (thing, callback) {
-            facelift(thing, function (error, data) {
+            facelift(userId, thing, function (error, data) {
                 if (error) console.error('Failed to facelift:', error);
 
                 thing.attachments = thing.attachments || [];
@@ -223,20 +187,13 @@ function getAll(query, skip, limit, callback) {
     });
 }
 
-function getAllLean(callback) {
-    g_things.find({}).toArray(function (error, result) {
-        if (error) return callback(error);
-        callback(null, result || []);
-    });
-}
-
-function get(id, callback) {
-    g_things.find({ _id: new ObjectId(id) }).toArray(function (error, result) {
+function get(userId, id, callback) {
+    things.get(userId, id, function (error, result) {
         if (error) return callback(error);
         if (result.length === 0) return callback(new Error('not found'));
 
         var thing = result[0];
-        facelift(thing, function (error, data) {
+        facelift(userId, thing, function (error, data) {
             if (error) console.error('Failed to facelift:', error);
 
             thing.attachments = thing.attachments || [];
@@ -247,8 +204,7 @@ function get(id, callback) {
     });
 }
 
-function add(content, attachments, callback) {
-
+function add(userId, content, attachments, callback) {
     extractExternalContent(content, function (error, result) {
         if (error) return callback(error);
 
@@ -264,34 +220,26 @@ function add(content, attachments, callback) {
         async.eachSeries(doc.tags, tags.update, function (error) {
             if (error) return callback(error);
 
-            g_things.insert(doc, function (error, result) {
+            things.add(userId, doc.content, doc.tags, doc.attachments, doc.externalContent, function (error, result) {
                 if (error) return callback(error);
                 if (!result) return callback(new Error('no result returned'));
 
-                get(result.ops[0]._id, callback);
+                callback(null, result);
             });
         });
     });
 }
 
-function put(id, content, attachments, callback) {
+function put(userId, id, content, attachments, callback) {
     var tagObjects = extractTags(content);
 
     async.eachSeries(tagObjects, tags.update, function (error) {
         if (error) return callback(error);
 
-        extractExternalContent(content, function (error, result) {
+        extractExternalContent(content, function (error, externalContent) {
             if (error) console.error('Failed to extract external content:', error);
 
-            var data = {
-                content: content,
-                tags: tagObjects,
-                modifiedAt: new Date(),
-                externalContent: result,
-                attachments: attachments
-            };
-
-            g_things.update({_id: new ObjectId(id) }, { $set: data }, function (error) {
+            put(userId, id, content, tagObjects, attachments, externalContent, function (error) {
                 if (error) return callback(error);
 
                 get(id, callback);
@@ -300,15 +248,15 @@ function put(id, content, attachments, callback) {
     });
 }
 
-function del(id, callback) {
-    g_things.deleteOne({ _id: new ObjectId(id) }, function (error) {
+function del(userId, id, callback) {
+    things.del(userId, id, function (error) {
         if (error) return callback(error);
         callback(null);
     });
 }
 
-function exp(callback) {
-    g_things.find({}).toArray(function (error, result) {
+function exp(userId, callback) {
+    things.getAllLean(userId, function (error, result) {
         if (error) return callback(error);
         if (!result) return (null, '');
 
@@ -317,6 +265,7 @@ function exp(callback) {
                 createdAt: thing.createdAt,
                 modifiedAt: thing.modifiedAt,
                 content: thing.content,
+                externalContent: thing.externalContent || [],
                 attachments: thing.attachments || []
             };
         });
@@ -325,23 +274,14 @@ function exp(callback) {
     });
 }
 
-function imp(data, callback) {
+function imp(userId, data, callback) {
     async.eachSeries(data.things, function (thing, next) {
         var tagObjects = extractTags(thing.content);
-        var data = thing.content;
-
-        var doc = {
-            content: data,
-            createdAt: thing.createdAt,
-            modifiedAt: thing.modifiedAt || thing.createdAt,
-            tags: tagObjects,
-            attachments: thing.attachments || []
-        };
 
         async.eachSeries(tagObjects, tags.update, function (error) {
             if (error) return next(error);
 
-            g_things.insert(doc, function (error, result) {
+            things.addFull(userId, thing.content, tagObjects, thing.attachments || [], thing.externalContent || [], thing.createdAt, thing.modifiedAt || thing.createdAt, function (error, result) {
                 if (error) return next(error);
                 if (!result) return next(new Error('no result returned'));
 
@@ -351,29 +291,49 @@ function imp(data, callback) {
     }, callback);
 }
 
-function publicLink(id, callback) {
-    var doc = {
-        thingId: id,
-        createdAt: new Date()
-    };
-
-    g_publicLinks.insert(doc, function (error, result) {
+function publicLink(userId, thingId, callback) {
+    shares.add(userId, thingId, function (error, result) {
         if (error) return callback(error);
         if (!result) return callback(new Error('no result returned'));
 
-        callback(null, result.insertedIds[0]);
+        callback(null, result);
     });
 }
 
-function getByShareId(shareId, callback) {
-    g_publicLinks.find({ _id: new ObjectId(shareId) }).toArray(function (error, result) {
+function getByShareId(userId, shareId, callback) {
+    shares.get(userId, shareId, function (error, result) {
         if (error) return callback(error);
         if (result.length === 0) return callback(new Error('not found'));
 
-        get(result[0].thingId, function (error, result) {
+        get(userId, result.thingId, function (error, result) {
             if (error) return callback(error);
 
             callback(null, result);
+        });
+    });
+}
+
+function cleanupTags(userId) {
+    things.getAllLean(userId, function (error, result) {
+        if (error) return console.error(new Error(error));
+
+        var tags = [];
+        result.forEach(function (thing) {
+            tags = tags.concat(extractTags(thing.content));
+        });
+
+        tags.get(userId, function (error, result) {
+            if (error) return console.error(new Error(error));
+
+            async.each(result, function (tag, callback) {
+                if (tags.indexOf(tag.name) !== -1) return callback(null);
+
+                console.log('Cleanup tag', tag.name);
+
+                tags.del(userId, tag._id, callback);
+            }, function (error) {
+                if (error) console.error('Failed to cleanup tags:', error);
+            });
         });
     });
 }

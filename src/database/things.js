@@ -8,34 +8,17 @@ exports = module.exports = {
     getAllLean: getAllLean,
     get: get,
     add: add,
+    addFull: addFull,
     put: put,
-    del: del,
-    exp: exp,
-    imp: imp,
-    publicLink: publicLink,
-    getByShareId: getByShareId,
-    extractURLs: extractURLs,
-    extractTags: extractTags,
-    facelift: facelift,
-
-    TYPE_IMAGE: 'image',
-    TYPE_UNKNOWN: 'unknown'
+    del: del
 };
 
 var MongoClient = require('mongodb').MongoClient,
     ObjectId = require('mongodb').ObjectID,
-    async = require('async'),
-    url = require('url'),
-    config = require('../config.js'),
-    tags = require('./tags.js'),
-    superagent = require('superagent');
+    config = require('../config.js');
 
 var g_db;
-var g_thingsCollections = {};
-var g_publicLinkCollections = {};
-
-var GET_URL = new RegExp('(^|[ \t\r\n])((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){2,}(#([a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))', 'g');
-var PRETTY_URL_LENGTH = 40;
+var g_Collections = {};
 
 function init(callback) {
     MongoClient.connect(config.databaseUrl, function (error, db) {
@@ -47,333 +30,82 @@ function init(callback) {
     });
 }
 
-function getThingsCollection(userId) {
-    if (!g_thingsCollections[userId]) {
+function getCollection(userId) {
+    if (!g_Collections[userId]) {
         g_db.createCollection(userId + '_things');
-        g_thingsCollections[userId] = g_db.collection(userId + '_things');
-        g_thingsCollections[userId].createIndex({ content: 'text' }, { default_language: 'none' });
+        g_Collections[userId] = g_db.collection(userId + '_things');
+        g_Collections[userId].createIndex({ content: 'text' }, { default_language: 'none' });
     }
 
-    return g_thingsCollections[userId];
+    return g_Collections[userId];
 }
 
-function getPublicLinksCollection(userId) {
-    if (!g_publicLinkCollections[userId]) {
-        g_db.createCollection(userId + '_things');
-        g_publicLinkCollections[userId] = g_db.collection(userId + '_public_links');
-        g_publicLinkCollections[userId].createIndex({ content: 'text' }, { default_language: 'none' });
-    }
-
-    return g_publicLinkCollections[userId];
-}
-
-function extractURLs(content) {
-    var lines = content.split('\n');
-    var urls = [];
-
-    lines.forEach(function (line) {
-        var tmp = line.match(GET_URL);
-        if (tmp === null) return;
-
-        urls = urls.concat(tmp.map(function (url) {
-            return url.trim();
-        }));
-    });
-
-    return urls.filter(function (item, pos, self) {
-        return self.indexOf(item) === pos;
-    });
-}
-
-function escapeRegExp(str) {
-    return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
-}
-
-function extractTags(content) {
-    var tagObjects = [];
-
-    // first replace all urls which might contain # with placeholders
-    var urls = extractURLs(content);
-    urls.forEach(function (u) {
-        content = content.replace(new RegExp(escapeRegExp(u), 'gmi'), ' --URL_PLACEHOLDER-- ');
-    });
-
-    var lines = content.split('\n');
-    lines.forEach(function (line) {
-        var tmp = line.match(/#([\u00C0-\u017Fa-zA-Z]+)/g);
-        if (tmp === null) return;
-
-        tagObjects = tagObjects.concat(tmp.map(function (tag) {
-            return tag.slice(1).toLowerCase();
-        }));
-    });
-
-    return tagObjects;
-}
-
-function extractExternalContent(content, callback) {
-    var urls = extractURLs(content);
-    var externalContent = [];
-
-    async.each(urls, function (url, callback) {
-        superagent.get(url).end(function (error, result) {
-            var obj = { url: url, type: exports.TYPE_UNKNOWN };
-
-            if (error) {
-                console.log('[WARN] failed to fetch external content %s', url);
-            } else {
-                if (result.type.indexOf('image/') === 0) {
-                    obj = { url: url, type: exports.TYPE_IMAGE };
-                }
-
-                console.log('[INFO] external content type %s - %s', obj.type, obj.url);
-            }
-
-            externalContent.push(obj);
-
-            callback(null);
-        });
-    }, function () {
-        callback(null, externalContent);
-    });
-}
-
-function facelift(thing, callback) {
-    var data = thing.content;
-    var tagObjects = thing.tags;
-    var externalContent = thing.externalContent;
-    var attachments = thing.attachments || [];
-
-    function wrapper() {
-
-        // Enrich with tag links
-        tagObjects.forEach(function (tag) {
-            data = data.replace(new RegExp('#' + tag + '(#|\\s|$)', 'gmi'), '[#' + tag + '](#search?#' + tag + ')$1').trim();
-        });
-
-        // Enrich with image links
-        externalContent.forEach(function (obj) {
-            if (obj.type === exports.TYPE_IMAGE) {
-                data = data.replace(new RegExp(escapeRegExp(obj.url), 'gmi'), '![' + obj.url + '](' + obj.url + ')');
-            } else {
-                // make urls look prettier
-                var tmp = url.parse(obj.url);
-
-                var pretty = obj.url.slice(tmp.protocol.length + 2);
-                if (pretty.length > PRETTY_URL_LENGTH) pretty = pretty.slice(0, PRETTY_URL_LENGTH) + '...';
-
-                data = data.replace(new RegExp(escapeRegExp(obj.url), 'gmi'), '[' + pretty + '](' + obj.url + ')');
-            }
-        });
-
-        // Enrich with attachments
-        attachments.forEach(function (a) {
-            if (a.type === exports.TYPE_IMAGE) {
-                data = data.replace(new RegExp('\\[' + a.fileName + '\\]', 'gmi'), '![/api/files/' + a.identifier + '](/api/files/' + a.identifier + ')');
-            } else {
-                data = data.replace(new RegExp('\\[' + a.fileName + '\\]', 'gmi'), '[/api/files/' + a.identifier + '](/api/files/' + a.identifier + ')');
-            }
-        });
-
-        callback(null, data);
-    }
-
-    if (Array.isArray(externalContent)) return wrapper();
-
-    // old entry extract external content first
-    extractExternalContent(thing.content, function (error, result) {
-        if (error) {
-            console.error('Failed to extract external content:', error);
-
-            externalContent = [];
-
-            return wrapper();
-        }
-
-        // set for wrapper()
-        externalContent = result;
-
-        console.log('[INFO] update %s with new external content.', thing._id, result);
-
-        g_things.update({_id: new ObjectId(thing._id) }, { $set: { externalContent: result } }, function (error) {
-            if (error) console.error('Failed to update external content:', error);
-
-            wrapper();
-        });
-    });
-}
-
-function getAll(query, skip, limit, callback) {
-    g_things.find(query).skip(skip).limit(limit).sort({ modifiedAt: -1 }).toArray(function (error, result) {
+function getAll(userId, query, skip, limit, callback) {
+    getCollection(userId).find(query).skip(skip).limit(limit).sort({ modifiedAt: -1 }).toArray(function (error, result) {
         if (error) return callback(error);
         if (!result) return callback(null, []);
 
-        async.each(result, function (thing, callback) {
-            facelift(thing, function (error, data) {
-                if (error) console.error('Failed to facelift:', error);
-
-                thing.attachments = thing.attachments || [];
-                thing.richContent = data || thing.content;
-
-                callback(null);
-            });
-        }, function () {
-            callback(null, result);
-        });
+        callback(null, result);
     });
 }
 
-function getAllLean(callback) {
-    g_things.find({}).toArray(function (error, result) {
+function getAllLean(userId, callback) {
+    getCollection(userId).find({}).toArray(function (error, result) {
         if (error) return callback(error);
         callback(null, result || []);
     });
 }
 
-function get(id, callback) {
-    g_things.find({ _id: new ObjectId(id) }).toArray(function (error, result) {
+function get(userId, id, callback) {
+    getCollection(userId).find({ _id: new ObjectId(id) }).toArray(function (error, result) {
         if (error) return callback(error);
         if (result.length === 0) return callback(new Error('not found'));
 
-        var thing = result[0];
-        facelift(thing, function (error, data) {
-            if (error) console.error('Failed to facelift:', error);
-
-            thing.attachments = thing.attachments || [];
-            thing.richContent = data || thing.content;
-
-            callback(null, thing);
-        });
+        callback(null, result[0]);
     });
 }
 
-function add(content, attachments, callback) {
-
-    extractExternalContent(content, function (error, result) {
-        if (error) return callback(error);
-
-        var doc = {
-            content: content,
-            createdAt: new Date(),
-            modifiedAt: new Date(),
-            tags: extractTags(content),
-            externalContent: result,
-            attachments: attachments
-        };
-
-        async.eachSeries(doc.tags, tags.update, function (error) {
-            if (error) return callback(error);
-
-            g_things.insert(doc, function (error, result) {
-                if (error) return callback(error);
-                if (!result) return callback(new Error('no result returned'));
-
-                get(result.ops[0]._id, callback);
-            });
-        });
-    });
+function add(userId, content, tags, attachments, externalContent, callback) {
+    addFull(userId, content, tags, attachments, externalContent, new Date(), new Date(), callback);
 }
 
-function put(id, content, attachments, callback) {
-    var tagObjects = extractTags(content);
-
-    async.eachSeries(tagObjects, tags.update, function (error) {
-        if (error) return callback(error);
-
-        extractExternalContent(content, function (error, result) {
-            if (error) console.error('Failed to extract external content:', error);
-
-            var data = {
-                content: content,
-                tags: tagObjects,
-                modifiedAt: new Date(),
-                externalContent: result,
-                attachments: attachments
-            };
-
-            g_things.update({_id: new ObjectId(id) }, { $set: data }, function (error) {
-                if (error) return callback(error);
-
-                get(id, callback);
-            });
-        });
-    });
-}
-
-function del(id, callback) {
-    g_things.deleteOne({ _id: new ObjectId(id) }, function (error) {
-        if (error) return callback(error);
-        callback(null);
-    });
-}
-
-function exp(callback) {
-    g_things.find({}).toArray(function (error, result) {
-        if (error) return callback(error);
-        if (!result) return (null, '');
-
-        var out = result.map(function (thing) {
-            return {
-                createdAt: thing.createdAt,
-                modifiedAt: thing.modifiedAt,
-                content: thing.content,
-                attachments: thing.attachments || []
-            };
-        });
-
-        callback(null, { things: out });
-    });
-}
-
-function imp(data, callback) {
-    async.eachSeries(data.things, function (thing, next) {
-        var tagObjects = extractTags(thing.content);
-        var data = thing.content;
-
-        var doc = {
-            content: data,
-            createdAt: thing.createdAt,
-            modifiedAt: thing.modifiedAt || thing.createdAt,
-            tags: tagObjects,
-            attachments: thing.attachments || []
-        };
-
-        async.eachSeries(tagObjects, tags.update, function (error) {
-            if (error) return next(error);
-
-            g_things.insert(doc, function (error, result) {
-                if (error) return next(error);
-                if (!result) return next(new Error('no result returned'));
-
-                next(null, result._id);
-            });
-        });
-    }, callback);
-}
-
-function publicLink(id, callback) {
+function addFull(userId, content, tags, attachments, externalContent, createdAt, modifiedAt, callback) {
     var doc = {
-        thingId: id,
-        createdAt: new Date()
+        content: content,
+        createdAt: createdAt,
+        modifiedAt: modifiedAt,
+        tags: tags,
+        externalContent: externalContent,
+        attachments: attachments
     };
 
-    g_publicLinks.insert(doc, function (error, result) {
+    getCollection(userId).insert(doc, function (error, result) {
         if (error) return callback(error);
         if (!result) return callback(new Error('no result returned'));
 
-        callback(null, result.insertedIds[0]);
+        get(result.ops[0]._id, callback);
     });
 }
 
-function getByShareId(shareId, callback) {
-    g_publicLinks.find({ _id: new ObjectId(shareId) }).toArray(function (error, result) {
+function put(userId, id, content, tags, attachments, externalContent, callback) {
+    var data = {
+        content: content,
+        tags: tags,
+        modifiedAt: new Date(),
+        externalContent: externalContent,
+        attachments: attachments
+    };
+
+    getCollection(userId).update({_id: new ObjectId(id) }, { $set: data }, function (error) {
         if (error) return callback(error);
-        if (result.length === 0) return callback(new Error('not found'));
 
-        get(result[0].thingId, function (error, result) {
-            if (error) return callback(error);
+        get(id, callback);
+    });
+}
 
-            callback(null, result);
-        });
+function del(userId, id, callback) {
+    getCollection(userId).deleteOne({ _id: new ObjectId(id) }, function (error) {
+        if (error) return callback(error);
+        callback(null);
     });
 }

@@ -53,6 +53,6 @@ function get(userId, shareId, callback) {
         if (error) return callback(error);
         if (result.length === 0) return callback(new Error('not found'));
 
-        callback(null, result);
+        callback(null, result[0]);
     });
 }

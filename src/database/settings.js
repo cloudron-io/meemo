@@ -9,7 +9,7 @@ exports = module.exports = {
 };
 
 var MongoClient = require('mongodb').MongoClient,
-    config = require('./config.js');
+    config = require('../config.js');
 
 var g_db;
 var g_collections = {};

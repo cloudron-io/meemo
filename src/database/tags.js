@@ -6,14 +6,11 @@ exports = module.exports = {
     init: init,
     get: get,
     del: del,
-    update: update,
-    cleanup: cleanup
+    update: update
 };
 
 var MongoClient = require('mongodb').MongoClient,
     ObjectId = require('mongodb').ObjectID,
-    async = require('async'),
-    things = require('../things.js'),
     config = require('../config.js');
 
 var g_db;
@@ -61,30 +58,5 @@ function del(userId, id, callback) {
     getCollection(userId).deleteOne({ _id: new ObjectId(id) }, function (error) {
         if (error) return callback(error);
         callback(null);
-    });
-}
-
-function cleanup(userId) {
-    things.getAllLean(userId, function (error, result) {
-        if (error) return console.error(new Error(error));
-
-        var tags = [];
-        result.forEach(function (thing) {
-            tags = tags.concat(things.extractTags(thing.content));
-        });
-
-        get(function (error, result) {
-            if (error) return console.error(new Error(error));
-
-            async.each(result, function (tag, callback) {
-                if (tags.indexOf(tag.name) !== -1) return callback(null);
-
-                console.log('Cleanup tag', tag.name);
-
-                del(userId, tag._id, callback);
-            }, function (error) {
-                if (error) console.error('Failed to cleanup tags:', error);
-            });
-        });
     });
 }

@@ -3,7 +3,6 @@
 'use strict';
 
 exports = module.exports = {
-    init: init,
     auth: auth,
     login: login,
     logout: logout,
@@ -27,28 +26,18 @@ exports = module.exports = {
 
 var fs = require('fs'),
     path = require('path'),
-    async = require('async'),
     checksum = require('checksum'),
     uuid = require('uuid'),
     config = require('./config.js'),
     tags = require('./database/tags.js'),
     tar = require('tar-fs'),
     safe = require('safetydance'),
-    things = require('./things.js'),
+    logic = require('./logic.js'),
     tokens = require('./database/tokens.js'),
-    settings = require('./settings.js'),
+    settings = require('./database/settings.js'),
     superagent = require('superagent'),
     HttpError = require('connect-lastmile').HttpError,
     HttpSuccess = require('connect-lastmile').HttpSuccess;
-
-function init(callback) {
-    async.series([
-        tokens.init,
-        things.init,
-        tags.init,
-        settings.init
-    ], callback);
-}
 
 function healthcheck(req, res, next) {
     next(new HttpSuccess(200, {}));
