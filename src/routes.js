@@ -25,17 +25,17 @@ exports = module.exports = {
 };
 
 var fs = require('fs'),
-    path = require('path'),
     checksum = require('checksum'),
-    uuid = require('uuid'),
     config = require('./config.js'),
-    tags = require('./database/tags.js'),
-    tar = require('tar-fs'),
-    safe = require('safetydance'),
+    path = require('path'),
     logic = require('./logic.js'),
-    tokens = require('./database/tokens.js'),
+    safe = require('safetydance'),
     settings = require('./database/settings.js'),
     superagent = require('superagent'),
+    tags = require('./database/tags.js'),
+    tar = require('tar-fs'),
+    tokens = require('./database/tokens.js'),
+    uuid = require('uuid'),
     HttpError = require('connect-lastmile').HttpError,
     HttpSuccess = require('connect-lastmile').HttpSuccess;
 
@@ -131,14 +131,14 @@ function getAll(req, res, next) {
     var skip = isNaN(parseInt(req.query.skip)) ? 0 : parseInt(req.query.skip);
     var limit = isNaN(parseInt(req.query.limit)) ? 10 : parseInt(req.query.limit);
 
-    things.getAll(req.userId, query, skip, limit, function (error, result) {
+    logic.getAll(req.userId, query, skip, limit, function (error, result) {
         if (error) return next(new HttpError(500, error));
         next(new HttpSuccess(200, { things: result }));
     });
 }
 
 function get(req, res, next) {
-    things.get(req.userId, req.params.id, function (error, result) {
+    logic.get(req.userId, req.params.id, function (error, result) {
         if (error) return next(new HttpError(500, error));
         next(new HttpSuccess(200, { thing: result }));
     });
@@ -147,35 +147,35 @@ function get(req, res, next) {
 function add(req, res, next) {
     if (typeof req.body.content !== 'string' || !req.body.content) return next(new HttpError(400, 'content must be a string'));
 
-    things.add(req.userId, req.body.content, req.body.attachments || [], function (error, result) {
+    logic.add(req.userId, req.body.content, req.body.attachments || [], function (error, result) {
         if (error) return next(new HttpError(500, error));
         next(new HttpSuccess(201, { thing: result }));
     });
 }
 
 function put(req, res, next) {
-    things.put(req.userId, req.params.id, req.body.content, req.body.attachments || [], function (error, result) {
+    logic.put(req.userId, req.params.id, req.body.content, req.body.attachments || [], function (error, result) {
         if (error) return next(new HttpError(500, error));
         next(new HttpSuccess(201, { thing: result }));
     });
 }
 
 function del(req, res, next) {
-    things.del(req.userId, req.params.id, function (error) {
+    logic.del(req.userId, req.params.id, function (error) {
         if (error) return next(new HttpError(500, error));
         next(new HttpSuccess(200, {}));
     });
 }
 
 function getPublic(req, res, next) {
-    things.getByShareId(req.userId, req.params.shareId, function (error, result) {
+    logic.getByShareId(req.userId, req.params.shareId, function (error, result) {
         if (error) return next(new HttpError(500, error));
         next(new HttpSuccess(200, { thing: result }));
     });
 }
 
 function makePublic(req, res, next) {
-    things.publicLink(req.userId, req.params.id, function (error, result) {
+    logic.publicLink(req.userId, req.params.id, function (error, result) {
         if (error) return next(new HttpError(500, error));
         next(new HttpSuccess(201, { publicLinkId: result }));
     });
@@ -204,7 +204,7 @@ function settingsGet(req, res, next) {
 
 // FIXME not multiuser aware
 function exportThings(req, res, next) {
-    things.exp(function (error, result) {
+    logic.exp(req.userId, function (error, result) {
         if (error) return next(new HttpError(500, error));
 
         var out = tar.pack(config.attachmentDir, {
@@ -262,7 +262,7 @@ function importThings(req, res, next) {
         if (!data) return next(new HttpError(400, 'content is not JSON'));
         if (!Array.isArray(data.things)) return next(new HttpError(400, 'content must have a "things" array'));
 
-        things.imp(data, function (error) {
+        logic.imp(req.userId, data, function (error) {
             if (error) return next(new HttpError(500, error));
             next(new HttpSuccess(200, {}));
         });
@@ -280,7 +280,7 @@ function fileAdd(req, res, next) {
     fs.writeFile(path.join(config.attachmentDir, fileName), file.buffer, function (error) {
         if (error) return next(new HttpError(500, error));
 
-        var type = file.mimetype.indexOf('image/') === 0 ? things.TYPE_IMAGE : things.TYPE_UNKNOWN;
+        var type = file.mimetype.indexOf('image/') === 0 ? logic.TYPE_IMAGE : logic.TYPE_UNKNOWN;
 
         next(new HttpSuccess(201, { identifier: fileName, fileName: file.originalname, type: type }));
     });
