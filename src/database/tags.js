@@ -13,32 +13,40 @@ exports = module.exports = {
 var MongoClient = require('mongodb').MongoClient,
     ObjectId = require('mongodb').ObjectID,
     async = require('async'),
-    things = require('./things.js'),
-    config = require('./config.js');
+    things = require('../things.js'),
+    config = require('../config.js');
 
-var g_db, g_tags;
+var g_db;
+var g_collections = {};
 
 function init(callback) {
     MongoClient.connect(config.databaseUrl, function (error, db) {
         if (error) return callback(error);
 
         g_db = db;
-        g_db.createCollection('tags');
-        g_tags = db.collection('tags');
 
         callback(null);
     });
 }
 
-function get(callback) {
-    g_tags.find({}).sort({ createdAt: -1 }).toArray(function (error, result) {
+function getCollection(userId) {
+    if (!g_collections[userId]) {
+        g_db.createCollection(userId + '_tags');
+        g_collections[userId] = g_db.collection(userId + '_tags');
+    }
+
+    return g_collections[userId];
+}
+
+function get(userId, callback) {
+    getCollection(userId).find({}).sort({ createdAt: -1 }).toArray(function (error, result) {
         if (error) return callback(error);
         callback(null, result || []);
     });
 }
 
-function update(name, callback) {
-    g_tags.update({ name: name }, {
+function update(userId, name, callback) {
+    getCollection(userId).update({ name: name }, {
         $inc: { usage: 1 },
         $set: {
             name: name
@@ -49,15 +57,15 @@ function update(name, callback) {
     });
 }
 
-function del(id, callback) {
-    g_tags.deleteOne({ _id: new ObjectId(id) }, function (error) {
+function del(userId, id, callback) {
+    getCollection(userId).deleteOne({ _id: new ObjectId(id) }, function (error) {
         if (error) return callback(error);
         callback(null);
     });
 }
 
-function cleanup() {
-    things.getAllLean(function (error, result) {
+function cleanup(userId) {
+    things.getAllLean(userId, function (error, result) {
         if (error) return console.error(new Error(error));
 
         var tags = [];
@@ -73,7 +81,7 @@ function cleanup() {
 
                 console.log('Cleanup tag', tag.name);
 
-                del(tag._id, callback);
+                del(userId, tag._id, callback);
             }, function (error) {
                 if (error) console.error('Failed to cleanup tags:', error);
             });

@@ -31,11 +31,11 @@ var fs = require('fs'),
     checksum = require('checksum'),
     uuid = require('uuid'),
     config = require('./config.js'),
-    tags = require('./tags.js'),
+    tags = require('./database/tags.js'),
     tar = require('tar-fs'),
     safe = require('safetydance'),
     things = require('./things.js'),
-    tokens = require('./tokens.js'),
+    tokens = require('./database/tokens.js'),
     settings = require('./settings.js'),
     superagent = require('superagent'),
     HttpError = require('connect-lastmile').HttpError,
@@ -110,7 +110,7 @@ function login(req, res, next) {
 }
 
 function logout(req, res, next) {
-    tokens.remove(req.token, function (error) {
+    tokens.del(req.token, function (error) {
         if (error) return next(new HttpError(500, error));
         next(new HttpSuccess(200, {}));
     });
@@ -142,14 +142,14 @@ function getAll(req, res, next) {
     var skip = isNaN(parseInt(req.query.skip)) ? 0 : parseInt(req.query.skip);
     var limit = isNaN(parseInt(req.query.limit)) ? 10 : parseInt(req.query.limit);
 
-    things.getAll(query, skip, limit, function (error, result) {
+    things.getAll(req.userId, query, skip, limit, function (error, result) {
         if (error) return next(new HttpError(500, error));
         next(new HttpSuccess(200, { things: result }));
     });
 }
 
 function get(req, res, next) {
-    things.get(req.params.id, function (error, result) {
+    things.get(req.userId, req.params.id, function (error, result) {
         if (error) return next(new HttpError(500, error));
         next(new HttpSuccess(200, { thing: result }));
     });
@@ -158,61 +158,62 @@ function get(req, res, next) {
 function add(req, res, next) {
     if (typeof req.body.content !== 'string' || !req.body.content) return next(new HttpError(400, 'content must be a string'));
 
-    things.add(req.body.content, req.body.attachments || [], function (error, result) {
+    things.add(req.userId, req.body.content, req.body.attachments || [], function (error, result) {
         if (error) return next(new HttpError(500, error));
         next(new HttpSuccess(201, { thing: result }));
     });
 }
 
 function put(req, res, next) {
-    things.put(req.params.id, req.body.content, req.body.attachments || [], function (error, result) {
+    things.put(req.userId, req.params.id, req.body.content, req.body.attachments || [], function (error, result) {
         if (error) return next(new HttpError(500, error));
         next(new HttpSuccess(201, { thing: result }));
     });
 }
 
 function del(req, res, next) {
-    things.del(req.params.id, function (error) {
+    things.del(req.userId, req.params.id, function (error) {
         if (error) return next(new HttpError(500, error));
         next(new HttpSuccess(200, {}));
     });
 }
 
 function getPublic(req, res, next) {
-    things.getByShareId(req.params.shareId, function (error, result) {
+    things.getByShareId(req.userId, req.params.shareId, function (error, result) {
         if (error) return next(new HttpError(500, error));
         next(new HttpSuccess(200, { thing: result }));
     });
 }
 
 function makePublic(req, res, next) {
-    things.publicLink(req.params.id, function (error, result) {
+    things.publicLink(req.userId, req.params.id, function (error, result) {
         if (error) return next(new HttpError(500, error));
         next(new HttpSuccess(201, { publicLinkId: result }));
     });
 }
 
 function getTags(req, res, next) {
-    tags.get(function (error, result) {
+    tags.get(req.userId, function (error, result) {
         if (error) return next(new HttpError(500, error));
         next(new HttpSuccess(200, { tags: result }));
     });
 }
 
 function settingsSave(req, res, next) {
-    settings.put(req.body.settings, function (error) {
+    settings.put(req.userId, req.body.settings, function (error) {
         if (error) return next(new HttpError(500, error));
         next(new HttpSuccess(202, {}));
     });
 }
 
 function settingsGet(req, res, next) {
-    settings.get(function (error, result) {
+    settings.get(req.userId, function (error, result) {
         if (error) return next(new HttpError(500, error));
         next(new HttpSuccess(200, { settings: result }));
     });
 }
 
+// FIXME not multiuser aware
 function exportThings(req, res, next) {
     things.exp(function (error, result) {
         if (error) return next(new HttpError(500, error));
@@ -232,6 +233,7 @@ function exportThings(req, res, next) {
     });
 }
 
+// FIXME not multiuser aware
 function importThings(req, res, next) {
     if (!req.files || !req.files[0]) return next(new HttpError('400', 'missing file'));
 

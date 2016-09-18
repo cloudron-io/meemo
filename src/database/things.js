@@ -26,8 +26,8 @@ var MongoClient = require('mongodb').MongoClient,
     ObjectId = require('mongodb').ObjectID,
     async = require('async'),
     url = require('url'),
-    config = require('./config.js'),
-    tags = require('./database/tags.js'),
+    config = require('../config.js'),
+    tags = require('./tags.js'),
     superagent = require('superagent');
 
 var g_db;

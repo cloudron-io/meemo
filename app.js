@@ -12,7 +12,6 @@ var express = require('express'),
     cors = require('cors'),
     multer  = require('multer'),
     routes = require('./src/routes.js'),
-    tags = require('./src/tags.js'),
     things = require('./src/things.js'),
     morgan = require('morgan'),
     lastmile = require('connect-lastmile'),
@@ -88,9 +87,9 @@ routes.init(function (error) {
 
             console.log('App listening at http://%s:%s', host, port);
 
-            tags.cleanup();
-
-            setInterval(tags.cleanup, 1000 * 60);
+            // must be done per user
+            // tags.cleanup();
+            // setInterval(tags.cleanup, 1000 * 60);
 
             if (process.env.MAIL_IMAP_SERVER) {
                 require('./src/mail.js');

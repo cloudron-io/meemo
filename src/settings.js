@@ -11,29 +11,37 @@ exports = module.exports = {
 var MongoClient = require('mongodb').MongoClient,
     config = require('./config.js');
 
-var g_db, g_settings;
+var g_db;
+var g_collections = {};
 
 function init(callback) {
     MongoClient.connect(config.databaseUrl, function (error, db) {
         if (error) return callback(error);
 
         g_db = db;
-        g_db.createCollection('settings');
-        g_settings = db.collection('settings');
 
         callback(null);
     });
 }
 
-function put(settings, callback) {
-    g_settings.update({ type: 'frontend' }, { type: 'frontend', value: settings }, { upsert: true }, function (error) {
+function getCollection(userId) {
+    if (!g_collections[userId]) {
+        g_db.createCollection(userId + '_settings');
+        g_collections[userId] = g_db.collection(userId + '_settings');
+    }
+
+    return g_collections[userId];
+}
+
+function put(userId, settings, callback) {
+    getCollection(userId).update({ type: 'frontend' }, { type: 'frontend', value: settings }, { upsert: true }, function (error) {
         if (error) return callback(error);
         callback(null);
     });
 }
 
-function get(callback) {
-    g_settings.find({ type: 'frontend' }).toArray(function (error, result) {
+function get(userId, callback) {
+    getCollection(userId).find({ type: 'frontend' }).toArray(function (error, result) {
         if (error) return callback(error);
         callback(null, result[0] ? result[0].value : {
             title: 'Guacamoly'

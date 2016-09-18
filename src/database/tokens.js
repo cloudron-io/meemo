@@ -5,13 +5,13 @@
 exports = module.exports = {
     init: init,
     get: get,
-    remove: remove,
+    del: del,
     add: add
 };
 
 var assert = require('assert'),
     MongoClient = require('mongodb').MongoClient,
-    config = require('./config.js');
+    config = require('../config.js');
 
 var g_db, g_tokens;
 
@@ -40,7 +40,7 @@ function get(value, callback) {
     });
 }
 
-function remove(value, callback) {
+function del(value, callback) {
     assert.strictEqual(typeof value, 'string');
     assert.strictEqual(typeof callback, 'function');
 
