@@ -239,7 +239,7 @@ function put(userId, id, content, attachments, callback) {
         extractExternalContent(content, function (error, externalContent) {
             if (error) console.error('Failed to extract external content:', error);
 
-            put(userId, id, content, tagObjects, attachments, externalContent, function (error) {
+            things.put(userId, id, content, tagObjects, attachments, externalContent, function (error) {
                 if (error) return callback(error);
 
                 get(id, callback);
