@@ -133,9 +133,9 @@ function facelift(userId, thing, callback) {
         // Enrich with attachments
         attachments.forEach(function (a) {
             if (a.type === exports.TYPE_IMAGE) {
-                data = data.replace(new RegExp('\\[' + a.fileName + '\\]', 'gmi'), '![/api/files/' + a.identifier + '](/api/files/' + a.identifier + ')');
+                data = data.replace(new RegExp('\\[' + a.fileName + '\\]', 'gmi'), '![/api/files/' + userId + '/' + a.identifier + '](/api/files/' + userId + '/' + a.identifier + ')');
             } else {
-                data = data.replace(new RegExp('\\[' + a.fileName + '\\]', 'gmi'), '[/api/files/' + a.identifier + '](/api/files/' + a.identifier + ')');
+                data = data.replace(new RegExp('\\[' + a.fileName + '\\]', 'gmi'), '[/api/files/' + userId + '/' + a.identifier + '](/api/files/' + userId + '/' + a.identifier + ')');
             }
         });
 

@@ -29,6 +29,7 @@ var fs = require('fs'),
     config = require('./config.js'),
     path = require('path'),
     logic = require('./logic.js'),
+    mkdirp = require('mkdirp'),
     safe = require('safetydance'),
     settings = require('./database/settings.js'),
     superagent = require('superagent'),
@@ -295,8 +296,12 @@ function fileAdd(req, res, next) {
 
     var file = req.files[0];
     var fileName = checksum(file.buffer) + path.extname(file.originalname);
+    var attachmentFolder = path.join(config.attachmentDir, req.userId);
 
-    fs.writeFile(path.join(config.attachmentDir, fileName), file.buffer, function (error) {
+    // ensure the directory exists
+    mkdirp.sync(attachmentFolder);
+
+    fs.writeFile(path.join(attachmentFolder, fileName), file.buffer, function (error) {
         if (error) return next(new HttpError(500, error));
 
         var type = file.mimetype.indexOf('image/') === 0 ? logic.TYPE_IMAGE : logic.TYPE_UNKNOWN;
@@ -306,5 +311,5 @@ function fileAdd(req, res, next) {
 }
 
 function fileGet(req, res) {
-    res.sendFile(req.params.identifier, { root: config.attachmentDir });
+    res.sendFile(req.params.identifier, { root: path.join(config.attachmentDir, req.params.userId) });
 }
