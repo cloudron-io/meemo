@@ -97,7 +97,7 @@ function addFull(userId, content, tags, attachments, externalContent, createdAt,
         if (error) return callback(error);
         if (!result) return callback(new Error('no result returned'));
 
-        get(userId, result.ops[0]._id, callback);
+        get(userId, String(result.ops[0]._id), callback);
     });
 }
 
