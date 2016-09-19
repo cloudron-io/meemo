@@ -66,6 +66,8 @@ function get(userId, thingId, callback) {
         if (error) return callback(error);
         if (result.length === 0) return callback(new Error('not found'));
 
+        result[0]._id = String(result[0]._id);
+
         callback(null, result[0]);
     });
 }

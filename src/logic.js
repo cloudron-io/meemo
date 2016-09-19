@@ -215,14 +215,14 @@ function add(userId, content, attachments, callback) {
             attachments: attachments
         };
 
-        async.eachSeries(doc.tags, tags.update, function (error) {
+        async.eachSeries(doc.tags, tags.update.bind(null, userId), function (error) {
             if (error) return callback(error);
 
             things.add(userId, doc.content, doc.tags, doc.attachments, doc.externalContent, function (error, result) {
                 if (error) return callback(error);
                 if (!result) return callback(new Error('no result returned'));
 
-                callback(null, result);
+                get(userId, result._id, callback);
             });
         });
     });
@@ -276,7 +276,7 @@ function imp(userId, data, callback) {
     async.eachSeries(data.things, function (thing, next) {
         var tagObjects = extractTags(thing.content);
 
-        async.eachSeries(tagObjects, tags.update, function (error) {
+        async.eachSeries(tagObjects, tags.update.bind(null, userId), function (error) {
             if (error) return next(error);
 
             things.addFull(userId, thing.content, tagObjects, thing.attachments || [], thing.externalContent || [], thing.createdAt, thing.modifiedAt || thing.createdAt, function (error, result) {
