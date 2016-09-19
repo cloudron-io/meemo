@@ -231,7 +231,7 @@ function add(userId, content, attachments, callback) {
 function put(userId, id, content, attachments, callback) {
     var tagObjects = extractTags(content);
 
-    async.eachSeries(tagObjects, tags.update, function (error) {
+    async.eachSeries(tagObjects, tags.update.bind(null, userId), function (error) {
         if (error) return callback(error);
 
         extractExternalContent(content, function (error, externalContent) {
