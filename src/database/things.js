@@ -13,7 +13,8 @@ exports = module.exports = {
     del: del
 };
 
-var MongoClient = require('mongodb').MongoClient,
+var assert = require('assert'),
+    MongoClient = require('mongodb').MongoClient,
     ObjectId = require('mongodb').ObjectID,
     config = require('../config.js');
 
@@ -21,6 +22,8 @@ var g_db;
 var g_collections = {};
 
 function init(callback) {
+    assert.strictEqual(typeof callback, 'function');
+
     MongoClient.connect(config.databaseUrl, function (error, db) {
         if (error) return callback(error);
 
@@ -31,6 +34,8 @@ function init(callback) {
 }
 
 function getCollection(userId) {
+    assert.strictEqual(typeof userId, 'string');
+
     if (!g_collections[userId]) {
         console.log('Opening collection for', userId);
 
@@ -43,7 +48,12 @@ function getCollection(userId) {
 }
 
 function getAll(userId, query, skip, limit, callback) {
-    console.log(arguments)
+    assert.strictEqual(typeof userId, 'string');
+    assert.strictEqual(typeof query, 'object');
+    assert.strictEqual(typeof skip, 'number');
+    assert.strictEqual(typeof limit, 'number');
+    assert.strictEqual(typeof callback, 'function');
+
     getCollection(userId).find(query).skip(skip).limit(limit).sort({ modifiedAt: -1 }).toArray(function (error, result) {
         if (error) return callback(error);
         if (!result) return callback(null, []);
@@ -53,14 +63,21 @@ function getAll(userId, query, skip, limit, callback) {
 }
 
 function getAllLean(userId, callback) {
+    assert.strictEqual(typeof userId, 'string');
+    assert.strictEqual(typeof callback, 'function');
+
     getCollection(userId).find({}).toArray(function (error, result) {
         if (error) return callback(error);
         callback(null, result || []);
     });
 }
 
-function get(userId, id, callback) {
-    getCollection(userId).find({ _id: new ObjectId(id) }).toArray(function (error, result) {
+function get(userId, thingId, callback) {
+    assert.strictEqual(typeof userId, 'string');
+    assert.strictEqual(typeof thingId, 'string');
+    assert.strictEqual(typeof callback, 'function');
+
+    getCollection(userId).find({ _id: new ObjectId(thingId) }).toArray(function (error, result) {
         if (error) return callback(error);
         if (result.length === 0) return callback(new Error('not found'));
 
@@ -73,6 +90,15 @@ function add(userId, content, tags, attachments, externalContent, callback) {
 }
 
 function addFull(userId, content, tags, attachments, externalContent, createdAt, modifiedAt, callback) {
+    assert.strictEqual(typeof userId, 'string');
+    assert.strictEqual(typeof content, 'string');
+    assert(Array.isArray(tags));
+    assert(Array.isArray(attachments));
+    assert(Array.isArray(externalContent));
+    assert.strictEqual(typeof createdAt, 'number');
+    assert.strictEqual(typeof modifiedAt, 'number');
+    assert.strictEqual(typeof callback, 'function');
+
     var doc = {
         content: content,
         createdAt: createdAt,
@@ -90,7 +116,15 @@ function addFull(userId, content, tags, attachments, externalContent, createdAt,
     });
 }
 
-function put(userId, id, content, tags, attachments, externalContent, callback) {
+function put(userId, thingId, content, tags, attachments, externalContent, callback) {
+    assert.strictEqual(typeof userId, 'string');
+    assert.strictEqual(typeof thingId, 'string');
+    assert.strictEqual(typeof content, 'string');
+    assert(Array.isArray(tags));
+    assert(Array.isArray(attachments));
+    assert(Array.isArray(externalContent));
+    assert.strictEqual(typeof callback, 'function');
+
     var data = {
         content: content,
         tags: tags,
@@ -99,15 +133,19 @@ function put(userId, id, content, tags, attachments, externalContent, callback) 
         attachments: attachments
     };
 
-    getCollection(userId).update({_id: new ObjectId(id) }, { $set: data }, function (error) {
+    getCollection(userId).update({_id: new ObjectId(thingId) }, { $set: data }, function (error) {
         if (error) return callback(error);
 
-        get(id, callback);
+        get(thingId, callback);
     });
 }
 
-function del(userId, id, callback) {
-    getCollection(userId).deleteOne({ _id: new ObjectId(id) }, function (error) {
+function del(userId, thingId, callback) {
+    assert.strictEqual(typeof userId, 'string');
+    assert.strictEqual(typeof thingId, 'string');
+    assert.strictEqual(typeof callback, 'function');
+
+    getCollection(userId).deleteOne({ _id: new ObjectId(thingId) }, function (error) {
         if (error) return callback(error);
         callback(null);
     });
