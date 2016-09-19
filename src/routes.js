@@ -222,12 +222,15 @@ function settingsGet(req, res, next) {
     });
 }
 
-// FIXME not multiuser aware
 function exportThings(req, res, next) {
+    // Just to make sure the folder exists in case a user has never uploaded an attachment
+    var attachmentFolder = path.join(config.attachmentDir, req.userId);
+    mkdirp.sync(attachmentFolder);
+
     logic.exp(req.userId, function (error, result) {
         if (error) return next(new HttpError(500, error));
 
-        var out = tar.pack(config.attachmentDir, {
+        var out = tar.pack(attachmentFolder, {
             map: function (header) {
                 header.name = 'attachments/' + header.name;
                 return header;
@@ -242,23 +245,22 @@ function exportThings(req, res, next) {
     });
 }
 
-// FIXME not multiuser aware
 function importThings(req, res, next) {
     if (!req.files || !req.files[0]) return next(new HttpError('400', 'missing file'));
 
-    var outputDir = path.join(config.attachmentDir, req.userId);
-    mkdirp.sync(outputDir);
+    var attachmentFolder = path.join(config.attachmentDir, req.userId);
+    mkdirp.sync(attachmentFolder);
 
     function cleanup() {
         // cleanup things.json
-        safe.fs.unlinkSync(path.join(outputDir, 'things.json'));
+        safe.fs.unlinkSync(path.join(attachmentFolder, 'things.json'));
 
         // cleanup uploaded file
         safe.fs.unlinkSync(req.files[0].path);
     }
 
     var outStream = fs.createReadStream(req.files[0].path);
-    var extract = tar.extract(outputDir, {
+    var extract = tar.extract(attachmentFolder, {
         map: function (header) {
             var prefix = 'attachments/';
 
@@ -275,7 +277,7 @@ function importThings(req, res, next) {
     });
 
     outStream.on('end', function () {
-        var data = safe.require(path.join(outputDir, 'things.json'));
+        var data = safe.require(path.join(attachmentFolder, 'things.json'));
 
         cleanup();
 
