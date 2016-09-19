@@ -168,7 +168,7 @@ function del(req, res, next) {
 }
 
 function getPublic(req, res, next) {
-    logic.getByShareId(req.userId, req.params.shareId, function (error, result) {
+    logic.getByShareId(req.params.userId, req.params.shareId, function (error, result) {
         if (error) return next(new HttpError(500, error));
         next(new HttpSuccess(200, { thing: result }));
     });

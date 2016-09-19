@@ -15,6 +15,10 @@ Vue.component('thing', {
         thing: {
             type: Object,
             required: true
+        },
+        profile: {
+            type: Object,
+            required: true
         }
     },
     methods: {
@@ -72,7 +76,9 @@ Vue.component('thing', {
             this.$root.Core.things.publicLink(this.thing, function (error, publicLinkId) {
                 if (error) return console.error(error);
 
-                that.shareLink = location.origin + '/thing.html?id=' + publicLinkId;
+                console.log(that.profile);
+
+                that.shareLink = location.origin + '/thing.html?id=' + publicLinkId + '&userId=' + that.profile.id;
 
                 $('#modalShare-' + that.thing.id).modal('show');
             });

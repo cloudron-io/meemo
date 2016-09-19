@@ -162,8 +162,8 @@ ThingsApi.prototype.publicLink = function (thing, callback) {
     }));
 };
 
-ThingsApi.prototype.getPublic = function (shareId, callback) {
-    superagent.get(url('/api/share/' + shareId)).end(errorWrapper(function (error, result) {
+ThingsApi.prototype.getPublic = function (userId, shareId, callback) {
+    superagent.get(url('/api/share/' + userId + '/' + shareId)).end(errorWrapper(function (error, result) {
         if (result && result.status !== 200) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
         if (error) return callback(error);
 

@@ -55,7 +55,7 @@
               </div>
             </div>
             <div v-show="!busyThings">
-              <thing v-for="item in things" :thing="item" track-by="id"></thing>
+              <thing v-for="item in things" :thing="item" :profile="profile" track-by="id"></thing>
           </div>
         </div>
       </div>

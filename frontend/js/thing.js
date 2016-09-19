@@ -67,7 +67,13 @@ function main() {
         return;
     }
 
-    Core.things.getPublic(search.id, function (error, result) {
+    if (!search.userId) {
+        vue.error = 'No userId provided';
+        vue.busy = false;
+        return;
+    }
+
+    Core.things.getPublic(search.userId, search.id, function (error, result) {
         vue.busy = false;
 
         if (error) {

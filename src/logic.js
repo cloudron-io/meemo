@@ -208,8 +208,8 @@ function add(userId, content, attachments, callback) {
 
         var doc = {
             content: content,
-            createdAt: new Date(),
-            modifiedAt: new Date(),
+            createdAt: Date.now(),
+            modifiedAt: Date.now(),
             tags: extractTags(content),
             externalContent: result,
             attachments: attachments

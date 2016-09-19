@@ -14,7 +14,7 @@ var assert = require('assert'),
 var g_collections = {};
 
 function getCollection(userId) {
-    assert.strictEqual(typeof callback, 'function');
+    assert.strictEqual(typeof userId, 'string');
 
     if (!g_collections[userId]) {
         config.db.createCollection(userId + '_shares');
@@ -31,7 +31,7 @@ function add(userId, thingId, callback) {
 
     var doc = {
         thingId: thingId,
-        createdAt: new Date()
+        createdAt: Date.now()
     };
 
     getCollection(userId).insert(doc, function (error, result) {

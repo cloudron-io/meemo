@@ -115,7 +115,7 @@ function put(userId, thingId, content, tags, attachments, externalContent, callb
     var data = {
         content: content,
         tags: tags,
-        modifiedAt: new Date(),
+        modifiedAt: Date.now(),
         externalContent: externalContent,
         attachments: attachments
     };

@@ -44,7 +44,7 @@ router.post('/api/files', routes.auth, memoryUpload, routes.fileAdd);
 // FIXME should not be public!!! but is required for thing sharing at the moment
 router.get ('/api/files/:identifier', routes.fileGet);
 
-router.get ('/api/share/:shareId', routes.getPublic);
+router.get ('/api/share/:userId/:shareId', routes.getPublic);
 
 router.get ('/api/tags', routes.auth, routes.getTags);
 
