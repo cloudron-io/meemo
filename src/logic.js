@@ -168,7 +168,7 @@ function facelift(userId, thing, callback) {
 }
 
 function getAll(userId, query, skip, limit, callback) {
-    things.getAll(userId, function (error, result) {
+    things.getAll(userId, query, skip, limit, function (error, result) {
         if (error) return callback(error);
         if (!result) return callback(null, []);
 

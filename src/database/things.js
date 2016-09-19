@@ -18,7 +18,7 @@ var MongoClient = require('mongodb').MongoClient,
     config = require('../config.js');
 
 var g_db;
-var g_Collections = {};
+var g_collections = {};
 
 function init(callback) {
     MongoClient.connect(config.databaseUrl, function (error, db) {
@@ -31,16 +31,19 @@ function init(callback) {
 }
 
 function getCollection(userId) {
-    if (!g_Collections[userId]) {
+    if (!g_collections[userId]) {
+        console.log('Opening collection for', userId);
+
         g_db.createCollection(userId + '_things');
-        g_Collections[userId] = g_db.collection(userId + '_things');
-        g_Collections[userId].createIndex({ content: 'text' }, { default_language: 'none' });
+        g_collections[userId] = g_db.collection(userId + '_things');
+        g_collections[userId].createIndex({ content: 'text' }, { default_language: 'none' });
     }
 
-    return g_Collections[userId];
+    return g_collections[userId];
 }
 
 function getAll(userId, query, skip, limit, callback) {
+    console.log(arguments)
     getCollection(userId).find(query).skip(skip).limit(limit).sort({ modifiedAt: -1 }).toArray(function (error, result) {
         if (error) return callback(error);
         if (!result) return callback(null, []);
