@@ -64,8 +64,24 @@ function wrapRestError(error) {
     return new Error('Failed with status: ' + error.status + ' text: ' + (error.response && error.response.res.text));
 }
 
+var g_testUsers = {};
+
 function verifyUser(username, password, callback) {
-    if (!simpleAuth) return callback(null, username === 'test' && password === 'test' ? {  accessToken: '', user: { id: 'testId', username: 'test', displayName: 'Test', email: 'test@test.com' } } : null);
+    if (!simpleAuth) {
+        if (password !== 'test') return callback(null, null);
+
+        g_testUsers[username + 'Id'] = {
+            accessToken: '',
+            user: {
+                id: username + 'Id',
+                username: username,
+                displayName: username.toUpperCase(),
+                email: username + '@cloudron.io'
+            }
+        };
+
+        return callback(null, g_testUsers[username + 'Id']);
+    }
 
     var authPayload = {
         clientId: process.env.SIMPLE_AUTH_CLIENT_ID,
@@ -106,7 +122,10 @@ function logout(req, res, next) {
 }
 
 function profile(req, res, next) {
-    if (!simpleAuth) return next(new HttpSuccess(200, { mailbox: process.env.MAIL_TO || null, user: { id: 'testId', username: 'test', displayName: 'Test', email: 'test@test.com' }}));
+    if (!simpleAuth) {
+        if (g_testUsers[req.userId]) return next(new HttpSuccess(200, { mailbox: process.env.MAIL_TO || null, user: g_testUsers[req.userId].user}));
+        return next(new HttpError(401, 'No such user found'));
+    }
 
     superagent.get(process.env.API_ORIGIN + '/api/v1/profile').query({ access_token: req.cloudronToken }).end(function (error, result) {
         if (error && error.status === 401) return next(new HttpError(401, 'invalid credentials'));
