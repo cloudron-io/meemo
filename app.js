@@ -7,18 +7,12 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 require('supererror')({ splatchError: true });
 
-var async = require('async'),
-    express = require('express'),
+var express = require('express'),
     json = require('body-parser').json,
     config = require('./src/config.js'),
     cors = require('cors'),
     multer  = require('multer'),
     routes = require('./src/routes.js'),
-    settings = require('./src/database/settings.js'),
-    shares = require('./src/database/shares.js'),
-    tags = require('./src/database/tags.js'),
-    things = require('./src/database/things.js'),
-    tokens = require('./src/database/tokens.js'),
     morgan = require('morgan'),
     MongoClient = require('mongodb').MongoClient,
     lastmile = require('connect-lastmile'),
