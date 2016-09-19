@@ -1,6 +1,6 @@
 {
   "name": "guacamoly",
-  "version": "0.8.7",
+  "version": "1.0.0",
   "dependencies": {
     "async": {
       "version": "1.5.2",
@@ -439,6 +439,18 @@
               "resolved": "https://registry.npmjs.org/inherits/-/inherits-2.0.1.tgz"
             }
           }
+        }
+      }
+    },
+    "mkdirp": {
+      "version": "0.5.1",
+      "from": "mkdirp@*",
+      "resolved": "https://registry.npmjs.org/mkdirp/-/mkdirp-0.5.1.tgz",
+      "dependencies": {
+        "minimist": {
+          "version": "0.0.8",
+          "from": "minimist@0.0.8",
+          "resolved": "https://registry.npmjs.org/minimist/-/minimist-0.0.8.tgz"
         }
       }
     },

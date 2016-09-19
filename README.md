@@ -9,12 +9,12 @@ For better bookmarking, there are chrome and firefox webextensions available.
 
 ## Installation
 
-[![Install](https://cloudron.io/img/button32.png)](https://cloudron.io/button.html?app=de.nebulon.guacamoly)
+[![Install](https://cloudron.io/img/button32.png)](https://cloudron.io/button.html?app=de.nebulon.guacamoly2)
 
 or using the [Cloudron command line tooling](https://cloudron.io/references/cli.html)
 
 ```
-cloudron install --appstore-id de.nebulon.guacamoly
+cloudron install --appstore-id de.nebulon.guacamoly2
 ```
 
 ## Building

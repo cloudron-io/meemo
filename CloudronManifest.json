@@ -1,12 +1,12 @@
 {
-  "id": "de.nebulon.guacamoly",
+  "id": "de.nebulon.guacamoly2",
   "title": "Guacamoly",
   "author": "Johannes Zellner",
   "description": "file://DESCRIPTION.md",
   "changelog": "file://CHANGELOG",
   "icon": "file://logo.png",
   "tagline": "Your personal notes",
-  "version": "0.8.7",
+  "version": "1.0.0",
   "healthCheckPath": "/api/healthcheck",
   "httpPort": 3000,
   "addons": {
@@ -16,7 +16,6 @@
     "recvmail": {}
   },
   "developmentMode": false,
-  "singleUser": true,
   "tags": ["notes", "bookmarks", "todo", "ideas"],
   "changelog": "file://CHANGELOG",
   "targetBoxVersion": "0.4.0",
