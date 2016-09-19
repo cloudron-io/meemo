@@ -279,6 +279,10 @@ function imp(userId, data, callback) {
         async.eachSeries(tagObjects, tags.update.bind(null, userId), function (error) {
             if (error) return next(error);
 
+            // older exports use strings here
+            if (typeof thing.createdAt === 'string') thing.createdAt = (new Date(thing.createdAt)).getTime();
+            if (typeof thing.modifiedAt === 'string') thing.modifiedAt = (new Date(thing.modifiedAt)).getTime();
+
             things.addFull(userId, thing.content, tagObjects, thing.attachments || [], thing.externalContent || [], thing.createdAt, thing.modifiedAt || thing.createdAt, function (error, result) {
                 if (error) return next(error);
                 if (!result) return next(new Error('no result returned'));

@@ -246,7 +246,8 @@ function exportThings(req, res, next) {
 function importThings(req, res, next) {
     if (!req.files || !req.files[0]) return next(new HttpError('400', 'missing file'));
 
-    var outputDir = config.attachmentDir;
+    var outputDir = path.join(config.attachmentDir, req.userId);
+    mkdirp.sync(outputDir);
 
     function cleanup() {
         // cleanup things.json
