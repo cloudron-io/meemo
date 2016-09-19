@@ -7,7 +7,7 @@ exports = module.exports = {
 
     databaseUrl: process.env.MONGODB_URL || 'mongodb://127.0.0.1:27017/guacamoly',
     _clearDatabase: clearDatabase,
-    attachmentDir: process.env.ATTACHMENT_DIR || (__dirname + '/../attachments')
+    attachmentDir: process.env.ATTACHMENT_DIR || (__dirname + '/../storage')
 };
 
 var MongoClient = require('mongodb').MongoClient;

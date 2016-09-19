@@ -3,7 +3,7 @@
 set -eu
 
 export NODE_ENV=production
-export ATTACHMENT_DIR=/app/data/attachments
+export ATTACHMENT_DIR=/app/data/storage
 
 mkdir -p "$ATTACHMENT_DIR"
 
