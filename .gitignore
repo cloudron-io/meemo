@@ -1,4 +1,5 @@
 node_modules/
 public/
+attachments/
 webextension-chrome.zip
 webextension-firefox.xpi
