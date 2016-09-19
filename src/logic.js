@@ -242,7 +242,7 @@ function put(userId, id, content, attachments, callback) {
             things.put(userId, id, content, tagObjects, attachments, externalContent, function (error) {
                 if (error) return callback(error);
 
-                get(id, callback);
+                get(userId, id, callback);
             });
         });
     });
