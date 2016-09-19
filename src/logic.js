@@ -190,16 +190,14 @@ function getAll(userId, query, skip, limit, callback) {
 function get(userId, id, callback) {
     things.get(userId, id, function (error, result) {
         if (error) return callback(error);
-        if (result.length === 0) return callback(new Error('not found'));
 
-        var thing = result[0];
-        facelift(userId, thing, function (error, data) {
+        facelift(userId, result, function (error, data) {
             if (error) console.error('Failed to facelift:', error);
 
-            thing.attachments = thing.attachments || [];
-            thing.richContent = data || thing.content;
+            result.attachments = result.attachments || [];
+            result.richContent = data || result.content;
 
-            callback(null, thing);
+            callback(null, result);
         });
     });
 }
