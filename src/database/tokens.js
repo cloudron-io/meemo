@@ -3,37 +3,32 @@
 'use strict';
 
 exports = module.exports = {
-    init: init,
     get: get,
     del: del,
     add: add
 };
 
 var assert = require('assert'),
-    MongoClient = require('mongodb').MongoClient,
     config = require('../config.js');
 
-var g_db, g_tokens;
+var g_tokens;
 
-function init(callback) {
-    assert.strictEqual(typeof callback, 'function');
+function getCollection() {
+    if (!g_tokens) {
+        console.log('Opening tokens collection');
 
-    MongoClient.connect(config.databaseUrl, function (error, db) {
-        if (error) return callback(error);
+        config.db.createCollection('tokens');
+        g_tokens = config.db.collection('tokens');
+    }
 
-        g_db = db;
-        g_db.createCollection('tokens');
-        g_tokens = db.collection('tokens');
-
-        callback(null);
-    });
+    return g_tokens;
 }
 
 function get(value, callback) {
     assert.strictEqual(typeof value, 'string');
     assert.strictEqual(typeof callback, 'function');
 
-    g_tokens.find({ value: value }).toArray(function (error, result) {
+    getCollection().find({ value: value }).toArray(function (error, result) {
         if (error) return callback(error);
         if (result.length === 0) return callback(new Error('No token found'));
         callback(null, result[0]);
@@ -44,7 +39,7 @@ function del(value, callback) {
     assert.strictEqual(typeof value, 'string');
     assert.strictEqual(typeof callback, 'function');
 
-    g_tokens.deleteOne({ value: value }, function (error) {
+    getCollection().deleteOne({ value: value }, function (error) {
         if (error) return callback(error);
         callback(null);
     });
@@ -56,7 +51,7 @@ function add(value, cloudronToken, userId, callback) {
     assert.strictEqual(typeof userId, 'string');
     assert.strictEqual(typeof callback, 'function');
 
-    g_tokens.insert({ value: value, cloudronToken: cloudronToken, userId: userId }, function (error, result) {
+    getCollection().insert({ value: value, cloudronToken: cloudronToken, userId: userId }, function (error, result) {
         if (error) return callback(error);
         if (!result) return callback(new Error('no result returned'));
 

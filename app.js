@@ -10,6 +10,7 @@ require('supererror')({ splatchError: true });
 var async = require('async'),
     express = require('express'),
     json = require('body-parser').json,
+    config = require('./src/config.js'),
     cors = require('cors'),
     multer  = require('multer'),
     routes = require('./src/routes.js'),
@@ -19,6 +20,7 @@ var async = require('async'),
     things = require('./src/database/things.js'),
     tokens = require('./src/database/tokens.js'),
     morgan = require('morgan'),
+    MongoClient = require('mongodb').MongoClient,
     lastmile = require('connect-lastmile'),
     serveStatic = require('serve-static');
 
@@ -80,14 +82,11 @@ function exit(error) {
 //     });
 // }
 
-async.series([
-    tokens.init,
-    things.init,
-    tags.init,
-    shares.init,
-    settings.init
-], function (error) {
+MongoClient.connect(config.databaseUrl, function (error, db) {
     if (error) exit(error);
+
+    // stash for database code to be used
+    config.db = db;
 
     // welcomeIfNeeded(function (error) {
     //     if (error) exit(error);

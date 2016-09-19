@@ -3,7 +3,6 @@
 'use strict';
 
 exports = module.exports = {
-    init: init,
     getAll: getAll,
     getAllLean: getAllLean,
     get: get,
@@ -14,24 +13,10 @@ exports = module.exports = {
 };
 
 var assert = require('assert'),
-    MongoClient = require('mongodb').MongoClient,
     ObjectId = require('mongodb').ObjectID,
     config = require('../config.js');
 
-var g_db;
 var g_collections = {};
-
-function init(callback) {
-    assert.strictEqual(typeof callback, 'function');
-
-    MongoClient.connect(config.databaseUrl, function (error, db) {
-        if (error) return callback(error);
-
-        g_db = db;
-
-        callback(null);
-    });
-}
 
 function getCollection(userId) {
     assert.strictEqual(typeof userId, 'string');
@@ -39,8 +24,8 @@ function getCollection(userId) {
     if (!g_collections[userId]) {
         console.log('Opening collection for', userId);
 
-        g_db.createCollection(userId + '_things');
-        g_collections[userId] = g_db.collection(userId + '_things');
+        config.db.createCollection(userId + '_things');
+        g_collections[userId] = config.db.collection(userId + '_things');
         g_collections[userId].createIndex({ content: 'text' }, { default_language: 'none' });
     }
 
@@ -86,7 +71,7 @@ function get(userId, thingId, callback) {
 }
 
 function add(userId, content, tags, attachments, externalContent, callback) {
-    addFull(userId, content, tags, attachments, externalContent, new Date(), new Date(), callback);
+    addFull(userId, content, tags, attachments, externalContent, Date.now(), Date.now(), callback);
 }
 
 function addFull(userId, content, tags, attachments, externalContent, createdAt, modifiedAt, callback) {
@@ -112,7 +97,7 @@ function addFull(userId, content, tags, attachments, externalContent, createdAt,
         if (error) return callback(error);
         if (!result) return callback(new Error('no result returned'));
 
-        get(result.ops[0]._id, callback);
+        get(userId, result.ops[0]._id, callback);
     });
 }
 
@@ -136,7 +121,7 @@ function put(userId, thingId, content, tags, attachments, externalContent, callb
     getCollection(userId).update({_id: new ObjectId(thingId) }, { $set: data }, function (error) {
         if (error) return callback(error);
 
-        get(thingId, callback);
+        get(userId, thingId, callback);
     });
 }
 

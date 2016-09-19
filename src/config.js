@@ -3,6 +3,8 @@
 'use strict';
 
 exports = module.exports = {
+    db: null,
+
     databaseUrl: process.env.MONGODB_URL || 'mongodb://127.0.0.1:27017/guacamoly',
     _clearDatabase: clearDatabase,
     attachmentDir: process.env.ATTACHMENT_DIR || (__dirname + '/../attachments')

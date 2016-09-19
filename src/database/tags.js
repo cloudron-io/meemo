@@ -3,38 +3,23 @@
 'use strict';
 
 exports = module.exports = {
-    init: init,
     get: get,
     del: del,
     update: update
 };
 
 var assert = require('assert'),
-    MongoClient = require('mongodb').MongoClient,
     ObjectId = require('mongodb').ObjectID,
     config = require('../config.js');
 
-var g_db;
 var g_collections = {};
-
-function init(callback) {
-    assert.strictEqual(typeof callback, 'function');
-
-    MongoClient.connect(config.databaseUrl, function (error, db) {
-        if (error) return callback(error);
-
-        g_db = db;
-
-        callback(null);
-    });
-}
 
 function getCollection(userId) {
     assert.strictEqual(typeof userId, 'string');
 
     if (!g_collections[userId]) {
-        g_db.createCollection(userId + '_tags');
-        g_collections[userId] = g_db.collection(userId + '_tags');
+        config.db.createCollection(userId + '_tags');
+        g_collections[userId] = config.db.collection(userId + '_tags');
     }
 
     return g_collections[userId];
