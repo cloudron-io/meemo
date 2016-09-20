@@ -421,7 +421,7 @@ function expOldData() {
             };
         });
 
-        var oldAttachmentFolder = path.resolve('./attachments'); //'/app/data/attachments';
+        var oldAttachmentFolder = '/app/data/attachments';
 
         // ensure the folder exists in case the user has never uploaded a file
         mkdirp.sync(oldAttachmentFolder);
@@ -446,7 +446,10 @@ function expOldData() {
 }
 
 function cleanupOldData(callback) {
-    var oldAttachmentFolder = path.resolve('./attachments'); //'/app/data/attachments';
+    var oldAttachmentFolder = '/app/data/attachments';
+
+    // prevent from further importing
+    exports.hasOldData = null;
 
     rimraf(oldAttachmentFolder, function (error) {
         if (error) console.error(error);
