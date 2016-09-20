@@ -12,7 +12,7 @@ var assert = require('assert'),
     debug = require('debug')('mail'),
     Imap = require('imap'),
     quotedPrintable = require('quoted-printable'),
-    things = require('./things.js');
+    logic = require('./logic.js');
 
 function parseMultipart(buffer, boundary) {
     var parts = buffer.split('\r\n');
@@ -167,7 +167,7 @@ function checkInbox() {
                     var body = message.subject[0] ? ('## ' + message.subject[0] + '\n\n' ) : '';
                     body += message.body;
 
-                    things.add(body, [], function (error, result) {
+                    logic.add(body, [], function (error, result) {
                         if (error) return callback(error);
 
                         // done now move to trash

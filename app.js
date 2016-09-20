@@ -99,9 +99,9 @@ MongoClient.connect(config.databaseUrl, function (error, db) {
             // tags.cleanup();
             // setInterval(tags.cleanup, 1000 * 60);
 
-            if (process.env.MAIL_IMAP_SERVER) {
-                require('./src/mail.js');
-            }
+            // if (process.env.MAIL_IMAP_SERVER) {
+            //     require('./src/mail.js');
+            // }
         });
     // });
 });
