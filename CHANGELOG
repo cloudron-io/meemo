@@ -75,4 +75,4 @@
 
 [1.0.0]
 * New guacamoly version supporting multiuser
-* The first user login will own the current data
+* The first user login will own the previous dataset
