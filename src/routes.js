@@ -111,6 +111,20 @@ function login(req, res, next) {
         tokens.add(token, result.accessToken, result.user.id, function (error) {
             if (error) return next(new HttpError(500, error));
             next(new HttpSuccess(201, { token: token, user: result.user }));
+
+            // TODO remove this eventually
+            // check for old data to import
+            if (logic.hasOldData) {
+                logic.importThings(result.user.id, logic.hasOldData, function (error) {
+                    if (error) return console.error('Failed to import old data', error);
+
+                    logic.cleanupOldData(function (error) {
+                        if (error) return console.error('Failed to cleanup old data', error);
+
+                        console.log('Importing old data for user %s done', result.user.id);
+                    });
+                });
+            }
         });
     });
 }
@@ -248,50 +262,11 @@ function exportThings(req, res, next) {
 function importThings(req, res, next) {
     if (!req.files || !req.files[0]) return next(new HttpError('400', 'missing file'));
 
-    var attachmentFolder = path.join(config.attachmentDir, req.userId);
-    mkdirp.sync(attachmentFolder);
+    logic.importThings(req.userId, req.files[0].path, function (error) {
+        if (error) return next(new HttpError(400, error));
 
-    function cleanup() {
-        // cleanup things.json
-        safe.fs.unlinkSync(path.join(attachmentFolder, 'things.json'));
-
-        // cleanup uploaded file
-        safe.fs.unlinkSync(req.files[0].path);
-    }
-
-    var outStream = fs.createReadStream(req.files[0].path);
-    var extract = tar.extract(attachmentFolder, {
-        map: function (header) {
-            var prefix = 'attachments/';
-
-            if (header.name.indexOf(prefix) === 0) header.name = header.name.slice(prefix.length);
-
-            return header;
-        }
+        next(new HttpSuccess(200, {}));
     });
-
-    extract.on('error', function (error) {
-        cleanup();
-
-        next(new HttpError(400, error));
-    });
-
-    outStream.on('end', function () {
-        var data = safe.require(path.join(attachmentFolder, 'things.json'));
-
-        cleanup();
-
-        // very basic sanity check
-        if (!data) return next(new HttpError(400, 'content is not JSON'));
-        if (!Array.isArray(data.things)) return next(new HttpError(400, 'content must have a "things" array'));
-
-        logic.imp(req.userId, data, function (error) {
-            if (error) return next(new HttpError(500, error));
-            next(new HttpSuccess(200, {}));
-        });
-    });
-
-    outStream.pipe(extract);
 }
 
 function fileAdd(req, res, next) {

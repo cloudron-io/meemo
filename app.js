@@ -13,6 +13,7 @@ var express = require('express'),
     cors = require('cors'),
     multer  = require('multer'),
     routes = require('./src/routes.js'),
+    logic = require('./src/logic.js'),
     morgan = require('morgan'),
     MongoClient = require('mongodb').MongoClient,
     lastmile = require('connect-lastmile'),
@@ -81,6 +82,9 @@ MongoClient.connect(config.databaseUrl, function (error, db) {
 
     // stash for database code to be used
     config.db = db;
+
+    // export data from singleUser mode app
+    logic.expOldData();
 
     // welcomeIfNeeded(function (error) {
     //     if (error) exit(error);

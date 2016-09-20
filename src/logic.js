@@ -16,15 +16,29 @@ exports = module.exports = {
     extractTags: extractTags,
     facelift: facelift,
     cleanupTags: cleanupTags,
+    importThings: importThings,
+
+    // TODO remove eventually
+    hasOldData: null,
+    expOldData: expOldData,
+    cleanupOldData: cleanupOldData,
 
     TYPE_IMAGE: 'image',
     TYPE_UNKNOWN: 'unknown'
 };
 
-var async = require('async'),
+var assert = require('assert'),
+    async = require('async'),
+    config = require('./config.js'),
+    path = require('path'),
+    fs = require('fs'),
+    mkdirp = require('mkdirp'),
     url = require('url'),
     tags = require('./database/tags.js'),
+    tar = require('tar-fs'),
     things = require('./database/things.js'),
+    rimraf = require('rimraf'),
+    safe = require('safetydance'),
     shares = require('./database/shares.js'),
     superagent = require('superagent');
 
@@ -337,5 +351,117 @@ function cleanupTags(userId) {
                 if (error) console.error('Failed to cleanup tags:', error);
             });
         });
+    });
+}
+
+function importThings(userId, filePath, callback) {
+    assert.strictEqual(typeof userId, 'string');
+    assert.strictEqual(typeof filePath, 'string');
+    assert.strictEqual(typeof callback, 'function');
+
+    var attachmentFolder = path.join(config.attachmentDir, userId);
+    mkdirp.sync(attachmentFolder);
+
+    function cleanup() {
+        // cleanup things.json
+        safe.fs.unlinkSync(path.join(attachmentFolder, 'things.json'));
+
+        // cleanup uploaded file
+        safe.fs.unlinkSync(filePath);
+    }
+
+    var outStream = fs.createReadStream(filePath);
+    var extract = tar.extract(attachmentFolder, {
+        map: function (header) {
+            var prefix = 'attachments/';
+
+            if (header.name.indexOf(prefix) === 0) header.name = header.name.slice(prefix.length);
+
+            return header;
+        }
+    });
+
+    extract.on('error', function (error) {
+        cleanup();
+
+        callback(error);
+    });
+
+    outStream.on('end', function () {
+        var data = safe.require(path.join(attachmentFolder, 'things.json'));
+
+        cleanup();
+
+        // very basic sanity check
+        if (!data) return callback('content is not JSON');
+        if (!Array.isArray(data.things)) return callback('content must have a "things" array');
+
+        imp(userId, data, callback);
+    });
+
+    outStream.pipe(extract);
+}
+
+function expOldData() {
+    var collection = config.db.collection('things');
+
+    collection.find({}).toArray(function (error, result) {
+        if (error) return console.error('Failed to export old data:', error);
+        if (!result || result.length === 0) return;   // nothing to do
+
+        console.log('Old data found, prepare for import');
+
+        var tmp = result.map(function (thing) {
+            return {
+                createdAt: thing.createdAt,
+                modifiedAt: thing.modifiedAt,
+                content: thing.content,
+                externalContent: thing.externalContent || [],
+                attachments: thing.attachments || []
+            };
+        });
+
+        var oldAttachmentFolder = path.resolve('./attachments'); //'/app/data/attachments';
+
+        // ensure the folder exists in case the user has never uploaded a file
+        mkdirp.sync(oldAttachmentFolder);
+
+        var out = tar.pack(oldAttachmentFolder, {
+            map: function (header) {
+                header.name = 'attachments/' + header.name;
+                return header;
+            }
+        });
+
+        // add the db dump
+        out.entry({ name: 'things.json' }, JSON.stringify({ things: tmp }, null, 4));
+
+        out.pipe(fs.createWriteStream('/tmp/old_data_export.tar'));
+
+        out.on('end', function () {
+            exports.hasOldData = '/tmp/old_data_export.tar';
+            console.log('Old data available at %s', exports.hasOldData);
+        });
+    });
+}
+
+function cleanupOldData(callback) {
+    var oldAttachmentFolder = path.resolve('./attachments'); //'/app/data/attachments';
+
+    rimraf(oldAttachmentFolder, function (error) {
+        if (error) console.error(error);
+
+        var collections = [
+            config.db.collection('things'),
+            config.db.collection('publicLinks'),
+            config.db.collection('tags')
+        ];
+
+        async.eachSeries(collections, function (collection, callback) {
+            collection.drop(function(error) {
+                if (error) console.error(error);
+                callback();
+            });
+        }, callback);
     });
 }
