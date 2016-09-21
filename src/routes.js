@@ -69,53 +69,13 @@ function welcomeIfNeeded(userId, callback) {
     });
 }
 
-// identifier may be userId, email, username
-function getProfileByIdentifier(identifier, callback) {
-    assert.strictEqual(typeof identifier, 'string');
-    assert.strictEqual(typeof callback, 'function');
-
-    var ldapClient = ldapjs.createClient({ url: process.env.LDAP_URL });
-    ldapClient.on('error', function (error) {
-        console.error('ldap error', error);
-        callback(error);
-    });
-
-    ldapClient.search(process.env.LDAP_USERS_BASE_DN, { filter: '(|(uid=' + identifier + ')(mail=' + identifier + ')(username=' + identifier + '))' }, function (error, result) {
-        if (error) return callback(error);
-
-        var items = [];
-
-        result.on('searchEntry', function(entry) {
-            items.push(entry.object);
-        });
-
-        result.on('error', function (error) {
-            callback(error);
-        });
-
-        result.on('end', function (result) {
-            if (result.status !== 0) return callback(new Error('non-zero status from LDAP search: ' + result.status));
-            if (items.length === 0) return callback(new Error('Duplicate entries found'));
-
-            var out = {
-                id: items[0].uid,
-                username: items[0].username,
-                displayName: items[0].displayname,
-                email: items[0].mail
-            };
-
-            callback(null, out);
-        });
-    });
-}
-
 function verifyUser(username, password, callback) {
-    getProfileByIdentifier(username, function (error, result) {
+    logic.getProfileByIdentifier(username, function (error, result) {
         if (error) return callback(null, null);
 
         var ldapClient = ldapjs.createClient({ url: process.env.LDAP_URL });
         ldapClient.on('error', function (error) {
-            console.error('ldap error', error);
+            console.error('LDAP error', error);
             callback(error);
         });
 
@@ -173,7 +133,7 @@ function logout(req, res, next) {
 }
 
 function profile(req, res, next) {
-    getProfileByIdentifier(req.userId, function (error, result) {
+    logic.getProfileByIdentifier(req.userId, function (error, result) {
         if (error) return next(new HttpError(500, error));
 
         var out = {
