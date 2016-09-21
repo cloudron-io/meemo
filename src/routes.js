@@ -95,8 +95,6 @@ function verifyUser(username, password, callback) {
             }
         };
 
-        console.log(g_testUsers[userId], userId)
-
         return callback(null, g_testUsers[userId]);
     }
 
