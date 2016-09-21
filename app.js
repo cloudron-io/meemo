@@ -68,15 +68,6 @@ function exit(error) {
     process.exit(error ? 1 : 0);
 }
 
-// function welcomeIfNeeded(callback) {
-//     things.getAll({}, 0, 1, function (error, result) {
-//         if (error) return callback(error);
-//         if (result.length > 0) return callback(null);
-
-//         things.imp(require(__dirname + '/things.json'), callback);
-//     });
-// }
-
 MongoClient.connect(config.databaseUrl, function (error, db) {
     if (error) exit(error);
 
@@ -86,22 +77,18 @@ MongoClient.connect(config.databaseUrl, function (error, db) {
     // export data from singleUser mode app
     logic.expOldData();
 
-    // welcomeIfNeeded(function (error) {
-    //     if (error) exit(error);
+    var server = app.listen(3000, function () {
+        var host = server.address().address;
+        var port = server.address().port;
 
-        var server = app.listen(3000, function () {
-            var host = server.address().address;
-            var port = server.address().port;
+        console.log('App listening at http://%s:%s', host, port);
 
-            console.log('App listening at http://%s:%s', host, port);
+        // must be done per user
+        // tags.cleanup();
+        // setInterval(tags.cleanup, 1000 * 60);
 
-            // must be done per user
-            // tags.cleanup();
-            // setInterval(tags.cleanup, 1000 * 60);
-
-            // if (process.env.MAIL_IMAP_SERVER) {
-            //     require('./src/mail.js');
-            // }
-        });
-    // });
+        // if (process.env.MAIL_IMAP_SERVER) {
+        //     require('./src/mail.js');
+        // }
+    });
 });

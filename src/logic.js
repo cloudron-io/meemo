@@ -4,6 +4,7 @@
 
 exports = module.exports = {
     getAll: getAll,
+    getAllLean: getAllLean,
     get: get,
     add: add,
     put: put,
@@ -201,6 +202,13 @@ function getAll(userId, query, skip, limit, callback) {
     });
 }
 
+function getAllLean(userId, callback) {
+    assert.strictEqual(typeof userId, 'string');
+    assert.strictEqual(typeof callback, 'function');
+
+    things.getAllLean(userId, callback);
+}
+
 function get(userId, id, callback) {
     things.get(userId, id, function (error, result) {
         if (error) return callback(error);
@@ -287,6 +295,10 @@ function exp(userId, callback) {
 }
 
 function imp(userId, data, callback) {
+    assert.strictEqual(typeof userId, 'string');
+    assert.strictEqual(typeof data, 'object');
+    assert.strictEqual(typeof callback, 'function');
+
     async.eachSeries(data.things, function (thing, next) {
         var tagObjects = extractTags(thing.content);
 

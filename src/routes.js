@@ -24,13 +24,13 @@ exports = module.exports = {
     fileGet: fileGet
 };
 
-var fs = require('fs'),
+var assert = require('assert'),
     checksum = require('checksum'),
     config = require('./config.js'),
-    path = require('path'),
+    fs = require('fs'),
     logic = require('./logic.js'),
     mkdirp = require('mkdirp'),
-    safe = require('safetydance'),
+    path = require('path'),
     settings = require('./database/settings.js'),
     superagent = require('superagent'),
     tags = require('./database/tags.js'),
@@ -67,21 +67,37 @@ function wrapRestError(error) {
 
 var g_testUsers = {};
 
+function welcomeIfNeeded(userId, callback) {
+    assert.strictEqual(typeof userId, 'string');
+    assert.strictEqual(typeof callback, 'function');
+
+    logic.getAllLean(userId, function (error, result) {
+        if (error) return callback(error);
+        if (result.length > 0) return callback(null);
+
+        logic.imp(userId, require('../things.json'), callback);
+    });
+}
+
 function verifyUser(username, password, callback) {
     if (!simpleAuth) {
         if (password !== 'test') return callback(null, null);
 
-        g_testUsers[username + 'Id'] = {
+        var userId = username + 'Id';
+
+        g_testUsers[userId] = {
             accessToken: '',
             user: {
-                id: username + 'Id',
+                id: userId,
                 username: username,
                 displayName: username.toUpperCase(),
                 email: username + '@cloudron.io'
             }
         };
 
-        return callback(null, g_testUsers[username + 'Id']);
+        console.log(g_testUsers[userId], userId)
+
+        return callback(null, g_testUsers[userId]);
     }
 
     var authPayload = {
@@ -123,6 +139,12 @@ function login(req, res, next) {
 
                         console.log('Importing old data for user %s done', result.user.id);
                     });
+                });
+            } else {
+                welcomeIfNeeded(result.user.id, function (error) {
+                    if (error) console.error(error);
+
+                    console.log('Seed welcome data for user %s', result.user.id);
                 });
             }
         });
