@@ -28,11 +28,11 @@ var assert = require('assert'),
     checksum = require('checksum'),
     config = require('./config.js'),
     fs = require('fs'),
+    ldapjs = require('ldapjs'),
     logic = require('./logic.js'),
     mkdirp = require('mkdirp'),
     path = require('path'),
     settings = require('./database/settings.js'),
-    superagent = require('superagent'),
     tags = require('./database/tags.js'),
     tar = require('tar-fs'),
     tokens = require('./database/tokens.js'),
@@ -51,21 +51,11 @@ function auth(req, res, next) {
         if (error) return next(new HttpError(401, 'invalid credentials'));
 
         req.token = req.query.token;
-        req.cloudronToken = result.cloudronToken;
         req.userId = result.userId;
 
         next();
     });
 }
-
-// These are set on a Cloudron only
-var simpleAuth = process.env.SIMPLE_AUTH_URL && process.env.SIMPLE_AUTH_CLIENT_ID && process.env.API_ORIGIN;
-
-function wrapRestError(error) {
-    return new Error('Failed with status: ' + error.status + ' text: ' + (error.response && error.response.res.text));
-}
-
-var g_testUsers = {};
 
 function welcomeIfNeeded(userId, callback) {
     assert.strictEqual(typeof userId, 'string');
@@ -79,37 +69,63 @@ function welcomeIfNeeded(userId, callback) {
     });
 }
 
+// identifier may be userId, email, username
+function getProfileByIdentifier(identifier, callback) {
+    assert.strictEqual(typeof identifier, 'string');
+    assert.strictEqual(typeof callback, 'function');
+
+    var ldapClient = ldapjs.createClient({ url: process.env.LDAP_URL });
+    ldapClient.on('error', function (error) {
+        console.error('ldap error', error);
+        callback(error);
+    });
+
+    ldapClient.search(process.env.LDAP_USERS_BASE_DN, { filter: '(|(uid=' + identifier + ')(mail=' + identifier + ')(username=' + identifier + '))' }, function (error, result) {
+        if (error) return callback(error);
+
+        var items = [];
+
+        result.on('searchEntry', function(entry) {
+            items.push(entry.object);
+        });
+
+        result.on('error', function (error) {
+            callback(error);
+        });
+
+        result.on('end', function (result) {
+            if (result.status !== 0) return callback(new Error('non-zero status from LDAP search: ' + result.status));
+            if (items.length === 0) return callback(new Error('Duplicate entries found'));
+
+            var out = {
+                id: items[0].uid,
+                username: items[0].username,
+                displayName: items[0].displayname,
+                email: items[0].mail
+            };
+
+            callback(null, out);
+        });
+    });
+}
+
 function verifyUser(username, password, callback) {
-    if (!simpleAuth) {
-        if (password !== 'test') return callback(null, null);
+    getProfileByIdentifier(username, function (error, result) {
+        if (error) return callback(null, null);
 
-        var userId = username + 'Id';
+        var ldapClient = ldapjs.createClient({ url: process.env.LDAP_URL });
+        ldapClient.on('error', function (error) {
+            console.error('ldap error', error);
+            callback(error);
+        });
 
-        g_testUsers[userId] = {
-            accessToken: '',
-            user: {
-                id: userId,
-                username: username,
-                displayName: username.toUpperCase(),
-                email: username + '@cloudron.io'
-            }
-        };
+        var ldapDn = 'cn=' + result.username + ',' + process.env.LDAP_USERS_BASE_DN;
 
-        return callback(null, g_testUsers[userId]);
-    }
+        ldapClient.bind(ldapDn, password, function (error) {
+            if (error) return callback(null, null);
 
-    var authPayload = {
-        clientId: process.env.SIMPLE_AUTH_CLIENT_ID,
-        username: username,
-        password: password
-    };
-
-    superagent.post(process.env.SIMPLE_AUTH_URL + '/api/v1/login').send(authPayload).end(function (error, result) {
-        if (error && error.status === 401) return callback(null, null);
-        if (error) return callback(wrapRestError(error));
-        if (result.status !== 200) return callback(null, null);
-
-        callback(null, result.body);
+            callback(null, { user: result });
+        });
     });
 }
 
@@ -122,7 +138,7 @@ function login(req, res, next) {
         if (!result) return next(new HttpError(401, 'invalid credentials'));
 
         var token = uuid.v4();
-        tokens.add(token, result.accessToken, result.user.id, function (error) {
+        tokens.add(token, '', result.user.id, function (error) {
             if (error) return next(new HttpError(500, error));
             next(new HttpSuccess(201, { token: token, user: result.user }));
 
@@ -157,19 +173,15 @@ function logout(req, res, next) {
 }
 
 function profile(req, res, next) {
-    if (!simpleAuth) {
-        if (g_testUsers[req.userId]) return next(new HttpSuccess(200, { mailbox: process.env.MAIL_TO || null, user: g_testUsers[req.userId].user}));
-        return next(new HttpError(401, 'No such user found'));
-    }
+    getProfileByIdentifier(req.userId, function (error, result) {
+        if (error) return next(new HttpError(500, error));
 
-    superagent.get(process.env.API_ORIGIN + '/api/v1/profile').query({ access_token: req.cloudronToken }).end(function (error, result) {
-        if (error && error.status === 401) return next(new HttpError(401, 'invalid credentials'));
-        if (error) return next(new HttpError(500, wrapRestError(error)));
+        var out = {
+            mailbox: process.env.MAIL_TO || null,
+            user: result
+        };
 
-        next(new HttpSuccess(200, {
-            user: result.body,
-            mailbox: process.env.MAIL_TO || null
-        }));
+        next(new HttpSuccess(200, out));
     });
 }
 

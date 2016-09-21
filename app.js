@@ -7,6 +7,11 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 require('supererror')({ splatchError: true });
 
+if (!process.env.LDAP_URL) {
+    console.error('Only ldap supported. Missing LDAP_URL');
+    process.exit(1);
+}
+
 var express = require('express'),
     json = require('body-parser').json,
     config = require('./src/config.js'),
@@ -85,8 +90,8 @@ MongoClient.connect(config.databaseUrl, function (error, db) {
 
         setInterval(logic.cleanupTags, 1000 * 60);
 
-        // if (process.env.MAIL_IMAP_SERVER) {
-        //     require('./src/mail.js');
-        // }
+        if (process.env.MAIL_IMAP_SERVER) {
+            require('./src/mail.js');
+        }
     });
 });
