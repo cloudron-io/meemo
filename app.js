@@ -2,9 +2,6 @@
 
 'use strict';
 
-// FIXME should not be there. This is currently needed to work on a dev Cloudron
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-
 require('supererror')({ splatchError: true });
 
 if (!process.env.LDAP_URL) {
