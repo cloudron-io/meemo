@@ -14,6 +14,8 @@ var assert = require('assert'),
     quotedPrintable = require('quoted-printable'),
     logic = require('./logic.js');
 
+console.log('Email receiving is enabled');
+
 function parseMultipart(buffer, boundary) {
     var parts = buffer.split('\r\n');
 
@@ -167,12 +169,14 @@ function checkInbox() {
                     var body = message.subject[0] ? ('## ' + message.subject[0] + '\n\n' ) : '';
                     body += message.body;
 
-                    logic.add(body, [], function (error, result) {
-                        if (error) return callback(error);
+                    console.log('received message to:', message.to)
+
+                    // logic.add(message.to, body, [], function (error, result) {
+                        // if (error) return callback(error);
 
                         // done now move to trash
                         conn.seq.move(message.seqno, ['Trash'], callback);
-                    });
+                    // });
                 }, callback);
             }, function (error) {
                 if (error) console.error(error);
