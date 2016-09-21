@@ -62,7 +62,6 @@ function parseMultipart(buffer, boundary) {
     return content.join('\n');
 }
 
-
 function fetchMessage(connection, handler, callback) {
     assert.strictEqual(typeof connection, 'object');
     assert.strictEqual(typeof handler, 'function');
@@ -140,7 +139,8 @@ function checkInbox() {
         password: process.env.MAIL_IMAP_PASSWORD,
         host: process.env.MAIL_IMAP_SERVER,
         port: process.env.MAIL_IMAP_PORT,
-        tls: true
+        tls: true,
+        tlsOptions: { rejectUnauthorized: false }
     });
 
     conn.once('error', function (error) {
@@ -169,14 +169,27 @@ function checkInbox() {
                     var body = message.subject[0] ? ('## ' + message.subject[0] + '\n\n' ) : '';
                     body += message.body;
 
-                    console.log('received message to:', message.to)
-
-                    // logic.add(message.to, body, [], function (error, result) {
-                        // if (error) return callback(error);
-
-                        // done now move to trash
+                    var username = String(message.to).split('@')[0].split('+')[1];
+                    if (!username) {
+                        console.error('Unable to extract username from %s', String(message.to));
                         conn.seq.move(message.seqno, ['Trash'], callback);
-                    // });
+                        return;
+                    }
+
+                    logic.getProfileByIdentifier(username, function (error, result) {
+                        if (error) {
+                            console.error('Unable to map %s to an LDAP user', error);
+                            conn.seq.move(message.seqno, ['Trash'], callback);
+                            return;
+                        }
+
+                        logic.add(result.id, body, [], function (error) {
+                            if (error) return callback(error);
+
+                            // done now move to trash
+                            conn.seq.move(message.seqno, ['Trash'], callback);
+                        });
+                    });
                 }, callback);
             }, function (error) {
                 if (error) console.error(error);
@@ -201,7 +214,8 @@ function cleanupTrash() {
         password: process.env.MAIL_IMAP_PASSWORD,
         host: process.env.MAIL_IMAP_SERVER,
         port: process.env.MAIL_IMAP_PORT,
-        tls: true
+        tls: true,
+        tlsOptions: { rejectUnauthorized: false }
     });
 
     conn.once('error', function (error) {

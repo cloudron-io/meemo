@@ -137,7 +137,7 @@ function profile(req, res, next) {
         if (error) return next(new HttpError(500, error));
 
         var out = {
-            mailbox: process.env.MAIL_TO || null,
+            mailbox: process.env.MAIL_TO ? (process.env.MAIL_IMAP_USERNAME + '+' + result.username + '@' + process.env.MAIL_DOMAIN) : null,
             user: result
         };
 
