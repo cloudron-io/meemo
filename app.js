@@ -83,9 +83,7 @@ MongoClient.connect(config.databaseUrl, function (error, db) {
 
         console.log('App listening at http://%s:%s', host, port);
 
-        // must be done per user
-        // tags.cleanup();
-        // setInterval(tags.cleanup, 1000 * 60);
+        setInterval(logic.cleanupTags, 1000 * 60);
 
         // if (process.env.MAIL_IMAP_SERVER) {
         //     require('./src/mail.js');

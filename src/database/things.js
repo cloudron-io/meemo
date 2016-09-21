@@ -3,6 +3,8 @@
 'use strict';
 
 exports = module.exports = {
+    getAllActiveUserIds: getAllActiveUserIds,
+
     getAll: getAll,
     getAllLean: getAllLean,
     get: get,
@@ -17,6 +19,10 @@ var assert = require('assert'),
     config = require('../config.js');
 
 var g_collections = {};
+
+function getAllActiveUserIds() {
+    return Object.keys(g_collections);
+}
 
 function getCollection(userId) {
     assert.strictEqual(typeof userId, 'string');

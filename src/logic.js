@@ -341,28 +341,32 @@ function getByShareId(userId, shareId, callback) {
     });
 }
 
-function cleanupTags(userId) {
-    things.getAllLean(userId, function (error, result) {
-        if (error) return console.error(new Error(error));
+function cleanupTags() {
+    var userIds = things.getAllActiveUserIds();
 
-        var tags = [];
-        result.forEach(function (thing) {
-            tags = tags.concat(extractTags(thing.content));
-        });
-
-        tags.get(userId, function (error, result) {
+    async.each(userIds, function (userId, callback) {
+        things.getAllLean(userId, function (error, result) {
             if (error) return console.error(new Error(error));
 
-            async.each(result, function (tag, callback) {
-                if (tags.indexOf(tag.name) !== -1) return callback(null);
+            var activeTags = [];
+            result.forEach(function (thing) {
+                activeTags = activeTags.concat(extractTags(thing.content));
+            });
 
-                console.log('Cleanup tag', tag.name);
+            tags.get(userId, function (error, result) {
+                if (error) return console.error(new Error(error));
 
-                tags.del(userId, tag._id, callback);
-            }, function (error) {
-                if (error) console.error('Failed to cleanup tags:', error);
+                async.each(result, function (tag, callback) {
+                    if (activeTags.indexOf(tag.name) !== -1) return callback(null);
+
+                    console.log('Cleanup tag', tag.name);
+
+                    tags.del(userId, String(tag._id), callback);
+                }, callback);
             });
         });
+    }, function (error) {
+        if (error) console.error('Cleanup tags failed:', error);
     });
 }
 
