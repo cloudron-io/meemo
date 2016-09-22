@@ -76,3 +76,9 @@
 [1.0.0]
 * New guacamoly version supporting multiuser
 * The first user login will own the previous dataset
+
+[1.0.1]
+* Fix email receiving
+* Add busy indicator when fetching more
+* Fix tag cleanup job
+* Enable welcome notes
