@@ -32,7 +32,7 @@ function markdownTargetBlank(md) {
 }
 
 function colorizeIt(md, options) {
-    var regexp = /\:([\w\-]+)\:/;
+    var regexp = /\:([#\w\-]+)\:/;
 
     function isColor(color) {
         // https://developer.mozilla.org/en-US/docs/Web/CSS/color_value
