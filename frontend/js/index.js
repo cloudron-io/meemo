@@ -31,11 +31,53 @@ function markdownTargetBlank(md) {
     };
 }
 
+function colorizeIt(md, options) {
+    var regexp = /\:([\w\-]+)\:/;
+
+    function isColor(color) {
+        // TODO add all colors
+        var colors = [
+            'clear',
+            'red', 'blue', 'yellow', 'green'
+        ];
+
+        return colors.indexOf(color) !== -1;
+    }
+
+    md.inline.ruler.push('colorizeIt', function (state, silent) {
+        console.log(state.src.slice(state.pos))
+        // slowwww... maybe use an advanced regexp engine for this
+        var match = regexp.exec(state.src.slice(state.pos));
+        if (!match) return false;
+        if (!isColor(match[1])) return false;
+
+        // valid match found, now we need to advance cursor
+        state.pos += match[0].length;
+
+        // don't insert any tokens in silent mode
+        if (silent) return true;
+
+        var token = state.push('colorizeIt', '', 0);
+        token.meta = { color: match[1] };
+
+        return true;
+    });
+
+    md.renderer.rules['colorizeIt'] = function (tokens, id, options, env) {
+        if (tokens[id].meta.color === 'clear') {
+            return '</span>';
+        } else {
+            return '<span style="color: ' + tokens[id].meta.color + ';">';
+        }
+    };
+}
+
 var md = window.markdownit({
     breaks: true,
     html: true,
     linkify: true
 }).use(window.markdownitEmoji)
+.use(colorizeIt)
 .use(window.markdownitCheckbox)
 .use(markdownTargetBlank);
 
