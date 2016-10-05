@@ -82,3 +82,7 @@
 * Add busy indicator when fetching more
 * Fix tag cleanup job
 * Enable welcome notes
+
+[1.0.2]
+* Add text color support
+
