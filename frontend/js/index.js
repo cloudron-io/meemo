@@ -119,6 +119,7 @@ var vue = new Vue({
         Core: window.Guacamoly.Core,
         tags: [],
         things: [],
+        busyAdd: false,
         busyThings: true,
         busyFetchMore: false,
         search: '',
@@ -136,7 +137,11 @@ var vue = new Vue({
         addThing: function () {
             var that = this;
 
+            this.busyAdd = true;
+
             Core.things.add(this.thingContent, this.thingAttachments, function (error, thing) {
+                that.busyAdd = false;
+
                 if (error) return console.error(error);
                 that.thingContent = '';
                 that.thingAttachments = [];
