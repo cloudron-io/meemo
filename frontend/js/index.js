@@ -122,9 +122,9 @@ Vue.getCurrentSearchWord = function (search, inputElement) {
 
     for (var i = 0; i < search.length; ++i) {
         // break if we went beyond and we hit a space
-        if (i >= cursorPos && search[i] === ' ') break;
+        if (i >= cursorPos && (search[i] === ' ' || search[i] === '\n')) break;
 
-        if (search[i] === ' ') word = '';
+        if (search[i] === ' ' || search[i] === '\n') word = '';
         else word += search[i];
     }
 
