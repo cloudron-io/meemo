@@ -133,7 +133,7 @@ Vue.filter('proposeTags', function (options, search, inputSelector) {
     var word = Vue.getCurrentSearchWord(search, $(inputSelector)).replace(/^#/, '');
 
     return options.filter(function (o) {
-        return (o.name.indexOf(word) >= 0) && (o.name !== word);
+        return o.name.indexOf(word) >= 0;
     });
 });
 
