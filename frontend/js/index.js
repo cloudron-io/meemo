@@ -115,12 +115,12 @@ Vue.filter('prettyDateOffset', function (time) {
 
 // Tag propasal filter
 Vue.getCurrentSearchWord = function (search, inputElement) {
-    var cursorPos = inputElement.selectionStart;
+    var cursorPos = $(inputElement)[0] ? $(inputElement)[0].selectionStart : 0;
     var word = '';
 
     for (var i = 0; i < search.length; ++i) {
         // break if we went beyond and we hit a space
-        if (i > cursorPos && search[i] === ' ') break;
+        if (i >= cursorPos && search[i] === ' ') break;
 
         if (search[i] === ' ') word = '';
         else word += search[i];
@@ -129,8 +129,14 @@ Vue.getCurrentSearchWord = function (search, inputElement) {
     return word;
 };
 
-Vue.filter('proposeTags', function (options, search, inputSelector) {
-    var word = Vue.getCurrentSearchWord(search, $(inputSelector)).replace(/^#/, '');
+Vue.filter('proposeTags', function (options, search, inputSelector, requireHash, threshold) {
+    var raw = Vue.getCurrentSearchWord(search, $(inputSelector));
+
+    if (requireHash && raw[0] !== '#') return [];
+
+    var word = raw.replace(/^#/, '');
+
+    if (threshold && threshold > word.length) return [];
 
     return options.filter(function (o) {
         return o.name.indexOf(word) >= 0;
@@ -213,6 +219,18 @@ var vue = new Vue({
                 that.thingContent += ' [' + result.fileName + '] ';
                 that.thingAttachments.push(result);
             });
+        },
+        activateProposedTag: function (tag) {
+            var word = Vue.getCurrentSearchWord(this.thingContent, $('#addTextarea'));
+            if (!word) console.log('nothing to add');
+
+            var cursorPosition = $('#addTextarea')[0].selectionStart;
+
+            this.thingContent = this.thingContent.replace(new RegExp(word, 'g'), function (match, offset) {
+                return ((cursorPosition - word.length) === offset) ? ('#' + tag.name) : match;
+            });
+
+            Vue.nextTick(function () { $('#addTextarea').focus(); });
         },
         main: function () {
             var that = this;
