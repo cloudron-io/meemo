@@ -115,8 +115,10 @@ Vue.filter('prettyDateOffset', function (time) {
 
 // Tag propasal filter
 Vue.getCurrentSearchWord = function (search, inputElement) {
-    var cursorPos = $(inputElement)[0] ? $(inputElement)[0].selectionStart : 0;
+    var cursorPos = $(inputElement)[0] ? $(inputElement)[0].selectionStart : -1;
     var word = '';
+
+    if (cursorPos === -1) return '';
 
     for (var i = 0; i < search.length; ++i) {
         // break if we went beyond and we hit a space
@@ -129,7 +131,7 @@ Vue.getCurrentSearchWord = function (search, inputElement) {
     return word;
 };
 
-Vue.filter('proposeTags', function (options, search, inputSelector, requireHash, threshold) {
+function proposeTags(options, search, inputSelector, requireHash, threshold) {
     var raw = Vue.getCurrentSearchWord(search, $(inputSelector));
 
     if (requireHash && raw[0] !== '#') return [];
@@ -141,6 +143,11 @@ Vue.filter('proposeTags', function (options, search, inputSelector, requireHash,
     return options.filter(function (o) {
         return o.name.indexOf(word) >= 0;
     });
+}
+
+Vue.filter('proposeTags', proposeTags);
+Vue.filter('proposeTagsThingsEdit', function (options, search, id) {
+    return proposeTags(options, search, $('#textarea-' + id), true, 1);
 });
 
 var vue = new Vue({

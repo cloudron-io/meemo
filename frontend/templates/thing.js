@@ -95,6 +95,20 @@ Vue.component('thing', {
         },
         triggerUploadFileInput: function () {
             $('#fileUpload-' + this.thing.id).click();
+        },
+        activateProposedTag: function (tag) {
+            var that = this;
+
+            var word = Vue.getCurrentSearchWord(this.thing.content, $('#textarea-' + this.thing.id));
+            if (!word) return console.log('nothing to add');
+
+            var cursorPosition = $('#textarea-' + this.thing.id)[0].selectionStart;
+
+            this.thing.content = this.thing.content.replace(new RegExp(word, 'g'), function (match, offset) {
+                return ((cursorPosition - word.length) === offset) ? ('#' + tag.name) : match;
+            });
+
+            Vue.nextTick(function () { $('#textarea-' + that.thing.id).focus(); });
         }
     },
     ready: function () {
