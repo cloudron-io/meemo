@@ -31,7 +31,7 @@ Vue.component('thing', {
                 var margin = 20;
 
                 $('#textarea-' + id).focus();
-                $('#textarea-' + id).height($(window).height() - $('#mainNavigationBar').height() - (margin*2) - 60);
+                $('#textarea-' + id).height($(window).height() - $('#mainNavigationBar').height() - (margin*2) - 60 - 20);
 
                 window.scroll(0, $('#card-' + id).offset().top - $('#mainNavigationBar').height() - margin);
             });
