@@ -86,7 +86,7 @@ gulp.task('clean', function () {
     del.sync(['public/']);
 });
 
-gulp.task('watch', ['default'], function () {
+gulp.task('develop', ['default'], function () {
     gulp.watch('frontend/scss/*.scss', ['styles']);
     gulp.watch('frontend/js/*.js', ['javascript']);
     gulp.watch('frontend/*.html', ['html']);
