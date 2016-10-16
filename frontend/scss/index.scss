@@ -201,6 +201,37 @@ textarea {
     }
 }
 
+.propose-tags {
+    float: left;
+    text-align: left;
+
+    .item {
+        display: inline-block;
+        max-width: 150px;
+        padding: 5px;
+
+        a {
+            display: block;
+            padding: 3px 5px;
+            clear: both;
+            font-weight: 400;
+            line-height: 1.42857143;
+            color: #333;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+
+            &:hover, &:focus {
+                color: white;
+                text-decoration: none;
+                background-color: #03A9F4;
+                border: 0;
+                outline: 0;
+            }
+        }
+    }
+}
+
 .login-form {
     background-color: white;
     padding: 20px;
