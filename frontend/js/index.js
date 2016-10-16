@@ -113,6 +113,30 @@ Vue.filter('prettyDateOffset', function (time) {
                           Math.round( day_diff / 365 ) + ' years ago';
 });
 
+// Tag propasal filter
+Vue.getCurrentSearchWord = function (search, inputElement) {
+    var cursorPos = inputElement.selectionStart;
+    var word = '';
+
+    for (var i = 0; i < search.length; ++i) {
+        // break if we went beyond and we hit a space
+        if (i > cursorPos && search[i] === ' ') break;
+
+        if (search[i] === ' ') word = '';
+        else word += search[i];
+    }
+
+    return word;
+};
+
+Vue.filter('proposeTags', function (options, search, inputSelector) {
+    var word = Vue.getCurrentSearchWord(search, $(inputSelector)).replace(/^#/, '');
+
+    return options.filter(function (o) {
+        return (o.name.indexOf(word) >= 0) && (o.name !== word);
+    });
+});
+
 var vue = new Vue({
     el: '#application',
     data: {

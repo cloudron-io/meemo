@@ -2,29 +2,6 @@
 
 /* global Vue */
 
-function getCurrentSearchWord(search) {
-    var cursorPos = $('#searchBarInput').selectionStart;
-    var word = '';
-
-    for (var i = 0; i < search.length; ++i) {
-        // break if we went beyond and we hit a space
-        if (i > cursorPos && search[i] === ' ') break;
-
-        if (search[i] === ' ') word = '';
-        else word += search[i];
-    }
-
-    return word;
-}
-
-Vue.filter('proposeTags', function (options, search) {
-    var word = getCurrentSearchWord(search).replace(/^#/, '');
-
-    return options.filter(function (o) {
-        return (o.name.indexOf(word) >= 0) && (o.name !== word);
-    });
-});
-
 Vue.component('navigation-bar', {
     template: '#navigation-bar-template',
     data: function () {
@@ -102,10 +79,10 @@ Vue.component('navigation-bar', {
             }
         },
         activateProposedTag: function (tag) {
-            var word = getCurrentSearchWord(this.search);
+            var word = Vue.getCurrentSearchWord(this.search, $('#searchBarInput'));
 
             if (!word) this.search += '#' + tag.name;
-            else this.search = this.search.replace(getCurrentSearchWord(this.search), '#' + tag.name);
+            else this.search = this.search.replace(Vue.getCurrentSearchWord(this.search, $('#searchBarInput')), '#' + tag.name);
 
             if (this.search === '#' + tag.name) window.location.href = '/#search?#' + tag.name;
 
