@@ -255,6 +255,13 @@ var vue = new Vue({
 
                     // set initial settings
                     that.settings = settings;
+
+                    // just ensure we have defaults
+                    if (!that.settings.title) that.settings.title = 'Guacamoly';
+                    if (!that.settings.wide) that.settings.wide = false;
+                    if (!that.settings.backgroundImageDataUrl) that.settings.backgroundImageDataUrl = '';
+                    if (!that.settings.keepPositionAfterEdit) that.settings.keepPositionAfterEdit = false;
+
                     if (settings.title) window.document.title = settings.title;
                     if (settings.backgroundImageDataUrl) window.document.body.style.backgroundImage = 'url("' + settings.backgroundImageDataUrl + '")';
 
