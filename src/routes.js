@@ -150,7 +150,7 @@ function getAll(req, res, next) {
 
     if (req.query && req.query.filter) {
         query = {
-            $text: { $search: req.query.filter }
+            $text: { $search: String(req.query.filter) }
         };
     }
 
