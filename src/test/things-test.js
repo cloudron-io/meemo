@@ -91,6 +91,14 @@ describe('Things', function () {
             expect(tags[0]).to.equal('küche');
         });
 
+        it('succeeds with a tag starting with numbers', function () {
+            var test = 'Hello #1337tag there!';
+
+            var tags = logic.extractTags(test);
+            expect(tags.length).to.equal(1);
+            expect(tags[0]).to.equal('1337tag');
+        });
+
         it('succeeds with multiple tags', function () {
             var test = 'Hello #tag there! more #foobar #house tags';
 
