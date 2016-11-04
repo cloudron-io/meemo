@@ -121,7 +121,7 @@ function extractTags(content) {
 
     var lines = content.split('\n');
     lines.forEach(function (line) {
-        var tmp = line.match(/#([\u00C0-\u017Fa-zA-Z]+)/g);
+        var tmp = line.match(/#([\u00C0-\u017Fa-zA-Z0-9]+)/g);
         if (tmp === null) return;
 
         tagObjects = tagObjects.concat(tmp.map(function (tag) {
