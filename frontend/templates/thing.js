@@ -51,7 +51,9 @@ Vue.component('thing', {
                 that.thing.edit = false;
 
                 // edited item is now on top
-                Vue.nextTick(function () { window.scrollTo(0,0); });
+                if (!that.$root.settings.keepPositionAfterEdit) {
+                    Vue.nextTick(function () { window.scrollTo(0,0); });
+                }
 
                 that.$root.refreshTags();
             });
