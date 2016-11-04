@@ -88,3 +88,9 @@
 
 [1.1.0]
 * Add tag proposal on creation and edit of notes
+
+[1.2.0]
+* Support tags starting with numbers
+* Add option to disable scroll on edit
+* Various bug fixes
+
