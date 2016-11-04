@@ -15,9 +15,23 @@
               </div>
             </div>
             <div class="form-group">
-              <label class="col-xs-3 control-label">Wide Layout</label>
+              <label class="col-xs-3 control-label">Layout</label>
               <div class="col-xs-8">
-                <input type="checkbox" v-model="wide" />
+                <div class="checkbox">
+                  <label class="control-label">
+                    <input type="checkbox" v-model="wide" /> Wide
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-xs-3 control-label">Behavior</label>
+              <div class="col-xs-8">
+                <div class="checkbox">
+                  <label class="control-label">
+                    <input type="checkbox" v-model="keepPositionAfterEdit" /> Keep scroll position after edit
+                  </label>
+                </div>
               </div>
             </div>
             <div class="form-group">
