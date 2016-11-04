@@ -137,7 +137,7 @@ function extractExternalContent(content, callback) {
     var externalContent = [];
 
     async.each(urls, function (url, callback) {
-        superagent.get(url).end(function (error, result) {
+        superagent.head(url).timeout(20000).end(function (error, result) {
             var obj = { url: url, type: exports.TYPE_UNKNOWN };
 
             if (error) {
