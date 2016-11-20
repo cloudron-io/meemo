@@ -12,7 +12,6 @@ exports = module.exports = {
     del: del,
     exp: exp,
     imp: imp,
-    getByShareId: getByShareId,
     extractURLs: extractURLs,
     extractTags: extractTags,
     facelift: facelift,
@@ -41,7 +40,6 @@ var assert = require('assert'),
     things = require('./database/things.js'),
     rimraf = require('rimraf'),
     safe = require('safetydance'),
-    shares = require('./database/shares.js'),
     superagent = require('superagent');
 
 var GET_URL = new RegExp('(^|[ \t\r\n])((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){2,}(#([a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))', 'g');
@@ -374,19 +372,6 @@ function imp(userId, data, callback) {
             });
         });
     }, callback);
-}
-
-function getByShareId(userId, shareId, callback) {
-    shares.get(userId, shareId, function (error, result) {
-        if (error) return callback(error);
-        if (result.length === 0) return callback(new Error('not found'));
-
-        get(userId, result.thingId, '*', function (error, result) {
-            if (error) return callback(error);
-
-            callback(null, result);
-        });
-    });
 }
 
 function cleanupTags() {
