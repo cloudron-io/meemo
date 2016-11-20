@@ -301,7 +301,14 @@ function add(userId, content, attachments, callback) {
     });
 }
 
-function put(userId, id, content, attachments, callback) {
+function put(userId, thingId, content, attachments, acl, callback) {
+    assert.strictEqual(typeof userId, 'string');
+    assert.strictEqual(typeof thingId, 'string');
+    assert.strictEqual(typeof content, 'string');
+    assert(Array.isArray(attachments));
+    assert(Array.isArray(acl));
+    assert.strictEqual(typeof callback, 'function');
+
     var tagObjects = extractTags(content);
 
     async.eachSeries(tagObjects, tags.update.bind(null, userId), function (error) {
@@ -310,10 +317,10 @@ function put(userId, id, content, attachments, callback) {
         extractExternalContent(content, function (error, externalContent) {
             if (error) console.error('Failed to extract external content:', error);
 
-            things.put(userId, id, content, tagObjects, attachments, externalContent, function (error) {
+            things.put(userId, thingId, content, tagObjects, attachments, externalContent, acl, function (error) {
                 if (error) return callback(error);
 
-                get(userId, id, userId, callback);
+                get(userId, thingId, userId, callback);
             });
         });
     });

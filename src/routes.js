@@ -176,15 +176,25 @@ function get(req, res, next) {
 
 function add(req, res, next) {
     if (typeof req.body.content !== 'string' || !req.body.content) return next(new HttpError(400, 'content must be a string'));
+    if (req.body.attachments && !Array.isArray(req.body.attachments)) return next(new HttpError(400, 'attachments must be an array'));
 
-    logic.add(req.userId, req.body.content, req.body.attachments || [], function (error, result) {
+    if (!req.body.attachments) req.body.attachments = [];
+
+    logic.add(req.userId, req.body.content, req.body.attachments, function (error, result) {
         if (error) return next(new HttpError(500, error));
         next(new HttpSuccess(201, { thing: result }));
     });
 }
 
 function put(req, res, next) {
-    logic.put(req.userId, req.params.id, req.body.content, req.body.attachments || [], function (error, result) {
+    if (typeof req.body.content !== 'string' || !req.body.content) return next(new HttpError(400, 'content must be a string'));
+    if (req.body.attachments && !Array.isArray(req.body.attachments)) return next(new HttpError(400, 'attachments must be an array'));
+    if (req.body.acl && !Array.isArray(req.body.acl)) return next(new HttpError(400, 'acl must be an array'));
+
+    if (!req.body.attachments) req.body.attachments = [];
+    if (!req.body.acl) req.body.acl = [];
+
+    logic.put(req.userId, req.params.id, req.body.content, req.body.attachments, req.body.acl, function (error, result) {
         if (error) return next(new HttpError(500, error));
         next(new HttpSuccess(201, { thing: result }));
     });

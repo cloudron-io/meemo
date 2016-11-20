@@ -75,10 +75,12 @@ Vue.component('thing', {
         showShareLink: function () {
             var that = this;
 
-            this.$root.Core.things.publicLink(this.thing, function (error, result) {
+            this.thing.acl.push('*');
+
+            this.$root.Core.things.edit(this.thing, function (error) {
                 if (error) return console.error(error);
 
-                that.shareLink = location.origin + '/thing.html?id=' + result.thingId + '&userId=' + result.userId;
+                that.shareLink = location.origin + '/thing.html?id=' + that.thing.id + '&userId=' + that.$root.profile.id;
 
                 $('#modalShare-' + that.thing.id).modal('show');
             });

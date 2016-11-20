@@ -25,6 +25,14 @@ function getAllActiveUserIds() {
     return Object.keys(g_collections);
 }
 
+function postProcess(userId, thing) {
+    thing._id = String(thing._id);
+    thing.acl = Array.isArray(thing.acl) ? thing.acl : [];
+
+    // add its own user
+    thing.acl.push(userId);
+}
+
 function getCollection(userId) {
     assert.strictEqual(typeof userId, 'string');
 
@@ -50,6 +58,8 @@ function getAll(userId, query, skip, limit, callback) {
         if (error) return callback(error);
         if (!result) return callback(null, []);
 
+        result.forEach(postProcess.bind(null, userId));
+
         callback(null, result);
     });
 }
@@ -60,7 +70,11 @@ function getAllLean(userId, callback) {
 
     getCollection(userId).find({}).toArray(function (error, result) {
         if (error) return callback(error);
-        callback(null, result || []);
+        if (!result) return callback(null, []);
+
+        result.forEach(postProcess.bind(null, userId));
+
+        callback(null, result);
     });
 }
 
@@ -73,11 +87,7 @@ function get(userId, thingId, callback) {
         if (error) return callback(error);
         if (result.length === 0) return callback(new Error('not found'));
 
-        result[0]._id = String(result[0]._id);
-        result[0].acl = Array.isArray(result[0].acl) ? result[0].acl : [];
-
-        // add its own user
-        result[0].acl.push(userId);
+        postProcess(userId, result[0]);
 
         callback(null, result[0]);
     });
@@ -115,13 +125,14 @@ function addFull(userId, content, tags, attachments, externalContent, createdAt,
     });
 }
 
-function put(userId, thingId, content, tags, attachments, externalContent, callback) {
+function put(userId, thingId, content, tags, attachments, externalContent, acl, callback) {
     assert.strictEqual(typeof userId, 'string');
     assert.strictEqual(typeof thingId, 'string');
     assert.strictEqual(typeof content, 'string');
     assert(Array.isArray(tags));
     assert(Array.isArray(attachments));
     assert(Array.isArray(externalContent));
+    assert(Array.isArray(acl));
     assert.strictEqual(typeof callback, 'function');
 
     var data = {
@@ -130,6 +141,7 @@ function put(userId, thingId, content, tags, attachments, externalContent, callb
         modifiedAt: Date.now(),
         externalContent: externalContent,
         attachments: attachments,
+        acl: acl
     };
 
     getCollection(userId).update({_id: new ObjectId(thingId) }, { $set: data }, function (error) {
