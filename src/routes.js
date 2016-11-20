@@ -12,7 +12,6 @@ exports = module.exports = {
     add: add,
     put: put,
     del: del,
-    makePublic: makePublic,
     getTags: getTags,
     settingsSave: settingsSave,
     settingsGet: settingsGet,
@@ -204,13 +203,6 @@ function del(req, res, next) {
     logic.del(req.userId, req.params.id, function (error) {
         if (error) return next(new HttpError(500, error));
         next(new HttpSuccess(200, {}));
-    });
-}
-
-function makePublic(req, res, next) {
-    logic.publicLink(req.userId, req.params.id, function (error, result) {
-        if (error) return next(new HttpError(500, error));
-        next(new HttpSuccess(201, { userId: result.userId, thingId: result.thingId }));
     });
 }
 

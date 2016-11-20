@@ -154,15 +154,6 @@ ThingsApi.prototype.del = function (thing, callback) {
     }));
 };
 
-ThingsApi.prototype.publicLink = function (thing, callback) {
-    superagent.post(url('/api/things/' + thing.id + '/public')).end(errorWrapper(function (error, result) {
-        if (error) return callback(error);
-        if (result.status !== 201) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
-
-        callback(null, result.body);
-    }));
-};
-
 ThingsApi.prototype.getPublic = function (userId, thingId, callback) {
     superagent.get(url('/api/public/' + userId + '/things/' + thingId)).end(errorWrapper(function (error, result) {
         if (result && result.status !== 200) return callback(new Error('Failed: ' + result.status + '. ' + result.text));

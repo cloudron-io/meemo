@@ -12,7 +12,6 @@ exports = module.exports = {
     del: del,
     exp: exp,
     imp: imp,
-    publicLink: publicLink,
     getByShareId: getByShareId,
     extractURLs: extractURLs,
     extractTags: extractTags,
@@ -375,25 +374,6 @@ function imp(userId, data, callback) {
             });
         });
     }, callback);
-}
-
-function publicLink(userId, thingId, callback) {
-    assert.strictEqual(typeof userId, 'string');
-    assert.strictEqual(typeof thingId, 'string');
-    assert.strictEqual(typeof callback, 'function');
-
-    things.get(userId, thingId, function (error, result) {
-        if (error) return callback(error);
-
-        if (result.acl.indexOf('*') === -1) result.acl.push('*');
-
-        things.setAcl(userId, thingId, result.acl, function (error, result) {
-            if (error) return callback(error);
-            if (!result) return callback(new Error('no result returned'));
-
-            callback(null, { userId: userId, thingId: thingId });
-        });
-    });
 }
 
 function getByShareId(userId, shareId, callback) {
