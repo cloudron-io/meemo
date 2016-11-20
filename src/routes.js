@@ -12,7 +12,6 @@ exports = module.exports = {
     add: add,
     put: put,
     del: del,
-    getPublic: getPublic,
     makePublic: makePublic,
     getTags: getTags,
     settingsSave: settingsSave,
@@ -21,7 +20,12 @@ exports = module.exports = {
     importThings: importThings,
     healthcheck: healthcheck,
     fileAdd: fileAdd,
-    fileGet: fileGet
+    fileGet: fileGet,
+
+    public: {
+        getThing: publicGetThing,
+        getFile: publicGetFile
+    }
 };
 
 var assert = require('assert'),
@@ -164,7 +168,7 @@ function getAll(req, res, next) {
 }
 
 function get(req, res, next) {
-    logic.get(req.userId, req.params.id, function (error, result) {
+    logic.get(req.userId, req.params.id, req.userId, function (error, result) {
         if (error) return next(new HttpError(500, error));
         next(new HttpSuccess(200, { thing: result }));
     });
@@ -193,17 +197,10 @@ function del(req, res, next) {
     });
 }
 
-function getPublic(req, res, next) {
-    logic.getByShareId(req.params.userId, req.params.shareId, function (error, result) {
-        if (error) return next(new HttpError(500, error));
-        next(new HttpSuccess(200, { thing: result }));
-    });
-}
-
 function makePublic(req, res, next) {
     logic.publicLink(req.userId, req.params.id, function (error, result) {
         if (error) return next(new HttpError(500, error));
-        next(new HttpSuccess(201, { publicLinkId: result }));
+        next(new HttpSuccess(201, { userId: result.userId, thingId: result.thingId }));
     });
 }
 
@@ -282,4 +279,15 @@ function fileAdd(req, res, next) {
 
 function fileGet(req, res) {
     res.sendFile(req.params.identifier, { root: path.join(config.attachmentDir, req.params.userId) });
+}
+
+function publicGetThing(req, res, next) {
+    logic.get(req.params.userId, req.params.thingId, '*', function (error, result) {
+        if (error) return next(new HttpError(500, error));
+        next(new HttpSuccess(200, { thing: result }));
+    });
+}
+
+function publicGetFile(req, res) {
+    res.sendFile(req.params.fileId, { root: path.join(config.attachmentDir, req.params.userId) });
 }

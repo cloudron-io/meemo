@@ -11,7 +11,8 @@ exports = module.exports = {
     add: add,
     addFull: addFull,
     put: put,
-    del: del
+    del: del,
+    setAcl: setAcl
 };
 
 var assert = require('assert'),
@@ -73,6 +74,10 @@ function get(userId, thingId, callback) {
         if (result.length === 0) return callback(new Error('not found'));
 
         result[0]._id = String(result[0]._id);
+        result[0].acl = Array.isArray(result[0].acl) ? result[0].acl : [];
+
+        // add its own user
+        result[0].acl.push(userId);
 
         callback(null, result[0]);
     });
@@ -98,7 +103,8 @@ function addFull(userId, content, tags, attachments, externalContent, createdAt,
         modifiedAt: modifiedAt,
         tags: tags,
         externalContent: externalContent,
-        attachments: attachments
+        attachments: attachments,
+        acl: [ userId ]
     };
 
     getCollection(userId).insert(doc, function (error, result) {
@@ -123,7 +129,24 @@ function put(userId, thingId, content, tags, attachments, externalContent, callb
         tags: tags,
         modifiedAt: Date.now(),
         externalContent: externalContent,
-        attachments: attachments
+        attachments: attachments,
+    };
+
+    getCollection(userId).update({_id: new ObjectId(thingId) }, { $set: data }, function (error) {
+        if (error) return callback(error);
+
+        get(userId, thingId, callback);
+    });
+}
+
+function setAcl(userId, thingId, acl, callback) {
+    assert.strictEqual(typeof userId, 'string');
+    assert.strictEqual(typeof thingId, 'string');
+    assert(Array.isArray(acl));
+    assert.strictEqual(typeof callback, 'function');
+
+    var data = {
+        acl: acl
     };
 
     getCollection(userId).update({_id: new ObjectId(thingId) }, { $set: data }, function (error) {

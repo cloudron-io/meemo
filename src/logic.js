@@ -251,9 +251,18 @@ function getAllLean(userId, callback) {
     things.getAllLean(userId, callback);
 }
 
-function get(userId, id, callback) {
-    things.get(userId, id, function (error, result) {
+function get(userId, thingId, access, callback) {
+    assert.strictEqual(typeof userId, 'string');
+    assert.strictEqual(typeof thingId, 'string');
+    assert.strictEqual(typeof access, 'string');
+    assert.strictEqual(typeof callback, 'function');
+
+    if (!access) return callback('not allowed');
+
+    things.get(userId, thingId, function (error, result) {
         if (error) return callback(error);
+
+        if (result.acl.indexOf(access) === -1) return callback('not allowed');
 
         facelift(userId, result, function (error, data) {
             if (error) console.error('Failed to facelift:', error);
@@ -286,7 +295,7 @@ function add(userId, content, attachments, callback) {
                 if (error) return callback(error);
                 if (!result) return callback(new Error('no result returned'));
 
-                get(userId, result._id, callback);
+                get(userId, result._id, userId, callback);
             });
         });
     });
@@ -304,7 +313,7 @@ function put(userId, id, content, attachments, callback) {
             things.put(userId, id, content, tagObjects, attachments, externalContent, function (error) {
                 if (error) return callback(error);
 
-                get(userId, id, callback);
+                get(userId, id, userId, callback);
             });
         });
     });
@@ -362,11 +371,21 @@ function imp(userId, data, callback) {
 }
 
 function publicLink(userId, thingId, callback) {
-    shares.add(userId, thingId, function (error, result) {
-        if (error) return callback(error);
-        if (!result) return callback(new Error('no result returned'));
+    assert.strictEqual(typeof userId, 'string');
+    assert.strictEqual(typeof thingId, 'string');
+    assert.strictEqual(typeof callback, 'function');
 
-        callback(null, result);
+    things.get(userId, thingId, function (error, result) {
+        if (error) return callback(error);
+
+        if (result.acl.indexOf('*') === -1) result.acl.push('*');
+
+        things.setAcl(userId, thingId, result.acl, function (error, result) {
+            if (error) return callback(error);
+            if (!result) return callback(new Error('no result returned'));
+
+            callback(null, { userId: userId, thingId: thingId });
+        });
     });
 }
 
@@ -375,7 +394,7 @@ function getByShareId(userId, shareId, callback) {
         if (error) return callback(error);
         if (result.length === 0) return callback(new Error('not found'));
 
-        get(userId, result.thingId, function (error, result) {
+        get(userId, result.thingId, '*', function (error, result) {
             if (error) return callback(error);
 
             callback(null, result);

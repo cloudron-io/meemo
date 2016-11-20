@@ -158,12 +158,12 @@ ThingsApi.prototype.publicLink = function (thing, callback) {
         if (error) return callback(error);
         if (result.status !== 201) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
 
-        callback(null, result.body.publicLinkId);
+        callback(null, result.body);
     }));
 };
 
-ThingsApi.prototype.getPublic = function (userId, shareId, callback) {
-    superagent.get(url('/api/share/' + userId + '/' + shareId)).end(errorWrapper(function (error, result) {
+ThingsApi.prototype.getPublic = function (userId, thingId, callback) {
+    superagent.get(url('/api/public/' + userId + '/things/' + thingId)).end(errorWrapper(function (error, result) {
         if (result && result.status !== 200) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
         if (error) return callback(error);
 
