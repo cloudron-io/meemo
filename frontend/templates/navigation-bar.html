@@ -2,6 +2,8 @@
   <div id="mainNavigationBar" class="container-fluid navigation shadow">
     <div v-if="activeView === 'content'" class="input-group">
       <div class="input-group-btn">
+        <button type="button" class="btn btn-default" title="Private">Private</button>
+        <button type="button" class="btn btn-default" title="Public">Public</button>
         <button type="button" class="btn btn-default" @click.stop="doSearch()" title="Search"><i class="fa fa-search"></i></button>
       </div>
       <input type="text" class="form-control search" id="searchBarInput" autocomplete="off" placeholder="Search..." v-model="search" @click.stop="showTags()" @keyup="handleSearchKeyInput(this, $event)" @keyup.enter="doSearch()">
