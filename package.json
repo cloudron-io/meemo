@@ -1,6 +1,6 @@
 {
   "name": "guacamoly",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "A personal ideas, notes or links manager",
   "main": "index.js",
   "scripts": {
