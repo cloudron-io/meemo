@@ -12,7 +12,7 @@ exports = module.exports = {
     addFull: addFull,
     put: put,
     del: del,
-    setAcl: setAcl
+    setPublic: setPublic
 };
 
 var assert = require('assert'),
@@ -27,10 +27,7 @@ function getAllActiveUserIds() {
 
 function postProcess(userId, thing) {
     thing._id = String(thing._id);
-    thing.acl = Array.isArray(thing.acl) ? thing.acl : [];
-
-    // add its own user
-    thing.acl.push(userId);
+    thing.public = !!thing.public;
 }
 
 function getCollection(userId) {
@@ -114,7 +111,7 @@ function addFull(userId, content, tags, attachments, externalContent, createdAt,
         tags: tags,
         externalContent: externalContent,
         attachments: attachments,
-        acl: [ userId ]
+        public: false
     };
 
     getCollection(userId).insert(doc, function (error, result) {
@@ -125,14 +122,14 @@ function addFull(userId, content, tags, attachments, externalContent, createdAt,
     });
 }
 
-function put(userId, thingId, content, tags, attachments, externalContent, acl, callback) {
+function put(userId, thingId, content, tags, attachments, externalContent, isPublic, callback) {
     assert.strictEqual(typeof userId, 'string');
     assert.strictEqual(typeof thingId, 'string');
     assert.strictEqual(typeof content, 'string');
     assert(Array.isArray(tags));
     assert(Array.isArray(attachments));
     assert(Array.isArray(externalContent));
-    assert(Array.isArray(acl));
+    assert.strictEqual(typeof isPublic, 'boolean');
     assert.strictEqual(typeof callback, 'function');
 
     var data = {
@@ -141,7 +138,7 @@ function put(userId, thingId, content, tags, attachments, externalContent, acl, 
         modifiedAt: Date.now(),
         externalContent: externalContent,
         attachments: attachments,
-        acl: acl
+        public: isPublic
     };
 
     getCollection(userId).update({_id: new ObjectId(thingId) }, { $set: data }, function (error) {
@@ -151,14 +148,14 @@ function put(userId, thingId, content, tags, attachments, externalContent, acl, 
     });
 }
 
-function setAcl(userId, thingId, acl, callback) {
+function setPublic(userId, thingId, isPublic, callback) {
     assert.strictEqual(typeof userId, 'string');
     assert.strictEqual(typeof thingId, 'string');
-    assert(Array.isArray(acl));
+    assert.strictEqual(typeof isPublic, 'boolean');
     assert.strictEqual(typeof callback, 'function');
 
     var data = {
-        acl: acl
+        public: isPublic
     };
 
     getCollection(userId).update({_id: new ObjectId(thingId) }, { $set: data }, function (error) {

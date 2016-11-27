@@ -32,7 +32,7 @@ function token() {
     return g_token;
 }
 
-function Thing(id, createdAt, tags, content, richContent, attachments, acl) {
+function Thing(id, createdAt, tags, content, richContent, attachments, public) {
     this.id = id;
     this.createdAt = createdAt || 0;
     this.tags = tags || [];
@@ -40,7 +40,7 @@ function Thing(id, createdAt, tags, content, richContent, attachments, acl) {
     this.edit = false;
     this.richContent = richContent;
     this.attachments = attachments || [];
-    this.acl = acl || [];
+    this.public = !!public;
 }
 
 function ThingsApi() {
@@ -75,7 +75,7 @@ ThingsApi.prototype.get = function (filter, callback) {
         if (result.status !== 200) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
 
         var tmp = result.body.things.map(function (thing) {
-            return new Thing(thing._id, new Date(thing.createdAt).getTime(), thing.tags, thing.content, thing.richContent, thing.attachments, thing.acl);
+            return new Thing(thing._id, new Date(thing.createdAt).getTime(), thing.tags, thing.content, thing.richContent, thing.attachments, thing.public);
         });
 
         // update skip for fetch more call
@@ -96,7 +96,7 @@ ThingsApi.prototype.fetchMore = function (callback) {
         if (result.status !== 200) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
 
         var tmp = result.body.things.map(function (thing) {
-            return new Thing(thing._id, new Date(thing.createdAt).getTime(), thing.tags, thing.content, thing.richContent, thing.attachments, thing.acl);
+            return new Thing(thing._id, new Date(thing.createdAt).getTime(), thing.tags, thing.content, thing.richContent, thing.attachments, thing.public);
         });
 
         // update skip for next call
@@ -114,7 +114,7 @@ ThingsApi.prototype.add = function (content, attachments, callback) {
         if (result.status !== 201) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
 
         var tmp = result.body.thing;
-        var thing = new Thing(tmp._id, new Date(tmp.createdAt).getTime(), tmp.tags, tmp.content, tmp.richContent, tmp.attachments, tmp.acl);
+        var thing = new Thing(tmp._id, new Date(tmp.createdAt).getTime(), tmp.tags, tmp.content, tmp.richContent, tmp.attachments, tmp.public);
 
         that._addCallbacks.forEach(function (callback) {
             setTimeout(callback.bind(null, thing), 0);
@@ -161,7 +161,7 @@ ThingsApi.prototype.getPublic = function (userId, thingId, callback) {
 
         var thing = result.body.thing;
 
-        callback(null, new Thing(thing._id, new Date(thing.createdAt).getTime(), thing.tags, thing.content, thing.richContent, thing.attachments, thing.acl));
+        callback(null, new Thing(thing._id, new Date(thing.createdAt).getTime(), thing.tags, thing.content, thing.richContent, thing.attachments, thing.public));
     }));
 };
 

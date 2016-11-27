@@ -248,18 +248,14 @@ function getAllLean(userId, callback) {
     things.getAllLean(userId, callback);
 }
 
-function get(userId, thingId, access, callback) {
+function get(userId, thingId, public, callback) {
     assert.strictEqual(typeof userId, 'string');
     assert.strictEqual(typeof thingId, 'string');
-    assert.strictEqual(typeof access, 'string');
+    assert.strictEqual(typeof public, 'boolean');
     assert.strictEqual(typeof callback, 'function');
-
-    if (!access) return callback('not allowed');
 
     things.get(userId, thingId, function (error, result) {
         if (error) return callback(error);
-
-        if (result.acl.indexOf(access) === -1) return callback('not allowed');
 
         facelift(userId, result, function (error, data) {
             if (error) console.error('Failed to facelift:', error);
@@ -298,12 +294,12 @@ function add(userId, content, attachments, callback) {
     });
 }
 
-function put(userId, thingId, content, attachments, acl, callback) {
+function put(userId, thingId, content, attachments, public, callback) {
     assert.strictEqual(typeof userId, 'string');
     assert.strictEqual(typeof thingId, 'string');
     assert.strictEqual(typeof content, 'string');
     assert(Array.isArray(attachments));
-    assert(Array.isArray(acl));
+    assert.strictEqual(typeof public, 'boolean');
     assert.strictEqual(typeof callback, 'function');
 
     var tagObjects = extractTags(content);
@@ -314,7 +310,7 @@ function put(userId, thingId, content, attachments, acl, callback) {
         extractExternalContent(content, function (error, externalContent) {
             if (error) console.error('Failed to extract external content:', error);
 
-            things.put(userId, thingId, content, tagObjects, attachments, externalContent, acl, function (error) {
+            things.put(userId, thingId, content, tagObjects, attachments, externalContent, public, function (error) {
                 if (error) return callback(error);
 
                 get(userId, thingId, userId, callback);

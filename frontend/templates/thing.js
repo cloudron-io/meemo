@@ -75,7 +75,7 @@ Vue.component('thing', {
         showShareLink: function () {
             var that = this;
 
-            this.thing.acl.push('*');
+            this.thing.public = true;
 
             this.$root.Core.things.edit(this.thing, function (error) {
                 if (error) return console.error(error);
