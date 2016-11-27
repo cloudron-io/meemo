@@ -302,7 +302,7 @@ function add(userId, content, attachments, callback) {
                 if (error) return callback(error);
                 if (!result) return callback(new Error('no result returned'));
 
-                get(userId, result._id, userId, callback);
+                get(userId, result._id, callback);
             });
         });
     });
@@ -327,7 +327,7 @@ function put(userId, thingId, content, attachments, isPublic, callback) {
             things.put(userId, thingId, content, tagObjects, attachments, externalContent, isPublic, function (error) {
                 if (error) return callback(error);
 
-                get(userId, thingId, userId, callback);
+                get(userId, thingId, callback);
             });
         });
     });
