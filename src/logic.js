@@ -276,7 +276,7 @@ function getAllPublic(userId, query, skip, limit, callback) {
     assert.strictEqual(typeof limit, 'number');
     assert.strictEqual(typeof callback, 'function');
 
-    // query.userId = userId;
+    query.public = true;
 
     things.getAll(userId, query, skip, limit, function (error, result) {
         if (error) return callback(error);
