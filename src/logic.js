@@ -248,10 +248,10 @@ function getAllLean(userId, callback) {
     things.getAllLean(userId, callback);
 }
 
-function get(userId, thingId, public, callback) {
+function get(userId, thingId, isPublic, callback) {
     assert.strictEqual(typeof userId, 'string');
     assert.strictEqual(typeof thingId, 'string');
-    assert.strictEqual(typeof public, 'boolean');
+    assert.strictEqual(typeof isPublic, 'boolean');
     assert.strictEqual(typeof callback, 'function');
 
     things.get(userId, thingId, function (error, result) {
@@ -294,12 +294,12 @@ function add(userId, content, attachments, callback) {
     });
 }
 
-function put(userId, thingId, content, attachments, public, callback) {
+function put(userId, thingId, content, attachments, isPublic, callback) {
     assert.strictEqual(typeof userId, 'string');
     assert.strictEqual(typeof thingId, 'string');
     assert.strictEqual(typeof content, 'string');
     assert(Array.isArray(attachments));
-    assert.strictEqual(typeof public, 'boolean');
+    assert.strictEqual(typeof isPublic, 'boolean');
     assert.strictEqual(typeof callback, 'function');
 
     var tagObjects = extractTags(content);
@@ -310,7 +310,7 @@ function put(userId, thingId, content, attachments, public, callback) {
         extractExternalContent(content, function (error, externalContent) {
             if (error) console.error('Failed to extract external content:', error);
 
-            things.put(userId, thingId, content, tagObjects, attachments, externalContent, public, function (error) {
+            things.put(userId, thingId, content, tagObjects, attachments, externalContent, isPublic, function (error) {
                 if (error) return callback(error);
 
                 get(userId, thingId, userId, callback);

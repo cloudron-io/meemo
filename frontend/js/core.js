@@ -32,7 +32,7 @@ function token() {
     return g_token;
 }
 
-function Thing(id, createdAt, tags, content, richContent, attachments, public) {
+function Thing(id, createdAt, tags, content, richContent, attachments, isPublic) {
     this.id = id;
     this.createdAt = createdAt || 0;
     this.tags = tags || [];
@@ -40,7 +40,7 @@ function Thing(id, createdAt, tags, content, richContent, attachments, public) {
     this.edit = false;
     this.richContent = richContent;
     this.attachments = attachments || [];
-    this.public = !!public;
+    this.public = !!isPublic;
 }
 
 function ThingsApi() {
