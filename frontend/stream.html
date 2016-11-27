@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title></title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <link href="favicon.png" rel="shortcut icon" type="image/png">
+
+    <!-- Bootstrap -->
+    <link href="3rdparty/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link href="3rdparty/css/font-awesome.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="index.min.css"/>
+
+  </head>
+  <body id="application">
+
+    <div class="container-fluid navigation shadow">
+      <a href="http://guacamoly.rocks" target="_blank" class="brand-link"><img src="/favicon.png" height="28px"/> Guacamoly</a>
+    </div>
+
+    <div v-show="busy" v-cloak>
+      <br/>
+      <br/>
+      <br/>
+      <center><i class="spinner"></i></center>
+    </div>
+
+    <div class="container" v-show="!busy && error" v-cloak>
+      <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+          <center>
+            <br/>
+            <br/>
+            <br/>
+            <p>{{ error }}</p>
+          </center>
+        </div>
+      </div>
+    </div>
+
+    <div class="container main" v-show="!busy && !error" v-cloak>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+          <div class="well" v-for="item in things" track-by="id">
+            <div class="card-actions">
+              {{ item.createdAt | prettyDateOffset }}
+            </div>
+            <div class="card-content">
+              <div class="thing-content">{{{ item.richContent | markdown }}}</div>
+            </div>
+          </div>
+          <view-loading v-show="busyFetchMore"></view-loading>
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="3rdparty/jquery.min.js"></script>
+    <script type="text/javascript" src="3rdparty/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="3rdparty/js/vue.min.js"></script>
+    <script type="text/javascript" src="3rdparty/js/shortcut.js"></script>
+    <script type="text/javascript" src="3rdparty/js/twemoji.min.js"></script>
+    <script type="text/javascript" src="3rdparty/js/markdown-it.min.js"></script>
+    <script type="text/javascript" src="3rdparty/js/markdown-it-emoji.min.js"></script>
+    <script type="text/javascript" src="3rdparty/js/markdown-it-checkbox.min.js"></script>
+    <script type="text/javascript" src="3rdparty/js/superagent.js"></script>
+
+    <script type="text/javascript" src="js/core.js"></script>
+    <script type="text/javascript" src="js/stream.js"></script>
+
+  </body>
+</html>
