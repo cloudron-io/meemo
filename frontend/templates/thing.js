@@ -85,6 +85,17 @@ Vue.component('thing', {
                 $('#modalShare-' + that.thing.id).modal('show');
             });
         },
+        setPublic: function (public) {
+            var that = this;
+
+            this.thing.public = public;
+
+            this.$root.Core.things.edit(this.thing, function (error) {
+                if (error) return console.error(error);
+
+                that.shareLink = '';
+            });
+        },
         uploadFileChanged: function (event) {
             var that = this;
             var data = new FormData();
