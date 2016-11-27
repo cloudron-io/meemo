@@ -85,10 +85,10 @@ Vue.component('thing', {
                 $('#modalShare-' + that.thing.id).modal('show');
             });
         },
-        setPublic: function (public) {
+        togglePublic: function () {
             var that = this;
 
-            this.thing.public = public;
+            this.thing.public = !this.thing.public;
 
             this.$root.Core.things.edit(this.thing, function (error) {
                 if (error) return console.error(error);

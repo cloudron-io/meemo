@@ -44,7 +44,7 @@
         <button class="btn btn-default" @click="saveEdit()" title="Save (Ctrl+S)"><i class="fa fa-check"></i></button>
       </span>
       <span v-show="!thing.edit">
-        <button class="btn btn-default" @click="togglePublic()" title="{{ thing.public ? 'Make private' : 'Make public' }}"><i class="fa fa-share-alt"></i></button>
+        <button class="btn btn-default" @click="togglePublic()" title="{{ thing.public ? 'Make private' : 'Make public' }}"><i class="fa" :class="{ 'fa-eye': !thing.public, 'fa-eye-slash': thing.public }"></i></button>
         <button class="btn btn-default" @click="showShareLink()" title="Share"><i class="fa fa-share-alt"></i></button>
         <button class="btn btn-default" @click="showEdit()" title="Edit"><i class="fa fa-pencil"></i></button>
         <button class="btn btn-default" @click="showDelete()" title="Delete"><i class="fa fa-trash"></i></button>
