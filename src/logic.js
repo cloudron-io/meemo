@@ -5,6 +5,7 @@
 exports = module.exports = {
     getProfileByIdentifier: getProfileByIdentifier,
     getAll: getAll,
+    getAllPublic: getAllPublic,
     getAllLean: getAllLean,
     get: get,
     getPublic: getPublic,
@@ -263,6 +264,34 @@ function get(userId, thingId, callback) {
             result.attachments = result.attachments || [];
             result.richContent = data || result.content;
 
+            callback(null, result);
+        });
+    });
+}
+
+function getAllPublic(userId, query, skip, limit, callback) {
+    assert.strictEqual(typeof userId, 'string');
+    assert.strictEqual(typeof query, 'object');
+    assert.strictEqual(typeof skip, 'number');
+    assert.strictEqual(typeof limit, 'number');
+    assert.strictEqual(typeof callback, 'function');
+
+    // query.userId = userId;
+
+    things.getAll(userId, query, skip, limit, function (error, result) {
+        if (error) return callback(error);
+        if (!result) return callback(null, []);
+
+        async.each(result, function (thing, callback) {
+            facelift(userId, thing, function (error, data) {
+                if (error) console.error('Failed to facelift:', error);
+
+                thing.attachments = thing.attachments || [];
+                thing.richContent = data || thing.content;
+
+                callback(null);
+            });
+        }, function () {
             callback(null, result);
         });
     });

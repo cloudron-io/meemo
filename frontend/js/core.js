@@ -154,7 +154,7 @@ ThingsApi.prototype.del = function (thing, callback) {
     }));
 };
 
-ThingsApi.prototype.getPublic = function (userId, thingId, callback) {
+ThingsApi.prototype.getPublicThing = function (userId, thingId, callback) {
     superagent.get(url('/api/public/' + userId + '/things/' + thingId)).end(errorWrapper(function (error, result) {
         if (result && result.status !== 200) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
         if (error) return callback(error);
@@ -164,6 +164,62 @@ ThingsApi.prototype.getPublic = function (userId, thingId, callback) {
         callback(null, new Thing(thing._id, new Date(thing.createdAt).getTime(), thing.tags, thing.content, thing.richContent, thing.attachments, thing.public));
     }));
 };
+
+ThingsApi.prototype.getPublic = function (userId, filter, callback) {
+    var that = this;
+    var u = url('/api/public/' + userId + '/things');
+    var operation = guid();
+
+    this._operation = operation;
+
+    this._query = {};
+
+    if (filter) this._query.filter = filter;
+    this._query.skip = 0;
+    this._query.limit = 10;
+
+    superagent.get(u).query(this._query).end(errorWrapper(function (error, result) {
+        // ignore this if we moved on
+        if (that._operation !== operation) {
+            console.log('ignore this call');
+            return;
+        }
+
+        if (error) return callback(error);
+        if (result.status !== 200) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
+
+        var tmp = result.body.things.map(function (thing) {
+            return new Thing(thing._id, new Date(thing.createdAt).getTime(), thing.tags, thing.content, thing.richContent, thing.attachments, thing.public);
+        });
+
+        // update skip for fetch more call
+        that._query.skip += result.body.things.length;
+
+        callback(null, tmp);
+    }));
+};
+
+ThingsApi.prototype.fetchMorePublic = function (callback) {
+    var that = this;
+    var u = url('/api/public/' + userId + '/things');
+
+    if (!this._query) return callback(new Error('no previous query'));
+
+    superagent.get(u).query(this._query).end(errorWrapper(function (error, result) {
+        if (error) return callback(error);
+        if (result.status !== 200) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
+
+        var tmp = result.body.things.map(function (thing) {
+            return new Thing(thing._id, new Date(thing.createdAt).getTime(), thing.tags, thing.content, thing.richContent, thing.attachments, thing.public);
+        });
+
+        // update skip for next call
+        that._query.skip += result.body.things.length;
+
+        callback(null, tmp);
+    }));
+};
+
 
 ThingsApi.prototype.import = function (formData, callback) {
     superagent.post(url('/api/import')).send(formData).end(errorWrapper(function (error, result) {

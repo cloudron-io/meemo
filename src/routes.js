@@ -22,6 +22,7 @@ exports = module.exports = {
     fileGet: fileGet,
 
     public: {
+        getAll: publicGetAll,
         getThing: publicGetThing,
         getFile: publicGetFile
     }
@@ -290,6 +291,24 @@ function publicGetThing(req, res, next) {
         if (error) return next(new HttpError(500, error));
 
         next(new HttpSuccess(200, { thing: result }));
+    });
+}
+
+function publicGetAll(req, res, next) {
+    var query = {};
+
+    if (req.query && req.query.filter) {
+        query = {
+            $text: { $search: String(req.query.filter) }
+        };
+    }
+
+    var skip = isNaN(parseInt(req.query.skip)) ? 0 : parseInt(req.query.skip);
+    var limit = isNaN(parseInt(req.query.limit)) ? 10 : parseInt(req.query.limit);
+
+    logic.getAllPublic(req.params.userId, query, skip, limit, function (error, result) {
+        if (error) return next(new HttpError(500, error));
+        next(new HttpSuccess(200, { things: result }));
     });
 }
 

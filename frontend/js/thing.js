@@ -73,7 +73,7 @@ function main() {
         return;
     }
 
-    Core.things.getPublic(search.userId, search.id, function (error, result) {
+    Core.things.getPublicThing(search.userId, search.id, function (error, result) {
         vue.busy = false;
 
         if (error) {
