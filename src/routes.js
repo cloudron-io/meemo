@@ -286,7 +286,9 @@ function fileGet(req, res) {
 
 function publicGetThing(req, res, next) {
     logic.getPublic(req.params.userId, req.params.thingId, function (error, result) {
+        if (error === 'not allowed') return next(new HttpError(403, 'not allowed'));
         if (error) return next(new HttpError(500, error));
+
         next(new HttpSuccess(200, { thing: result }));
     });
 }

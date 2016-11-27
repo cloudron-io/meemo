@@ -7,6 +7,7 @@ exports = module.exports = {
     getAll: getAll,
     getAllLean: getAllLean,
     get: get,
+    getPublic: getPublic,
     add: add,
     put: put,
     del: del,
@@ -264,6 +265,20 @@ function get(userId, thingId, callback) {
 
             callback(null, result);
         });
+    });
+}
+
+function getPublic(userId, thingId, callback) {
+    assert.strictEqual(typeof userId, 'string');
+    assert.strictEqual(typeof thingId, 'string');
+    assert.strictEqual(typeof callback, 'function');
+
+    get(userId, thingId, function (error, result) {
+        if (error) return callback(error);
+
+        if (!result.public) return callback('not allowed');
+
+        callback(null, result);
     });
 }
 
