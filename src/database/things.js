@@ -11,8 +11,7 @@ exports = module.exports = {
     add: add,
     addFull: addFull,
     put: put,
-    del: del,
-    setPublic: setPublic
+    del: del
 };
 
 var assert = require('assert'),
@@ -138,23 +137,6 @@ function put(userId, thingId, content, tags, attachments, externalContent, isPub
         modifiedAt: Date.now(),
         externalContent: externalContent,
         attachments: attachments,
-        public: isPublic
-    };
-
-    getCollection(userId).update({_id: new ObjectId(thingId) }, { $set: data }, function (error) {
-        if (error) return callback(error);
-
-        get(userId, thingId, callback);
-    });
-}
-
-function setPublic(userId, thingId, isPublic, callback) {
-    assert.strictEqual(typeof userId, 'string');
-    assert.strictEqual(typeof thingId, 'string');
-    assert.strictEqual(typeof isPublic, 'boolean');
-    assert.strictEqual(typeof callback, 'function');
-
-    var data = {
         public: isPublic
     };
 
