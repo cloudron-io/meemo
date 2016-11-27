@@ -248,10 +248,9 @@ function getAllLean(userId, callback) {
     things.getAllLean(userId, callback);
 }
 
-function get(userId, thingId, isPublic, callback) {
+function get(userId, thingId, callback) {
     assert.strictEqual(typeof userId, 'string');
     assert.strictEqual(typeof thingId, 'string');
-    assert.strictEqual(typeof isPublic, 'boolean');
     assert.strictEqual(typeof callback, 'function');
 
     things.get(userId, thingId, function (error, result) {

@@ -167,7 +167,7 @@ function getAll(req, res, next) {
 }
 
 function get(req, res, next) {
-    logic.get(req.userId, req.params.id, req.userId, function (error, result) {
+    logic.get(req.userId, req.params.id, function (error, result) {
         if (error) return next(new HttpError(500, error));
         next(new HttpSuccess(200, { thing: result }));
     });
@@ -285,7 +285,7 @@ function fileGet(req, res) {
 }
 
 function publicGetThing(req, res, next) {
-    logic.get(req.params.userId, req.params.thingId, '*', function (error, result) {
+    logic.getPublic(req.params.userId, req.params.thingId, function (error, result) {
         if (error) return next(new HttpError(500, error));
         next(new HttpSuccess(200, { thing: result }));
     });
