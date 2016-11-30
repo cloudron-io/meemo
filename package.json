@@ -26,6 +26,9 @@
     "express": "^4.13.3",
     "imap": "^0.8.17",
     "ldapjs": "^1.0.0",
+    "markdown-it": "^5.0.2",
+    "markdown-it-checkbox": "^1.1.0",
+    "markdown-it-emoji": "^1.1.0",
     "mkdirp": "^0.5.1",
     "mongodb": "^2.0.49",
     "morgan": "^1.6.1",
@@ -38,6 +41,7 @@
     "superagent": "^1.5.0",
     "supererror": "^0.7.1",
     "tar-fs": "^1.13.2",
+    "twemoji": "^1.4.1",
     "uuid": "^2.0.1"
   },
   "devDependencies": {
@@ -53,11 +57,7 @@
     "gulp-sourcemaps": "^1.6.0",
     "gulp-util": "^3.0.7",
     "jquery": "^2.1.4",
-    "markdown-it": "^5.0.2",
-    "markdown-it-checkbox": "^1.1.0",
-    "markdown-it-emoji": "^1.1.0",
     "mocha": "^3.0.2",
-    "twemoji": "^1.4.1",
     "vue": "^1.0.21"
   }
 }
