@@ -35,9 +35,6 @@ router.post('/api/files', routes.auth, memoryUpload, routes.fileAdd);
 // FIXME should not be public!!! but is required for thing sharing at the moment
 router.get ('/api/files/:userId/:identifier', routes.fileGet);
 
-router.get ('/api/public/:userId/files/:fileId', routes.public.getFile);
-router.get ('/api/public/:userId/things', routes.public.getAll);
-router.get ('/api/public/:userId/things/:thingId', routes.public.getThing);
 
 router.get ('/api/tags', routes.auth, routes.getTags);
 
@@ -53,7 +50,12 @@ router.get ('/api/logout', routes.auth, routes.logout);
 router.get ('/api/profile', routes.auth, routes.profile);
 
 // public apis
-router.get ('/api/users', routes.users);
+router.get ('/api/public/:userId/files/:fileId', routes.public.getFile);
+router.get ('/api/public/:userId/things', routes.public.getAll);
+router.get ('/api/public/:userId/things/:thingId', routes.public.getThing);
+router.get ('/api/rss/:userId', routes.public.getRSS);
+
+router.get ('/api/users', routes.public.users);
 
 router.get ('/api/healthcheck', routes.healthcheck);
 

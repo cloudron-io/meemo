@@ -20,12 +20,13 @@ exports = module.exports = {
     healthcheck: healthcheck,
     fileAdd: fileAdd,
     fileGet: fileGet,
-    users: users,
 
     public: {
+        users: publicUsers,
         getAll: publicGetAll,
         getThing: publicGetThing,
-        getFile: publicGetFile
+        getFile: publicGetFile,
+        getRSS: publicGetRSS
     }
 };
 
@@ -37,6 +38,7 @@ var assert = require('assert'),
     logic = require('./logic.js'),
     mkdirp = require('mkdirp'),
     path = require('path'),
+    rss = require('rss'),
     settings = require('./database/settings.js'),
     tags = require('./database/tags.js'),
     tar = require('tar-fs'),
@@ -298,10 +300,43 @@ function publicGetFile(req, res) {
     res.sendFile(req.params.fileId, { root: path.join(config.attachmentDir, req.params.userId) });
 }
 
-function users(req, res, next) {
+function publicUsers(req, res, next) {
     users.list(function (error, result) {
         if (error) return next(new HttpError(500, error));
 
         next(new HttpSuccess(200, { users: result }));
     });
+}
+
+function publicGetRSS(req, res, next) {
+    var query = {};
+
+    logic.getAllPublic(req.params.userId, query, 0, 50, function (error, result) {
+        if (error) return next(new HttpError(500, error));
+
+        // TODO
+        var webServer = '/';
+
+        var feed = new rss({
+            title: 'Guacamoly',
+            image_url: webServer + '/img/logo128.png',
+            site_url: webServer
+        });
+
+        // generate the rss feed items
+        result.forEach(function (r) {
+            var title = r.content.split('\n').filter(function (l) { return !!l.trim(); })[0];
+
+            feed.item({
+                title: title,
+                url: webServer + '/blog/' + 'TODO', // TODO
+                author: req.params.userId,          // TODO
+                date: new Date(r.createdAt),
+                description: r.richContent
+            });
+        });
+
+        res.status(200).send(feed.xml());
+    });
+
 }
