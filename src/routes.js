@@ -309,7 +309,7 @@ function publicUsers(req, res, next) {
 }
 
 function publicGetRSS(req, res, next) {
-    var query = {};
+    assert.strictEqual(typeof req.params.userId, 'string');
 
     users.profile(req.params.userId, function (error, user) {
         if (error) return next(new HttpError(500, error));
@@ -317,7 +317,7 @@ function publicGetRSS(req, res, next) {
         settings.get(req.params.userId, function (error, config) {
             if (error) return next(new HttpError(500, error));
 
-            logic.getAllPublic(req.params.userId, query, 0, 50, function (error, result) {
+            logic.getAllPublic(req.params.userId, {}, 0, 50, function (error, result) {
                 if (error) return next(new HttpError(500, error));
 
                 // TODO
