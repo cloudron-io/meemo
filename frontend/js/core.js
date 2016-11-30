@@ -340,6 +340,17 @@ SessionApi.prototype.profile = function (callback) {
     }));
 };
 
+function UsersApi() {}
+
+UsersApi.prototype.list = function (callback) {
+    superagent.get(url('/api/users')).end(function (error, result) {
+        if (error) return callback(error);
+        if (result.status !== 200) return callback(new Error('Login failed. ' + result.status + '. ' + result.text));
+
+        callback(null, result.body.users);
+    });
+};
+
 window.Guacamoly = window.Guacamoly || {};
 window.Guacamoly.Core = {
     onAuthFailure: function () {},
@@ -351,7 +362,8 @@ window.Guacamoly.Core = {
     session: new SessionApi(),
     settings: new SettingsApi(),
     things: new ThingsApi(),
-    tags: new TagsApi()
+    tags: new TagsApi(),
+    users: new UsersApi()
 };
 
 })();
