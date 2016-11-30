@@ -162,7 +162,7 @@ textarea {
     display: none;
     position: absolute;
     top: 100%;
-    left: 36px;
+    left: 100px;
     width: 620px;
     padding: 0;
     z-index: 1000;
@@ -173,6 +173,12 @@ textarea {
     box-shadow: 0 6px 12px rgba(0,0,0,.175);
     max-height: 500px;
     overflow-y: auto;
+
+    @media (max-width: 768px) {
+        left: -5px;
+        width: 110%;
+        max-height: 115px;
+    }
 
     .item {
         display: inline-block;
