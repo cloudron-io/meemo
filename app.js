@@ -4,11 +4,6 @@
 
 require('supererror')({ splatchError: true });
 
-if (!process.env.LDAP_URL) {
-    console.error('Only ldap supported. Missing LDAP_URL');
-    process.exit(1);
-}
-
 var express = require('express'),
     json = require('body-parser').json,
     config = require('./src/config.js'),
