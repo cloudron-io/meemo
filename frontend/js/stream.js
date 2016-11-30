@@ -50,7 +50,8 @@ var vue = new Vue({
         busy: true,
         busyFetchMore: false,
         error: null,
-        things: []
+        things: [],
+        userId: ''
     },
     methods: {
         giveAddFocus: function () {
@@ -67,6 +68,8 @@ function main() {
         vue.busy = false;
         return;
     }
+
+    vue.userId = search.userId;
 
     // add rss link tag
     $('head').append('<link rel="alternate" type="application/rss+xml" title="" href="/api/rss/' + search.userId + '" />');

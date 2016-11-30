@@ -20,7 +20,17 @@
   <body id="application">
 
     <div class="container-fluid navigation shadow">
-      <a href="http://guacamoly.rocks" target="_blank" class="brand-link"><img src="/favicon.png" height="28px"/> Guacamoly</a>
+      <div class="row">
+        <div class="col-md-3">
+          <a href="http://guacamoly.rocks" target="_blank" class="brand-link"><img src="/favicon.png" height="28px"/> Guacamoly</a>
+        </div>
+        <div class="col-md-6 text-center">
+          <h2>{{ userId }}</h2>
+        </div>
+        <div class="col-md-3 text-right">
+          <a class="btn" href="/index.html"><i class="fa fa-sign-in"></i> Login</a>
+        </div>
+      </div>
     </div>
 
     <div v-show="busy" v-cloak>
