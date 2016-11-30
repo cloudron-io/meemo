@@ -338,7 +338,7 @@ function publicGetRSS(req, res, next) {
                         url: webServer + '/blog/' + 'TODO', // TODO
                         author: user.displayName + '( ' + user.username + ' )',
                         date: new Date(r.createdAt),
-                        description: r.richContent
+                        description: md.render(r.richContent)
                     });
                 });
 
@@ -347,3 +347,87 @@ function publicGetRSS(req, res, next) {
         });
     });
 }
+
+
+
+// THIS DOES NOT BELONG HERE
+
+function markdownTargetBlank(md) {
+    // stash the default renderer
+    var defaultRender = md.renderer.rules.link_open || function(tokens, idx, options, env, self) {
+        return self.renderToken(tokens, idx, options);
+    };
+
+    md.renderer.rules.link_open = function (tokens, idx, options, env, self) {
+        var href = tokens[idx].attrs[tokens[idx].attrIndex('href')][1];
+
+        if (href.indexOf('https://') === 0 || href.indexOf('http://') === 0) {
+            // in case another plugin added that attribute already
+            var aIndex = tokens[idx].attrIndex('target');
+
+            if (aIndex < 0) {
+                tokens[idx].attrPush(['target', '_blank']); // add new attribute
+            } else {
+                tokens[idx].attrs[aIndex][1] = '_blank';    // replace value of existing attr
+            }
+        }
+
+        return defaultRender(tokens, idx, options, env, self);
+    };
+}
+
+function colorizeIt(md, options) {
+    var regexp = /\:([#\w\-]+)\:/;
+
+    function isColor(color) {
+        // https://developer.mozilla.org/en-US/docs/Web/CSS/color_value
+        var colors = [
+            'clear',
+            'aliceblue', 'lightsalmon', 'antiquewhite', 'lightseagreen', 'aqua', 'lightskyblue', 'aquamarine', 'lightslategray', 'azure', 'lightsteelblue', 'beige', 'lightyellow', 'bisque', 'lime', 'black', 'limegreen', 'blanchedalmond', 'linen', 'blue', 'magenta', 'blueviolet', 'maroon', 'brown', 'mediumaquamarine', 'burlywood', 'mediumblue', 'cadetblue', 'mediumorchid', 'chartreuse', 'mediumpurple', 'chocolate', 'mediumseagreen', 'coral', 'mediumslateblue', 'cornflowerblue', 'mediumspringgreen', 'cornsilk', 'mediumturquoise', 'crimson', 'mediumvioletred', 'cyan', 'midnightblue', 'darkblue', 'mintcream', 'darkcyan', 'mistyrose', 'darkgoldenrod', 'moccasin', 'darkgray', 'navajowhite', 'darkgreen', 'navy', 'darkkhaki', 'oldlace', 'darkmagenta', 'olive', 'darkolivegreen', 'olivedrab', 'darkorange', 'orange', 'darkorchid', 'orangered', 'darkred', 'orchid', 'darksalmon', 'palegoldenrod', 'darkseagreen', 'palegreen', 'darkslateblue', 'paleturquoise', 'darkslategray', 'palevioletred', 'darkturquoise', 'papayawhip', 'darkviolet', 'peachpuff', 'deeppink', 'peru', 'deepskyblue', 'pink', 'dimgray', 'plum', 'dodgerblue', 'powderblue', 'firebrick', 'purple', 'floralwhite', 'red', 'forestgreen', 'rosybrown', 'fuchsia', 'royalblue', 'gainsboro', 'saddlebrown', 'ghostwhite', 'salmon', 'gold', 'sandybrown', 'goldenrod', 'seagreen', 'gray', 'seashell', 'green', 'sienna', 'greenyellow', 'silver', 'honeydew', 'skyblue', 'hotpink', 'slateblue', 'indianred', 'slategray', 'indigo', 'snow', 'ivory', 'springgreen', 'khaki', 'steelblue', 'lavender', 'tan', 'lavenderblush', 'teal', 'lawngreen', 'thistle', 'lemonchiffon', 'tomato', 'lightblue', 'turquoise', 'lightcoral', 'violet', 'lightcyan', 'wheat', 'lightgoldenrodyellow', 'white', 'lightgreen', 'whitesmoke', 'lightgrey', 'yellow', 'lightpink', 'yellowgreen'
+        ];
+
+        if (color[0] === '#') return true;
+
+        return colors.indexOf(color) !== -1;
+    }
+
+    md.inline.ruler.push('colorizeIt', function (state, silent) {
+        // slowwww... maybe use an advanced regexp engine for this
+        var match = regexp.exec(state.src.slice(state.pos));
+        if (!match) return false;
+        if (!isColor(match[1])) return false;
+
+        // valid match found, now we need to advance cursor
+        state.pos += match[0].length;
+
+        // don't insert any tokens in silent mode
+        if (silent) return true;
+
+        var token = state.push('colorizeIt', '', 0);
+        token.meta = { color: match[1] };
+
+        return true;
+    });
+
+    md.renderer.rules['colorizeIt'] = function (tokens, id, options, env) {
+        if (tokens[id].meta.color === 'clear') {
+            return '</span>';
+        } else {
+            return '<span style="color: ' + tokens[id].meta.color + ';">';
+        }
+    };
+}
+
+var md = require('markdown-it')({
+    breaks: true,
+    html: true,
+    linkify: true
+})
+.use(require('markdown-it-emoji'))
+.use(colorizeIt)
+.use(require('markdown-it-checkbox'))
+.use(markdownTargetBlank);
+
+md.renderer.rules.emoji = function(token, idx) {
+    return require('twemoji').parse(token[idx].content);
+};
