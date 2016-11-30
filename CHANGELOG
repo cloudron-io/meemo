@@ -94,3 +94,7 @@
 * Add option to disable scroll on edit
 * Various bug fixes
 
+[1.3.0]
+* Add public streams
+* Improve mobile usage
+
