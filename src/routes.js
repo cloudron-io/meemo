@@ -20,6 +20,7 @@ exports = module.exports = {
     healthcheck: healthcheck,
     fileAdd: fileAdd,
     fileGet: fileGet,
+    users: users,
 
     public: {
         getAll: publicGetAll,
@@ -314,4 +315,12 @@ function publicGetAll(req, res, next) {
 
 function publicGetFile(req, res) {
     res.sendFile(req.params.fileId, { root: path.join(config.attachmentDir, req.params.userId) });
+}
+
+function users(req, res, next) {
+    logic.users(function (error, result) {
+        if (error) return next(new HttpError(500, error));
+
+        next(new HttpSuccess(200, { users: result }));
+    });
 }

@@ -57,6 +57,9 @@ router.get ('/api/logout', routes.auth, routes.logout);
 
 router.get ('/api/profile', routes.auth, routes.profile);
 
+// public apis
+router.get ('/api/users', routes.users);
+
 router.get ('/api/healthcheck', routes.healthcheck);
 
 app.use(morgan('dev', { immediate: false, stream: { write: function (str) { console.log(str.slice(0, -1)); } } }));

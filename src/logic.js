@@ -19,6 +19,7 @@ exports = module.exports = {
     facelift: facelift,
     cleanupTags: cleanupTags,
     importThings: importThings,
+    users: users,
 
     // TODO remove eventually
     hasOldData: null,
@@ -554,5 +555,31 @@ function cleanupOldData(callback) {
                 callback();
             });
         }, callback);
+    });
+}
+
+function users(callback) {
+    var client = ldapjs.createClient({ url: process.env.LDAP_URL });
+    client.bind(process.env.LDAP_BIND_DN, process.env.LDAP_BIND_PASSWORD, function (error) {
+        if (error) return callback(error);
+
+        client.search(process.env.LDAP_USERS_BASE_DN, { scope: 'sub' }, function (error, res) {
+            if (error) return callback(error);
+
+            var entries = [];
+            res.on('searchEntry', function(entry) {
+                var data = {
+                    id: entry.object.uid,
+                    username: entry.object.username,
+                    displayName: entry.object.displayname
+                };
+
+                entries.push(data);
+            });
+            res.on('error', callback);
+            res.on('end', function () {
+                callback(null, entries);
+            });
+        });
     });
 }
