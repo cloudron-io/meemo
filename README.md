@@ -30,12 +30,17 @@ cloudron install
 
 ## Development
 
-The app can also be run locally for development. It depends on a locally running mongodb as well as an instance of the [ldap test server](https://github.com/nebulade/ldapjstestserver).
+The app can also be run locally for development. It depends on a locally running mongodb and optionally on an instance of the [ldap test server](https://github.com/nebulade/ldapjstestserver).
 
 ```
 cd guacamoly
 
 npm install
 
-LDAP_USERS_BASE_DN="ou=users,dc=example" LDAP_URL="ldap://localhost:3002" ./app.js
+# with LDAP
+LDAP_BIND_DN="cn=admin,ou=users,dc=example" LDAP_BIND_PASSWORD="password" LDAP_USERS_BASE_DN="ou=users,dc=example" LDAP_URL="ldap://localhost:3002" ./app.js
+
+# without LDAP
+./admin user-add --username test --password test --display-name "Test User"
+./app.js
 ```
