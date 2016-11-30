@@ -12,6 +12,7 @@ var assert = require('assert'),
     debug = require('debug')('mail'),
     Imap = require('imap'),
     quotedPrintable = require('quoted-printable'),
+    users = require('./users.js'),
     logic = require('./logic.js');
 
 console.log('Email receiving is enabled');
@@ -176,7 +177,7 @@ function checkInbox() {
                         return;
                     }
 
-                    logic.getProfileByIdentifier(username, function (error, result) {
+                    users.profile(username, function (error, result) {
                         if (error) {
                             console.error('Unable to map %s to an LDAP user', error);
                             conn.seq.move(message.seqno, ['Trash'], callback);

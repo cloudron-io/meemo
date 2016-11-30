@@ -33,7 +33,7 @@ var assert = require('assert'),
     checksum = require('checksum'),
     config = require('./config.js'),
     fs = require('fs'),
-    ldapjs = require('ldapjs'),
+    path = require('path'),
     logic = require('./logic.js'),
     mkdirp = require('mkdirp'),
     path = require('path'),
@@ -41,9 +41,11 @@ var assert = require('assert'),
     tags = require('./database/tags.js'),
     tar = require('tar-fs'),
     tokens = require('./database/tokens.js'),
+    users = require('./users.js'),
     uuid = require('uuid'),
     HttpError = require('connect-lastmile').HttpError,
     HttpSuccess = require('connect-lastmile').HttpSuccess;
+
 
 function healthcheck(req, res, next) {
     next(new HttpSuccess(200, {}));
@@ -73,32 +75,11 @@ function welcomeIfNeeded(userId, callback) {
         logic.imp(userId, require('../things.json'), callback);
     });
 }
-
-function verifyUser(username, password, callback) {
-    logic.getProfileByIdentifier(username, function (error, result) {
-        if (error) return callback(null, null);
-
-        var ldapClient = ldapjs.createClient({ url: process.env.LDAP_URL });
-        ldapClient.on('error', function (error) {
-            console.error('LDAP error', error);
-            callback(error);
-        });
-
-        var ldapDn = 'cn=' + result.username + ',' + process.env.LDAP_USERS_BASE_DN;
-
-        ldapClient.bind(ldapDn, password, function (error) {
-            if (error) return callback(null, null);
-
-            callback(null, { user: result });
-        });
-    });
-}
-
 function login(req, res, next) {
     if (typeof req.body.username !== 'string' || !req.body.username) return next(new HttpError(400, 'missing username'));
     if (typeof req.body.password !== 'string' || !req.body.password) return next(new HttpError(400, 'missing password'));
 
-    verifyUser(req.body.username, req.body.password, function (error, result) {
+    users.verify(req.body.username, req.body.password, function (error, result) {
         if (error) return next(new HttpError(500, error));
         if (!result) return next(new HttpError(401, 'invalid credentials'));
 
@@ -138,7 +119,7 @@ function logout(req, res, next) {
 }
 
 function profile(req, res, next) {
-    logic.getProfileByIdentifier(req.userId, function (error, result) {
+    users.profile(req.userId, function (error, result) {
         if (error) return next(new HttpError(500, error));
 
         var out = {
@@ -318,7 +299,7 @@ function publicGetFile(req, res) {
 }
 
 function users(req, res, next) {
-    logic.users(function (error, result) {
+    users.list(function (error, result) {
         if (error) return next(new HttpError(500, error));
 
         next(new HttpSuccess(200, { users: result }));

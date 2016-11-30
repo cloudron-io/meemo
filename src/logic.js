@@ -3,7 +3,6 @@
 'use strict';
 
 exports = module.exports = {
-    getProfileByIdentifier: getProfileByIdentifier,
     getAll: getAll,
     getAllPublic: getAllPublic,
     getAllLean: getAllLean,
@@ -19,7 +18,6 @@ exports = module.exports = {
     facelift: facelift,
     cleanupTags: cleanupTags,
     importThings: importThings,
-    users: users,
 
     // TODO remove eventually
     hasOldData: null,
@@ -35,7 +33,6 @@ var assert = require('assert'),
     config = require('./config.js'),
     path = require('path'),
     fs = require('fs'),
-    ldapjs = require('ldapjs'),
     mkdirp = require('mkdirp'),
     url = require('url'),
     tags = require('./database/tags.js'),
@@ -47,46 +44,6 @@ var assert = require('assert'),
 
 var GET_URL = new RegExp('(^|[ \t\r\n])((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){2,}(#([a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))', 'g');
 var PRETTY_URL_LENGTH = 40;
-
-// identifier may be userId, email, username
-function getProfileByIdentifier(identifier, callback) {
-    assert.strictEqual(typeof identifier, 'string');
-    assert.strictEqual(typeof callback, 'function');
-
-    var ldapClient = ldapjs.createClient({ url: process.env.LDAP_URL });
-    ldapClient.on('error', function (error) {
-        console.error('LDAP error', error);
-        callback(error);
-    });
-
-    ldapClient.search(process.env.LDAP_USERS_BASE_DN, { filter: '(|(uid=' + identifier + ')(mail=' + identifier + ')(username=' + identifier + '))' }, function (error, result) {
-        if (error) return callback(error);
-
-        var items = [];
-
-        result.on('searchEntry', function(entry) {
-            items.push(entry.object);
-        });
-
-        result.on('error', function (error) {
-            callback(error);
-        });
-
-        result.on('end', function (result) {
-            if (result.status !== 0) return callback(new Error('non-zero status from LDAP search: ' + result.status));
-            if (items.length === 0) return callback(new Error('Duplicate entries found'));
-
-            var out = {
-                id: items[0].uid,
-                username: items[0].username,
-                displayName: items[0].displayname,
-                email: items[0].mail
-            };
-
-            callback(null, out);
-        });
-    });
-}
 
 function extractURLs(content) {
     var lines = content.split('\n');
@@ -555,31 +512,5 @@ function cleanupOldData(callback) {
                 callback();
             });
         }, callback);
-    });
-}
-
-function users(callback) {
-    var client = ldapjs.createClient({ url: process.env.LDAP_URL });
-    client.bind(process.env.LDAP_BIND_DN, process.env.LDAP_BIND_PASSWORD, function (error) {
-        if (error) return callback(error);
-
-        client.search(process.env.LDAP_USERS_BASE_DN, { scope: 'sub' }, function (error, res) {
-            if (error) return callback(error);
-
-            var entries = [];
-            res.on('searchEntry', function(entry) {
-                var data = {
-                    id: entry.object.uid,
-                    username: entry.object.username,
-                    displayName: entry.object.displayname
-                };
-
-                entries.push(data);
-            });
-            res.on('error', callback);
-            res.on('end', function () {
-                callback(null, entries);
-            });
-        });
     });
 }
