@@ -336,7 +336,7 @@ function publicGetRSS(req, res, next) {
             });
         });
 
-        res.status(200).send(feed.xml());
+        res.type('application/rss+xml').status(200).send(feed.xml());
     });
 
 }
