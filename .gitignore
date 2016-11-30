@@ -4,3 +4,4 @@ attachments/
 storage/
 webextension-chrome.zip
 webextension-firefox.xpi
+.users.json
