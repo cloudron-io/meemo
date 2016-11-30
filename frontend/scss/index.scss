@@ -89,9 +89,7 @@ body {
 
 .shadow {
     box-shadow: 0 0 10px 0 rgba(0,0,0,.2),0 0 5px 0 rgba(0,0,0,.19);
-    // box-shadow: 0 4px 17px 0 rgba(0,0,0,.2),0 6px 20px 0 rgba(0,0,0,.19);
 }
-
 
 .thing-content {
     overflow: auto;
@@ -242,19 +240,19 @@ textarea {
     }
 }
 
-.login-form {
+.white-boxes {
     background-color: white;
     padding: 20px;
-}
 
-.user-list {
     h3 {
+        margin-top: 0;
         margin-bottom: 40px;
     }
 
     .entry {
         display: block;
         margin: 20px 0;
+        color: #03A9F4;
 
         h4 {
             margin-bottom: 0;
@@ -262,6 +260,7 @@ textarea {
 
         &:hover {
             text-decoration: none;
+            color: black;
         }
     }
 }
