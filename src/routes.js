@@ -321,7 +321,7 @@ function publicGetRSS(req, res, next) {
                 if (error) return next(new HttpError(500, error));
 
                 // TODO
-                var webServer = '/';
+                var webServer = process.env.APP_ORIGIN || 'http://localhost';
 
                 var feed = new rss({
                     title: config.title,
