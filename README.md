@@ -17,6 +17,37 @@ or using the [Cloudron command line tooling](https://cloudron.io/references/cli.
 cloudron install --appstore-id de.nebulon.guacamoly
 ```
 
+If you run Guacamoly outside a Cloudron environment, the installation consist of:
+```
+cd guacamoly
+npm i
+./app.js
+```
+
+Possible env variables for configuration are:
+```
+PORT=3000
+APP_ORIGIN="https://example.com"
+MONGODB_URL="mongodb://127.0.0.1:27017/guacamoly"
+ATTACHMENT_DIR="./storage"
+
+# using LDAP user management
+LDAP_URL="ldap://my.ldap.server"
+LDAP_USERS_BASE_DN="ou=users,dc=example"
+LDAP_BIND_DN="cn=admin,ou=users,dc=example"
+LDAP_BIND_PASSWORD=""
+
+# using local file user management via admin cli tool
+LOCAL_AUTH_FILE=".users.json"	# also pass this for the admin tool to find the correct file
+
+# to enable email receiving
+MAIL_IMAP_SERVER="my.mail.server"
+MAIL_IMAP_PORT=993
+MAIL_IMAP_USERNAME=""
+MAIL_IMAP_PASSWORD=""
+MAIL_DOMAIN="example.com"
+```
+
 ## Building
 
 The app package can be built using the [Cloudron command line tooling](https://cloudron.io/references/cli.html).
