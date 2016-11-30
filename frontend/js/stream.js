@@ -68,6 +68,9 @@ function main() {
         return;
     }
 
+    // add rss link tag
+    $('head').append('<link rel="alternate" type="application/rss+xml" title="" href="/api/rss/' + search.userId + '" />');
+
     Core.things.getPublic(search.userId, '', function (error, result) {
         vue.busy = false;
 
