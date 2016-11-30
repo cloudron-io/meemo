@@ -319,7 +319,7 @@ function publicProfile(req, res, next) {
             displayName: result.displayName,
         };
 
-        settings.get(req.userId, function (error, result) {
+        settings.get(req.params.userId, function (error, result) {
             if (error) return next(new HttpError(500, error));
 
             out.title = result.title;

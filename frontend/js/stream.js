@@ -51,7 +51,7 @@ var vue = new Vue({
         busyFetchMore: false,
         error: null,
         things: [],
-        userId: ''
+        publicProfile: {}
     },
     methods: {
         giveAddFocus: function () {
@@ -69,21 +69,25 @@ function main() {
         return;
     }
 
-    vue.userId = search.userId;
-
     // add rss link tag
     $('head').append('<link rel="alternate" type="application/rss+xml" title="" href="/api/rss/' + search.userId + '" />');
 
-    Core.things.getPublic(search.userId, '', function (error, result) {
-        vue.busy = false;
+    Core.users.publicProfile(search.userId, function (error, result) {
+        if (error) console.error(error);
 
-        if (error) {
-            console.log(error);
-            vue.error = 'Not found';
-            return;
-        }
+        vue.publicProfile = result;
 
-        vue.things = result;
+        Core.things.getPublic(search.userId, '', function (error, result) {
+            vue.busy = false;
+
+            if (error) {
+                console.log(error);
+                vue.error = 'Not found';
+                return;
+            }
+
+            vue.things = result;
+        });
     });
 }
 

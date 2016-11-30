@@ -345,9 +345,18 @@ function UsersApi() {}
 UsersApi.prototype.list = function (callback) {
     superagent.get(url('/api/users')).end(function (error, result) {
         if (error) return callback(error);
-        if (result.status !== 200) return callback(new Error('Login failed. ' + result.status + '. ' + result.text));
+        if (result.status !== 200) return callback(new Error('User listing failed. ' + result.status + '. ' + result.text));
 
         callback(null, result.body.users);
+    });
+};
+
+UsersApi.prototype.publicProfile = function (userId, callback) {
+    superagent.get(url('/api/users/' + userId)).end(function (error, result) {
+        if (error) return callback(error);
+        if (result.status !== 200) return callback(new Error('Fetching public profile failed. ' + result.status + '. ' + result.text));
+
+        callback(null, result.body);
     });
 };
 
