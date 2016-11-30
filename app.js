@@ -62,6 +62,8 @@ router.get ('/api/public/:userId/things/:thingId', routes.public.getThing);
 router.get ('/api/rss/:userId', routes.public.getRSS);
 
 router.get ('/api/users', routes.public.users);
+router.get ('/api/users', routes.public.users);
+router.get ('/api/users/:userId', routes.public.profile);
 
 router.get ('/api/healthcheck', routes.healthcheck);
 

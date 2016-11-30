@@ -23,6 +23,7 @@ exports = module.exports = {
 
     public: {
         users: publicUsers,
+        profile: publicProfile,
         getAll: publicGetAll,
         getThing: publicGetThing,
         getFile: publicGetFile,
@@ -305,6 +306,27 @@ function publicUsers(req, res, next) {
         if (error) return next(new HttpError(500, error));
 
         next(new HttpSuccess(200, { users: result }));
+    });
+}
+
+function publicProfile(req, res, next) {
+    users.profile(req.params.userId, function (error, result) {
+        if (error) return next(new HttpError(500, error));
+
+        var out = {
+            id: result.id,
+            username: result.username,
+            displayName: result.displayName,
+        };
+
+        settings.get(req.userId, function (error, result) {
+            if (error) return next(new HttpError(500, error));
+
+            out.title = result.title;
+            out.backgroundImageDataUrl = result.backgroundImageDataUrl;
+
+            next(new HttpSuccess(200, out));
+        });
     });
 }
 
