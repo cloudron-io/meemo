@@ -311,32 +311,39 @@ function publicUsers(req, res, next) {
 function publicGetRSS(req, res, next) {
     var query = {};
 
-    logic.getAllPublic(req.params.userId, query, 0, 50, function (error, result) {
+    users.profile(req.params.userId, function (error, user) {
         if (error) return next(new HttpError(500, error));
 
-        // TODO
-        var webServer = '/';
+        settings.get(req.params.userId, function (error, config) {
+            if (error) return next(new HttpError(500, error));
 
-        var feed = new rss({
-            title: 'Guacamoly',
-            image_url: webServer + '/img/logo128.png',
-            site_url: webServer
-        });
+            logic.getAllPublic(req.params.userId, query, 0, 50, function (error, result) {
+                if (error) return next(new HttpError(500, error));
 
-        // generate the rss feed items
-        result.forEach(function (r) {
-            var title = r.content.split('\n').filter(function (l) { return !!l.trim(); })[0];
+                // TODO
+                var webServer = '/';
 
-            feed.item({
-                title: title,
-                url: webServer + '/blog/' + 'TODO', // TODO
-                author: req.params.userId,          // TODO
-                date: new Date(r.createdAt),
-                description: r.richContent
+                var feed = new rss({
+                    title: config.title,
+                    image_url: webServer + '/img/logo128.png',
+                    site_url: webServer
+                });
+
+                // generate the rss feed items
+                result.forEach(function (r) {
+                    var title = r.content.split('\n').filter(function (l) { return !!l.trim(); })[0];
+
+                    feed.item({
+                        title: title,
+                        url: webServer + '/blog/' + 'TODO', // TODO
+                        author: user.displayName + '( ' + user.username + ' )',
+                        date: new Date(r.createdAt),
+                        description: r.richContent
+                    });
+                });
+
+                res.type('application/rss+xml').status(200).send(feed.xml());
             });
         });
-
-        res.type('application/rss+xml').status(200).send(feed.xml());
     });
-
 }
