@@ -9,7 +9,8 @@ Vue.component('view-login', {
             busy: false,
             error: false,
             username: '',
-            password: ''
+            password: '',
+            users: []
         };
     },
     methods: {
@@ -40,6 +41,13 @@ Vue.component('view-login', {
         }
     },
     ready: function () {
+        var that = this;
+
+        this.$root.Core.users.list(function (error, result) {
+            that.users = result;
+            console.log(result)
+        });
+
         Vue.nextTick(function () { $('#inputUsername').focus(); });
     }
 });

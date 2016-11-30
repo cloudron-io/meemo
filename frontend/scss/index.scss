@@ -236,3 +236,22 @@ textarea {
     background-color: white;
     padding: 20px;
 }
+
+.user-list {
+    h3 {
+        margin-bottom: 40px;
+    }
+
+    .entry {
+        display: block;
+        margin: 20px 0;
+
+        h4 {
+            margin-bottom: 0;
+        }
+
+        &:hover {
+            text-decoration: none;
+        }
+    }
+}
