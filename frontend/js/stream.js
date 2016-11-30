@@ -77,6 +77,9 @@ function main() {
 
         vue.publicProfile = result;
 
+        if (result.title) window.document.title = result.title;
+        if (result.backgroundImageDataUrl) window.document.body.style.backgroundImage = 'url("' + result.backgroundImageDataUrl + '")';
+
         Core.things.getPublic(search.userId, '', function (error, result) {
             vue.busy = false;
 
