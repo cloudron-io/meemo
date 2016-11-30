@@ -1,11 +1,16 @@
 {
   "name": "guacamoly",
-  "version": "1.0.0",
+  "version": "1.3.0",
   "dependencies": {
     "async": {
       "version": "1.5.2",
       "from": "https://registry.npmjs.org/async/-/async-1.5.2.tgz",
       "resolved": "https://registry.npmjs.org/async/-/async-1.5.2.tgz"
+    },
+    "bcryptjs": {
+      "version": "2.3.0",
+      "from": "bcryptjs@*",
+      "resolved": "https://registry.npmjs.org/bcryptjs/-/bcryptjs-2.3.0.tgz"
     },
     "body-parser": {
       "version": "1.15.2",
@@ -125,6 +130,18 @@
               "resolved": "https://registry.npmjs.org/wordwrap/-/wordwrap-0.0.3.tgz"
             }
           }
+        }
+      }
+    },
+    "commander": {
+      "version": "2.9.0",
+      "from": "commander@*",
+      "resolved": "https://registry.npmjs.org/commander/-/commander-2.9.0.tgz",
+      "dependencies": {
+        "graceful-readlink": {
+          "version": "1.0.1",
+          "from": "graceful-readlink@>=1.0.0",
+          "resolved": "https://registry.npmjs.org/graceful-readlink/-/graceful-readlink-1.0.1.tgz"
         }
       }
     },
@@ -633,6 +650,62 @@
         }
       }
     },
+    "markdown-it": {
+      "version": "5.1.0",
+      "from": "markdown-it@>=5.0.2 <6.0.0",
+      "resolved": "https://registry.npmjs.org/markdown-it/-/markdown-it-5.1.0.tgz",
+      "dependencies": {
+        "argparse": {
+          "version": "1.0.7",
+          "from": "argparse@>=1.0.3 <1.1.0",
+          "resolved": "https://registry.npmjs.org/argparse/-/argparse-1.0.7.tgz",
+          "dependencies": {
+            "sprintf-js": {
+              "version": "1.0.3",
+              "from": "sprintf-js@>=1.0.2 <1.1.0",
+              "resolved": "https://registry.npmjs.org/sprintf-js/-/sprintf-js-1.0.3.tgz"
+            }
+          }
+        },
+        "entities": {
+          "version": "1.1.1",
+          "from": "entities@>=1.1.1 <1.2.0",
+          "resolved": "https://registry.npmjs.org/entities/-/entities-1.1.1.tgz"
+        },
+        "linkify-it": {
+          "version": "1.2.4",
+          "from": "linkify-it@>=1.2.0 <1.3.0",
+          "resolved": "https://registry.npmjs.org/linkify-it/-/linkify-it-1.2.4.tgz"
+        },
+        "mdurl": {
+          "version": "1.0.1",
+          "from": "mdurl@>=1.0.1 <1.1.0",
+          "resolved": "https://registry.npmjs.org/mdurl/-/mdurl-1.0.1.tgz"
+        },
+        "uc.micro": {
+          "version": "1.0.3",
+          "from": "uc.micro@>=1.0.0 <2.0.0",
+          "resolved": "https://registry.npmjs.org/uc.micro/-/uc.micro-1.0.3.tgz"
+        }
+      }
+    },
+    "markdown-it-checkbox": {
+      "version": "1.1.0",
+      "from": "markdown-it-checkbox@>=1.1.0 <2.0.0",
+      "resolved": "https://registry.npmjs.org/markdown-it-checkbox/-/markdown-it-checkbox-1.1.0.tgz",
+      "dependencies": {
+        "underscore": {
+          "version": "1.8.3",
+          "from": "underscore@>=1.8.2 <2.0.0",
+          "resolved": "https://registry.npmjs.org/underscore/-/underscore-1.8.3.tgz"
+        }
+      }
+    },
+    "markdown-it-emoji": {
+      "version": "1.2.0",
+      "from": "markdown-it-emoji@>=1.1.0 <2.0.0",
+      "resolved": "https://registry.npmjs.org/markdown-it-emoji/-/markdown-it-emoji-1.2.0.tgz"
+    },
     "mkdirp": {
       "version": "0.5.1",
       "from": "https://registry.npmjs.org/mkdirp/-/mkdirp-0.5.1.tgz",
@@ -1001,6 +1074,30 @@
               "resolved": "https://registry.npmjs.org/path-is-absolute/-/path-is-absolute-1.0.0.tgz"
             }
           }
+        }
+      }
+    },
+    "rss": {
+      "version": "1.2.1",
+      "from": "rss@*",
+      "resolved": "https://registry.npmjs.org/rss/-/rss-1.2.1.tgz",
+      "dependencies": {
+        "mime-types": {
+          "version": "2.1.13",
+          "from": "mime-types@>=2.1.7 <3.0.0",
+          "resolved": "https://registry.npmjs.org/mime-types/-/mime-types-2.1.13.tgz",
+          "dependencies": {
+            "mime-db": {
+              "version": "1.25.0",
+              "from": "mime-db@>=1.25.0 <1.26.0",
+              "resolved": "https://registry.npmjs.org/mime-db/-/mime-db-1.25.0.tgz"
+            }
+          }
+        },
+        "xml": {
+          "version": "1.0.1",
+          "from": "xml@>=1.0.0 <2.0.0",
+          "resolved": "https://registry.npmjs.org/xml/-/xml-1.0.1.tgz"
         }
       }
     },
@@ -1395,6 +1492,11 @@
           }
         }
       }
+    },
+    "twemoji": {
+      "version": "1.4.1",
+      "from": "twemoji@>=1.4.1 <2.0.0",
+      "resolved": "https://registry.npmjs.org/twemoji/-/twemoji-1.4.1.tgz"
     },
     "uuid": {
       "version": "2.0.3",
