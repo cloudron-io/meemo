@@ -22,6 +22,7 @@
             <li><a href="#modalExtensions" data-toggle="modal">Browser Extensions</a></li>
             <li><a href="#modalCheatSheet" data-toggle="modal">Cheatsheet</a></li>
             <li v-show="$root.mailbox"><a href="#modalMailbox" data-toggle="modal">Mailbox</a></li>
+            <li><a href="/api/rss/{{ profile.id }}" target="_blank">RSS Feed</a></li>
             <li class="divider"></li>
             <li><a href="#" data-toggle="modal" data-target="#modalImport">Import</a></li>
             <li><a href="#" @click.prevent="exportThings()">Export</a></li>
