@@ -328,6 +328,9 @@ function reset() {
     vue.tags = [];
     vue.search = '';
     vue.settings = {};
+
+    window.document.title = 'Guacamoly';
+    window.document.body.style.backgroundImage = '';
 }
 
 Core.onAuthFailure = reset;
