@@ -323,7 +323,7 @@ function publicProfile(req, res, next) {
             if (error) return next(new HttpError(500, error));
 
             out.title = result.title;
-            out.backgroundImageDataUrl = result.backgroundImageDataUrl;
+            out.backgroundImageDataUrl = result.publicBackground ? result.backgroundImageDataUrl : undefined;
 
             next(new HttpSuccess(200, out));
         });

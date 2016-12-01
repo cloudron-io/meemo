@@ -260,6 +260,7 @@ SettingsApi.prototype.reset = function () {
     data.title = 'Guacamoly';
     data.backgroundImageDataUrl =  '';
     data.wide = false;
+    data.publicBackground = false;
 
     this.save(data, function () {});
 };

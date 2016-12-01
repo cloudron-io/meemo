@@ -12,7 +12,8 @@ Vue.component('modal-settings', {
             backgroundImageDataUrl: '',
             backgroundImageError: null,
             wide: false,
-            keepPositionAfterEdit: false
+            keepPositionAfterEdit: false,
+            publicBackground: false
         };
     },
     methods: {
@@ -23,6 +24,7 @@ Vue.component('modal-settings', {
             this.backgroundImage = 'url("' + this.$root.settings.backgroundImageDataUrl + '")';
             this.wide = this.$root.settings.wide;
             this.keepPositionAfterEdit = this.$root.settings.keepPositionAfterEdit;
+            this.publicBackground = this.$root.settings.publicBackground;
         },
         onHide: function () {
             this.busy = false;
@@ -31,6 +33,7 @@ Vue.component('modal-settings', {
             this.backgroundImage = '';
             this.wide = false;
             this.keepPositionAfterEdit = false;
+            this.publicBackground = false;
         },
         save: function () {
             var that = this;
@@ -38,7 +41,8 @@ Vue.component('modal-settings', {
                 title: this.title,
                 backgroundImageDataUrl: this.backgroundImageDataUrl,
                 wide: this.wide,
-                keepPositionAfterEdit: this.keepPositionAfterEdit
+                keepPositionAfterEdit: this.keepPositionAfterEdit,
+                publicBackground: this.publicBackground
             };
 
             this.busy = true;

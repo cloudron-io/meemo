@@ -258,9 +258,10 @@ var vue = new Vue({
 
                     // just ensure we have defaults
                     if (!that.settings.title) that.settings.title = 'Guacamoly';
-                    if (!that.settings.wide) that.settings.wide = false;
+                    if (typeof that.settings.wide === 'undefined') that.settings.wide = false;
                     if (!that.settings.backgroundImageDataUrl) that.settings.backgroundImageDataUrl = '';
-                    if (!that.settings.keepPositionAfterEdit) that.settings.keepPositionAfterEdit = false;
+                    if (typeof that.settings.keepPositionAfterEdit === 'undefined') that.settings.keepPositionAfterEdit = false;
+                    if (typeof that.settings.publicBackground === 'undefined') that.settings.publicBackground = false;
 
                     if (settings.title) window.document.title = settings.title;
                     if (settings.backgroundImageDataUrl) window.document.body.style.backgroundImage = 'url("' + settings.backgroundImageDataUrl + '")';
@@ -340,6 +341,8 @@ Core.settings.onChanged(function (data) {
     vue.settings.title = data.title || 'Guacamoly';
     vue.settings.backgroundImageDataUrl = data.backgroundImageDataUrl;
     vue.settings.wide = data.wide;
+    vue.settings.keepPositionAfterEdit = data.keepPositionAfterEdit;
+    vue.settings.publicBackground = data.publicBackground;
 
     window.document.title = data.title;
 
