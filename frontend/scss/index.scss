@@ -30,9 +30,10 @@ body {
 .well {
     overflow: hidden;
     padding: 10px !important;
-    border: 1px solid #E4E4E4;
+    border: 1px solid #e1e8ed;
     background-color: white;
     border-radius: 2px;
+    box-shadow: none;
 
     &.edit {
         border-color: #66afe9;
