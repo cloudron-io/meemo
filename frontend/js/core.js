@@ -199,7 +199,7 @@ ThingsApi.prototype.getPublic = function (userId, filter, callback) {
     }));
 };
 
-ThingsApi.prototype.fetchMorePublic = function (callback) {
+ThingsApi.prototype.fetchMorePublic = function (userId, callback) {
     var that = this;
     var u = url('/api/public/' + userId + '/things');
 
