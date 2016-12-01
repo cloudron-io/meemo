@@ -80,7 +80,7 @@ Vue.component('thing', {
             this.$root.Core.things.edit(this.thing, function (error) {
                 if (error) return console.error(error);
 
-                that.shareLink = location.origin + '/thing.html?id=' + that.thing.id + '&userId=' + that.$root.profile.id;
+                that.shareLink = location.origin + '/shared.html?userId=' + that.$root.profile.id + '&id=' + that.thing.id;
 
                 $('#modalShare-' + that.thing.id).modal('show');
             });

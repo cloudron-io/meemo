@@ -8,7 +8,8 @@ var vue = new Vue({
     data: {
         busy: true,
         error: null,
-        thing: {}
+        thing: {},
+        publicProfile: {}
     },
     methods: {
         giveAddFocus: function () {
@@ -20,28 +21,37 @@ var vue = new Vue({
 function main() {
     var search = window.location.search.slice(1).split('&').map(function (item) { return item.split('='); }).reduce(function (o, k) { o[k[0]] = k[1]; return o; }, {});
 
-    if (!search.id) {
-        vue.error = 'No id provided';
-        vue.busy = false;
-        return;
-    }
-
     if (!search.userId) {
         vue.error = 'No userId provided';
         vue.busy = false;
         return;
     }
 
-    Core.things.getPublicThing(search.userId, search.id, function (error, result) {
+    if (!search.id) {
+        vue.error = 'No id provided';
         vue.busy = false;
+        return;
+    }
 
-        if (error) {
-            console.log(error);
-            vue.error = 'Not found';
-            return;
-        }
+    Core.users.publicProfile(search.userId, function (error, result) {
+        if (error) console.error(error);
 
-        vue.thing = result;
+        vue.publicProfile = result;
+
+        if (result.title) window.document.title = result.title;
+        if (result.backgroundImageDataUrl) window.document.body.style.backgroundImage = 'url("' + result.backgroundImageDataUrl + '")';
+
+        Core.things.getPublicThing(search.userId, search.id, function (error, result) {
+            vue.busy = false;
+
+            if (error) {
+                console.log(error);
+                vue.error = 'Not found';
+                return;
+            }
+
+            vue.thing = result;
+        });
     });
 }
 
