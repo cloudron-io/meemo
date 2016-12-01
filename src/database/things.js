@@ -27,6 +27,7 @@ function getAllActiveUserIds() {
 function postProcess(userId, thing) {
     thing._id = String(thing._id);
     thing.public = !!thing.public;
+    thing.shared = !!thing.shared;
 }
 
 function getCollection(userId) {
@@ -110,7 +111,8 @@ function addFull(userId, content, tags, attachments, externalContent, createdAt,
         tags: tags,
         externalContent: externalContent,
         attachments: attachments,
-        public: false
+        public: false,
+        shared: false
     };
 
     getCollection(userId).insert(doc, function (error, result) {
@@ -121,7 +123,7 @@ function addFull(userId, content, tags, attachments, externalContent, createdAt,
     });
 }
 
-function put(userId, thingId, content, tags, attachments, externalContent, isPublic, callback) {
+function put(userId, thingId, content, tags, attachments, externalContent, isPublic, isShared, callback) {
     assert.strictEqual(typeof userId, 'string');
     assert.strictEqual(typeof thingId, 'string');
     assert.strictEqual(typeof content, 'string');
@@ -129,6 +131,7 @@ function put(userId, thingId, content, tags, attachments, externalContent, isPub
     assert(Array.isArray(attachments));
     assert(Array.isArray(externalContent));
     assert.strictEqual(typeof isPublic, 'boolean');
+    assert.strictEqual(typeof isShared, 'boolean');
     assert.strictEqual(typeof callback, 'function');
 
     var data = {
@@ -137,7 +140,8 @@ function put(userId, thingId, content, tags, attachments, externalContent, isPub
         modifiedAt: Date.now(),
         externalContent: externalContent,
         attachments: attachments,
-        public: isPublic
+        public: isPublic,
+        shared: isShared
     };
 
     getCollection(userId).update({_id: new ObjectId(thingId) }, { $set: data }, function (error) {
