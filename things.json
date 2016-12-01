@@ -3,16 +3,16 @@
         {
             "createdAt": "2015-12-06T18:15:10.134Z",
             "modifiedAt": "2015-12-18T17:26:02.513Z",
-            "content": "Holiday todo\n-------------------\n\n* get up\n* celebrate\n* enjoy the good food :cake:\n* be happy :-)\n"
+            "content": "## Holiday todo\n\n* get up\n* celebrate\n* enjoy the good food :cake:\n* be happy :-)\n"
         },
         {
             "createdAt": "2015-12-06T18:15:27.437Z",
-            "content": "*Splendid days!*"
+            "content": "*:purple:Splendid:clear: days!*"
         },
         {
             "createdAt": "2015-12-06T18:16:43.469Z",
             "modifiedAt": "2015-12-18T16:42:29.594Z",
-            "content": "![Cloudron](https://i.imgur.com/bL644zd.png)\nPictures with *text* #cloudron"
+            "content": "![Cloudron](https://cloudron.io/img/cloudron-banner.png)\nPictures with *text* #cloudron"
         },
         {
             "createdAt": "2015-12-18T10:40:44.984Z",
