@@ -21,7 +21,7 @@ If you run Guacamoly outside a Cloudron environment, the installation consist of
 ```
 cd guacamoly
 npm i
-gulp
+./node_modules/.bin/gulp
 ./app.js
 ```
 
