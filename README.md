@@ -17,7 +17,12 @@ or using the [Cloudron command line tooling](https://cloudron.io/references/cli.
 cloudron install --appstore-id de.nebulon.guacamoly
 ```
 
-If you run Guacamoly outside a Cloudron environment, the installation consist of:
+To you run Guacamoly outside a Cloudron environment, those dependencies are required:
+```
+nodejs  >= 4.1.1
+mongodb >= 2.6
+```
+and the installation consist of:
 ```
 cd guacamoly
 npm i
