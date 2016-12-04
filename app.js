@@ -5,6 +5,7 @@
 require('supererror')({ splatchError: true });
 
 var PORT = process.env.PORT || 3000;
+var BIND_ADDRESS = process.env.BIND_ADDRESS || '0.0.0.0';
 
 if (!process.env.APP_ORIGIN) {
     console.log('No APP_ORIGIN env var set. Falling back to http://localhost');
@@ -85,7 +86,7 @@ MongoClient.connect(config.databaseUrl, function (error, db) {
     // export data from singleUser mode app
     logic.expOldData();
 
-    var server = app.listen(PORT, function () {
+    var server = app.listen(PORT, BIND_ADDRESS, function () {
         var host = server.address().address;
         var port = server.address().port;
 
