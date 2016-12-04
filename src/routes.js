@@ -234,7 +234,7 @@ function exportThings(req, res, next) {
         // add the db dump
         out.entry({ name: 'things.json' }, JSON.stringify(result, null, 4));
 
-        res.attachment('guacamoly-export.tar');
+        res.attachment('meemo-export.tar');
         out.pipe(res);
     });
 }
