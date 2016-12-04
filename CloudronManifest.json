@@ -1,6 +1,6 @@
 {
   "id": "de.nebulon.guacamoly",
-  "title": "Guacamoly",
+  "title": "Meemo",
   "author": "Johannes Zellner",
   "description": "file://DESCRIPTION.md",
   "changelog": "file://CHANGELOG",
@@ -21,13 +21,13 @@
   "changelog": "file://CHANGELOG",
   "targetBoxVersion": "0.4.0",
   "manifestVersion": 1,
-  "website": "http://guacamoly.rocks/",
+  "website": "https://meemo.minimal-space.de/",
   "contactEmail": "johannes@nebulon.de",
   "mediaLinks": [
-    "https://github.com/cloudron-io/guacamoly/raw/dcadacaea7930a92ee4340b52840839277d0c019/screenshots/screenshot0.png",
-    "https://github.com/cloudron-io/guacamoly/raw/dcadacaea7930a92ee4340b52840839277d0c019/screenshots/screenshot1.png",
-    "https://github.com/cloudron-io/guacamoly/raw/dcadacaea7930a92ee4340b52840839277d0c019/screenshots/screenshot2.png",
-    "https://github.com/cloudron-io/guacamoly/raw/dcadacaea7930a92ee4340b52840839277d0c019/screenshots/screenshot3.png",
-    "https://github.com/cloudron-io/guacamoly/raw/dcadacaea7930a92ee4340b52840839277d0c019/screenshots/screenshot4.png"
+    "https://s3.amazonaws.com/meemo/1.3.1/screenshot0.png",
+    "https://s3.amazonaws.com/meemo/1.3.1/screenshot1.png",
+    "https://s3.amazonaws.com/meemo/1.3.1/screenshot2.png",
+    "https://s3.amazonaws.com/meemo/1.3.1/screenshot3.png",
+    "https://s3.amazonaws.com/meemo/1.3.1/screenshot4.png"
   ]
 }
