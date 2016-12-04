@@ -23,51 +23,51 @@ describe('Things', function () {
         after(cleanup);
 
         it('succeeds with one url', function () {
-            var test = 'Some content with a url http://guacamoly.rocks/';
+            var test = 'Some content with a url http://meemo.minimal-space.de/';
 
             var urls = logic.extractURLs(test);
             expect(urls.length).to.equal(1);
-            expect(urls[0]).to.equal('http://guacamoly.rocks/');
+            expect(urls[0]).to.equal('http://meemo.minimal-space.de/');
         });
 
         it('succeeds with multiple urls on one line', function () {
-            var test = 'Some content with a url http://guacamoly.rocks/ and http://guacamoly.rocks/timestwo with even more http://guacamoly.rocks/cheerio.html bar';
+            var test = 'Some content with a url http://meemo.minimal-space.de/ and http://meemo.minimal-space.de/timestwo with even more http://meemo.minimal-space.de/cheerio.html bar';
 
             var urls = logic.extractURLs(test);
             expect(urls.length).to.equal(3);
-            expect(urls[0]).to.equal('http://guacamoly.rocks/');
-            expect(urls[1]).to.equal('http://guacamoly.rocks/timestwo');
-            expect(urls[2]).to.equal('http://guacamoly.rocks/cheerio.html');
+            expect(urls[0]).to.equal('http://meemo.minimal-space.de/');
+            expect(urls[1]).to.equal('http://meemo.minimal-space.de/timestwo');
+            expect(urls[2]).to.equal('http://meemo.minimal-space.de/cheerio.html');
         });
 
         it('succeeds with multiple urls on multiple lines', function () {
-            var test = 'Some content with a url http://guacamoly.rocks/ and http://guacamoly.rocks/timestwo with \n even more http://guacamoly.rocks/cheerio.html bar';
+            var test = 'Some content with a url http://meemo.minimal-space.de/ and http://meemo.minimal-space.de/timestwo with \n even more http://meemo.minimal-space.de/cheerio.html bar';
 
             var urls = logic.extractURLs(test);
             expect(urls.length).to.equal(3);
-            expect(urls[0]).to.equal('http://guacamoly.rocks/');
-            expect(urls[1]).to.equal('http://guacamoly.rocks/timestwo');
-            expect(urls[2]).to.equal('http://guacamoly.rocks/cheerio.html');
+            expect(urls[0]).to.equal('http://meemo.minimal-space.de/');
+            expect(urls[1]).to.equal('http://meemo.minimal-space.de/timestwo');
+            expect(urls[2]).to.equal('http://meemo.minimal-space.de/cheerio.html');
         });
 
         it('filters out duplicate links', function () {
-            var test = 'Some content with a url http://guacamoly.rocks/cheerio.html and http://guacamoly.rocks/timestwo with \n even more http://guacamoly.rocks/cheerio.html bar';
+            var test = 'Some content with a url http://meemo.minimal-space.de/cheerio.html and http://meemo.minimal-space.de/timestwo with \n even more http://meemo.minimal-space.de/cheerio.html bar';
 
             var urls = logic.extractURLs(test);
             expect(urls.length).to.equal(2);
-            expect(urls[0]).to.equal('http://guacamoly.rocks/cheerio.html');
-            expect(urls[1]).to.equal('http://guacamoly.rocks/timestwo');
+            expect(urls[0]).to.equal('http://meemo.minimal-space.de/cheerio.html');
+            expect(urls[1]).to.equal('http://meemo.minimal-space.de/timestwo');
         });
 
         it('succeeds with multiple urls and #', function () {
-            var test = 'Some content with a url http://guacamoly.rocks/#/ and http://guacamoly.rocks/time#stwo with even more http://guacamoly.rocks/cheerio.html#11 http://guacamoly.rocks/cheerio.html#11/give_me_more bar';
+            var test = 'Some content with a url http://meemo.minimal-space.de/#/ and http://meemo.minimal-space.de/time#stwo with even more http://meemo.minimal-space.de/cheerio.html#11 http://meemo.minimal-space.de/cheerio.html#11/give_me_more bar';
 
             var urls = logic.extractURLs(test);
             expect(urls.length).to.equal(4);
-            expect(urls[0]).to.equal('http://guacamoly.rocks/#/');
-            expect(urls[1]).to.equal('http://guacamoly.rocks/time#stwo');
-            expect(urls[2]).to.equal('http://guacamoly.rocks/cheerio.html#11');
-            expect(urls[3]).to.equal('http://guacamoly.rocks/cheerio.html#11/give_me_more');
+            expect(urls[0]).to.equal('http://meemo.minimal-space.de/#/');
+            expect(urls[1]).to.equal('http://meemo.minimal-space.de/time#stwo');
+            expect(urls[2]).to.equal('http://meemo.minimal-space.de/cheerio.html#11');
+            expect(urls[3]).to.equal('http://meemo.minimal-space.de/cheerio.html#11/give_me_more');
         });
     });
 
@@ -132,7 +132,7 @@ describe('Things', function () {
         });
 
         it('ignores # in urls', function () {
-            var test = 'Hello #tag there! more http://guacamoly.rocks/#11/52.5194/13.3456 tags';
+            var test = 'Hello #tag there! more http://meemo.minimal-space.de/#11/52.5194/13.3456 tags';
 
             var tags = logic.extractTags(test);
             expect(tags.length).to.equal(1);
@@ -140,7 +140,7 @@ describe('Things', function () {
         });
 
         it('extract tags from urls ending with a tag in multiple urls', function () {
-            var test = 'Hello #tag there! more http://guacamoly.rocks/#11/52.5194/13.3456 tags foo  http://guacamoly.rocks/#11/52.5194/13.3456#bar';
+            var test = 'Hello #tag there! more http://meemo.minimal-space.de/#11/52.5194/13.3456 tags foo  http://meemo.minimal-space.de/#11/52.5194/13.3456#bar';
 
             var tags = logic.extractTags(test);
             expect(tags.length).to.equal(2);
