@@ -260,6 +260,7 @@ SettingsApi.prototype.reset = function () {
     data.title = 'Guacamoly';
     data.backgroundImageDataUrl =  '';
     data.wide = false;
+    data.wideNavbar = false;
     data.publicBackground = false;
 
     this.save(data, function () {});
@@ -284,6 +285,14 @@ SettingsApi.prototype.get = function (callback) {
     superagent.get(url('/api/settings')).end(errorWrapper(function (error, result) {
         if (error) return callback(error);
         if (result.status !== 200) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
+
+        // just ensure we have defaults
+        if (!result.body.settings.title) result.body.settings.title = 'Guacamoly';
+        if (typeof result.body.settings.wide === 'undefined') result.body.settings.wide = false;
+        if (typeof result.body.settings.wideNavbar === 'undefined') result.body.settings.wideNavbar = false;
+        if (!result.body.settings.backgroundImageDataUrl) result.body.settings.backgroundImageDataUrl = '';
+        if (typeof result.body.settings.keepPositionAfterEdit === 'undefined') result.body.settings.keepPositionAfterEdit = false;
+        if (typeof result.body.settings.publicBackground === 'undefined') result.body.settings.publicBackground = false;
 
         callback(null, result.body.settings);
     }));

@@ -23,6 +23,10 @@ Vue.component('navigation-bar', {
         profile: {
             type: Object,
             required: true
+        },
+        settings: {
+            type: Object,
+            required: true
         }
     },
     methods: {

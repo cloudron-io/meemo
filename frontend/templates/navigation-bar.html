@@ -1,40 +1,46 @@
 <script type="text/template" id="navigation-bar-template">
-  <div id="mainNavigationBar" class="container-fluid navigation shadow">
-    <div v-if="activeView === 'content'" class="input-group">
-      <div class="input-group-btn">
-        <!-- <button type="button" class="btn btn-default" title="Me">Me</button> -->
-        <!-- <button type="button" class="btn btn-default" title="Friends">Friends</button> -->
-        <a class="btn btn-default hidden-xs hidden-sm" title="Public" href="/stream.html?userId={{ profile.id }}" target="_blank">Public</a>
-        <button type="button" class="btn btn-default" @click.stop="doSearch()" title="Search"><i class="fa fa-search"></i></button>
-      </div>
-      <input type="text" class="form-control search" id="searchBarInput" autocomplete="off" placeholder="Search..." v-model="search" @click.stop="showTags()" @keyup="handleSearchKeyInput(this, $event)" @keyup.enter="doSearch()">
-      <div class="dropdown-tags" id="tagsDropdown">
-        <div class="item" v-for="tag in tags | proposeTags search '#searchBarInput'">
-          <a href="#" id="tagItem" @click.prevent="activateProposedTag(tag)" @keydown.stop.prevent="keyNavigateTags(this, tag, $event)">#{{ tag.name }}</a>
+  <div id="mainNavigationBar" class="navigation">
+    <div :class="{ 'container': (activeView === 'content' && !settings.wideNavbar), 'container-fluid': (activeView !== 'content' || settings.wideNavbar) }">
+      <div class="row">
+        <div class="shadow content" :class="{ 'col-md-10': (activeView === 'content' && !settings.wideNavbar), 'col-md-offset-1': (activeView === 'content' && !settings.wideNavbar) }">
+          <div v-if="activeView === 'content'" class="input-group">
+            <div class="input-group-btn">
+              <!-- <button type="button" class="btn btn-default" title="Me">Me</button> -->
+              <!-- <button type="button" class="btn btn-default" title="Friends">Friends</button> -->
+              <a class="btn btn-default hidden-xs hidden-sm" title="Public" href="/stream.html?userId={{ profile.id }}" target="_blank">Public</a>
+              <button type="button" class="btn btn-default" @click.stop="doSearch()" title="Search"><i class="fa fa-search"></i></button>
+            </div>
+            <input type="text" class="form-control search" id="searchBarInput" autocomplete="off" placeholder="Search..." v-model="search" @click.stop="showTags()" @keyup="handleSearchKeyInput(this, $event)" @keyup.enter="doSearch()">
+            <div class="dropdown-tags" id="tagsDropdown">
+              <div class="item" v-for="tag in tags | proposeTags search '#searchBarInput'">
+                <a href="#" id="tagItem" @click.prevent="activateProposedTag(tag)" @keydown.stop.prevent="keyNavigateTags(this, tag, $event)">#{{ tag.name }}</a>
+              </div>
+            </div>
+            <div class="input-group-btn">
+              <button type="button" class="btn btn-default hidden-xs hidden-sm" @click.stop="clearSearch()" title="Clear"><i class="fa fa-times"></i></button>
+              <button type="button" class="btn btn-default dropdown-toggle hidden-xs hidden-sm" data-toggle="dropdown">{{ profile.displayName || profile.username || profile.email }} <b class="caret"></b></button>
+              <button type="button" class="btn btn-default dropdown-toggle hidden-md hidden-lg" data-toggle="dropdown"><i class="fa fa-bars"></i></button>
+              <ul class="dropdown-menu settings-menu">
+                  <li><a href="#modalSettings" data-toggle="modal">Settings</a></li>
+                  <li><a href="#modalExtensions" data-toggle="modal">Browser Extensions</a></li>
+                  <li><a href="#modalCheatSheet" data-toggle="modal">Cheatsheet</a></li>
+                  <li v-show="$root.mailbox"><a href="#modalMailbox" data-toggle="modal">Mailbox</a></li>
+                  <li><a href="/api/rss/{{ profile.id }}" target="_blank">RSS Feed</a></li>
+                  <li class="divider"></li>
+                  <li><a href="#" data-toggle="modal" data-target="#modalImport">Import</a></li>
+                  <li><a href="#" @click.prevent="exportThings()">Export</a></li>
+                  <li class="divider"></li>
+                  <li><a href="https://meemo.minimal-space.de" target="_blank">About</a></li>
+                  <li><a href="#" @click.prevent="logout()">Logout</a></li>
+                </ul>
+            </div>
+          </div>
+          <div v-else>
+            <a href="" class="btn btn-default">Guacamoly</a>
+            <a href="https://meemo.minimal-space.de" target="_blank" class="btn btn-default pull-right">About</a>
+          </div>
         </div>
       </div>
-      <div class="input-group-btn">
-        <button type="button" class="btn btn-default hidden-xs hidden-sm" @click.stop="clearSearch()" title="Clear"><i class="fa fa-times"></i></button>
-        <button type="button" class="btn btn-default dropdown-toggle hidden-xs hidden-sm" data-toggle="dropdown">{{ profile.displayName || profile.username || profile.email }} <b class="caret"></b></button>
-        <button type="button" class="btn btn-default dropdown-toggle hidden-md hidden-lg" data-toggle="dropdown"><i class="fa fa-bars"></i></button>
-        <ul class="dropdown-menu settings-menu">
-            <li><a href="#modalSettings" data-toggle="modal">Settings</a></li>
-            <li><a href="#modalExtensions" data-toggle="modal">Browser Extensions</a></li>
-            <li><a href="#modalCheatSheet" data-toggle="modal">Cheatsheet</a></li>
-            <li v-show="$root.mailbox"><a href="#modalMailbox" data-toggle="modal">Mailbox</a></li>
-            <li><a href="/api/rss/{{ profile.id }}" target="_blank">RSS Feed</a></li>
-            <li class="divider"></li>
-            <li><a href="#" data-toggle="modal" data-target="#modalImport">Import</a></li>
-            <li><a href="#" @click.prevent="exportThings()">Export</a></li>
-            <li class="divider"></li>
-            <li><a href="https://meemo.minimal-space.de" target="_blank">About</a></li>
-            <li><a href="#" @click.prevent="logout()">Logout</a></li>
-          </ul>
-      </div>
-    </div>
-    <div v-else>
-      <a href="" class="btn btn-default">Guacamoly</a>
-      <a href="https://meemo.minimal-space.de" target="_blank" class="btn btn-default pull-right">About</a>
     </div>
   </div>
 </script>

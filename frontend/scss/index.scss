@@ -142,8 +142,11 @@ textarea {
     top: 0;
     left: 0;
     width: 100%;
-    background-color: white;
-    padding: 5px;
+
+    .content {
+        background-color: white;
+        padding: 5px;
+    }
 
     input, .btn {
         border: 0;
