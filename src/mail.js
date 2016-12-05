@@ -170,7 +170,10 @@ function checkInbox() {
                     var body = message.subject[0] ? ('## ' + message.subject[0] + '\n\n' ) : '';
                     body += message.body;
 
-                    var username = String(message.to).split('@')[0].split('+')[1];
+                    // username is either remainder of + or the whole mailbox name
+                    var parts = String(message.to).split('@')[0].split('+');
+                    var username = parts.length > 1 ? parts[1] : parts[0];
+
                     if (!username) {
                         console.error('Unable to extract username from %s', String(message.to));
                         conn.seq.move(message.seqno, ['Trash'], callback);
