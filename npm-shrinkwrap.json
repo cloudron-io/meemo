@@ -706,6 +706,11 @@
       "from": "markdown-it-emoji@>=1.1.0 <2.0.0",
       "resolved": "https://registry.npmjs.org/markdown-it-emoji/-/markdown-it-emoji-1.2.0.tgz"
     },
+    "markdown-it-hashtag": {
+      "version": "0.4.0",
+      "from": "markdown-it-hashtag@*",
+      "resolved": "https://registry.npmjs.org/markdown-it-hashtag/-/markdown-it-hashtag-0.4.0.tgz"
+    },
     "mkdirp": {
       "version": "0.5.1",
       "from": "https://registry.npmjs.org/mkdirp/-/mkdirp-0.5.1.tgz",
