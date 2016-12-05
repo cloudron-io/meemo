@@ -12,7 +12,7 @@ Vue.component('modal-settings', {
             backgroundImageDataUrl: '',
             backgroundImageError: null,
             wide: false,
-            wideNavbar: false,
+            wideNavbar: true,
             keepPositionAfterEdit: false,
             publicBackground: false
         };
@@ -34,7 +34,7 @@ Vue.component('modal-settings', {
             this.backgroundImageDataUrl = '';
             this.backgroundImage = '';
             this.wide = false;
-            this.wideNavbar = false;
+            this.wideNavbar = true;
             this.keepPositionAfterEdit = false;
             this.publicBackground = false;
         },
