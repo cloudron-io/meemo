@@ -69,6 +69,20 @@ describe('Things', function () {
             expect(urls[2]).to.equal('http://meemo.minimal-space.de/cheerio.html#11');
             expect(urls[3]).to.equal('http://meemo.minimal-space.de/cheerio.html#11/give_me_more');
         });
+
+        it('does not extract urls from inline code blocks', function () {
+            var test = 'Some code `content with a url http://meemo.minimal-space.de/` end';
+
+            var urls = logic.extractURLs(test);
+            expect(urls.length).to.equal(0);
+        });
+
+        it('does not extract urls from code blocks', function () {
+            var test = 'Some code \n ```content with a url http://meemo.minimal-space.de/``` \n end';
+
+            var urls = logic.extractURLs(test);
+            expect(urls.length).to.equal(0);
+        });
     });
 
     describe('extractTags',  function () {
@@ -162,6 +176,20 @@ describe('Things', function () {
             var tags = logic.extractTags(test);
             expect(tags.length).to.equal(17);
             expect(tags).to.eql(['nad', 'and', 'we', 'do', 'this', 'more', 'often', 'so', 'we', 'can', 'produce', 'a', 'hell', 'of', 'a', 'lot', 'schlagworte' ]);
+        });
+
+        it('does not extract tags from inline code blocks', function () {
+            var test = 'Some code `content with a #toggly tag` end';
+
+            var tags = logic.extractTags(test);
+            expect(tags.length).to.equal(0);
+        });
+
+        it('does not extract tags from code blocks', function () {
+            var test = 'Some code \n ```content with a #taggly tag``` \n end';
+
+            var tags = logic.extractTags(test);
+            expect(tags.length).to.equal(0);
         });
     });
 
