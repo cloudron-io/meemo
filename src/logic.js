@@ -83,15 +83,19 @@ function extractTags(content) {
         content = content.replace(new RegExp(escapeRegExp(u), 'gmi'), ' --URL_PLACEHOLDER-- ');
     });
 
-    var lines = content.split('\n');
-    lines.forEach(function (line) {
-        var tmp = line.match(/#([\u00C0-\u017Fa-zA-Z0-9]+)/g);
-        if (tmp === null) return;
+    var md = require('markdown-it')()
+        .use(require('markdown-it-hashtag'),{
+            hashtagRegExp: '[\u00C0-\u017Fa-zA-Z0-9]+',
+            preceding: ''
+        });
 
-        tagObjects = tagObjects.concat(tmp.map(function (tag) {
-            return tag.slice(1).toLowerCase();
-        }));
-    });
+    md.renderer.rules.hashtag_open  = function(tokens, idx) {
+        var tagName = tokens[idx].content.toLowerCase();
+        tagObjects.push(tagName);
+        return '';
+    };
+
+    md.render(content);
 
     return tagObjects;
 }
