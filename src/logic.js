@@ -42,22 +42,29 @@ var assert = require('assert'),
     safe = require('safetydance'),
     superagent = require('superagent');
 
-var GET_URL = new RegExp('(^|[ \t\r\n])((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){2,}(#([a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))', 'g');
 var PRETTY_URL_LENGTH = 40;
 
+var md = require('markdown-it')({
+    breaks: true,
+    html: true,
+    linkify: true
+});
+
 function extractURLs(content) {
-    var lines = content.split('\n');
     var urls = [];
 
-    lines.forEach(function (line) {
-        var tmp = line.match(GET_URL);
-        if (tmp === null) return;
+    // extract links, use markdown-it to avoid collecting code block links
+    md.renderer.rules.link_open = function (tokens, idx) {
+        var href = tokens[idx].attrs[tokens[idx].attrIndex('href')][1];
 
-        urls = urls.concat(tmp.map(function (url) {
-            return url.trim();
-        }));
-    });
+        if (href) urls.push(href);
 
+        return '';
+    };
+
+    md.render(content);
+
+    // remove duplicates
     return urls.filter(function (item, pos, self) {
         return self.indexOf(item) === pos;
     });
