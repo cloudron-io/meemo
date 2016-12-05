@@ -33,6 +33,7 @@ npm i
 Possible env variables for configuration are:
 ```
 PORT=3000
+BIND_ADDRESS=0.0.0.0
 APP_ORIGIN="https://example.com"
 MONGODB_URL="mongodb://127.0.0.1:27017/meemo"
 ATTACHMENT_DIR="./storage"
