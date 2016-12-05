@@ -255,17 +255,6 @@ function SettingsApi() {
     this._changeCallbacks = [];
 }
 
-SettingsApi.prototype.reset = function () {
-    var data = {};
-    data.title = 'Guacamoly';
-    data.backgroundImageDataUrl =  '';
-    data.wide = false;
-    data.wideNavbar = true;
-    data.publicBackground = false;
-
-    this.save(data, function () {});
-};
-
 SettingsApi.prototype.save = function (data, callback) {
     var that = this;
 
