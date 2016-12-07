@@ -151,8 +151,11 @@ function facelift(userId, thing, callback) {
                 // make urls look prettier
                 var tmp = url.parse(obj.url);
 
-                var pretty = obj.url.slice(tmp.protocol.length + 2);
-                if (pretty.length > PRETTY_URL_LENGTH) pretty = pretty.slice(0, PRETTY_URL_LENGTH) + '...';
+                var pretty = obj.url;
+                if (tmp.protocol) {
+                    pretty = obj.url.slice(tmp.protocol.length + 2);
+                    if (pretty.length > PRETTY_URL_LENGTH) pretty = pretty.slice(0, PRETTY_URL_LENGTH) + '...';
+                }
 
                 data = data.replace(new RegExp(escapeRegExp(obj.url), 'gmi'), '[' + pretty + '](' + obj.url + ')');
             }
