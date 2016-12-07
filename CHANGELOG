@@ -101,3 +101,7 @@
 [1.3.1]
 * First release under the new name meemo
 * Fix URL extraction in code blocks
+
+[1.3.2]
+* Fix two crashes
+
