@@ -181,8 +181,8 @@ function checkInbox() {
                     }
 
                     users.profile(username, function (error, result) {
-                        if (error) {
-                            console.error('Unable to map %s to an LDAP user', error);
+                        if (error || !result) {
+                            console.error('Unable to map %s to an LDAP user', username, error);
                             conn.seq.move(message.seqno, ['Trash'], callback);
                             return;
                         }
