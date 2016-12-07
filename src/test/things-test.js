@@ -83,6 +83,13 @@ describe('Things', function () {
             var urls = logic.extractURLs(test);
             expect(urls.length).to.equal(0);
         });
+
+        it('does not extract markdown links', function () {
+            var test = 'Test http://meemo.minimal-space.de/#/ spacer [Emphasis](#Emphasis) foobar [some link](http://meemo.minimal-space.de/#/)';
+
+            var urls = logic.extractURLs(test);
+            expect(urls.length).to.equal(1);
+        });
     });
 
     describe('extractTags',  function () {

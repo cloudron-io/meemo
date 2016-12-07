@@ -55,6 +55,9 @@ function extractURLs(content) {
 
     // extract links, use markdown-it to avoid collecting code block links
     md.renderer.rules.link_open = function (tokens, idx) {
+        // skip links which are already markdown
+        if (tokens[idx].markup !== 'linkify') return '';
+
         var href = tokens[idx].attrs[tokens[idx].attrIndex('href')][1];
 
         if (href) urls.push(href);
