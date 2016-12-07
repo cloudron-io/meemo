@@ -213,7 +213,7 @@ function reset() {
     vue.search = '';
     vue.settings = {};
 
-    window.document.title = 'Guacamoly';
+    window.document.title = 'Meemo';
     window.document.body.style.backgroundImage = '';
 }
 
@@ -221,7 +221,7 @@ Core.onAuthFailure = reset;
 Core.onLogout = reset;
 
 Core.settings.onChanged(function (data) {
-    vue.settings.title = data.title || 'Guacamoly';
+    vue.settings.title = data.title || 'Meemo';
     vue.settings.backgroundImageDataUrl = data.backgroundImageDataUrl;
     vue.settings.wide = data.wide;
     vue.settings.wideNavbar = data.wideNavbar;

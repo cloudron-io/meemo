@@ -41,7 +41,7 @@ function get(userId, callback) {
     getCollection(userId).find({ type: 'frontend' }).toArray(function (error, result) {
         if (error) return callback(error);
         callback(null, result[0] ? result[0].value : {
-            title: 'Guacamoly'
+            title: 'Meemo'
         });
     });
 }

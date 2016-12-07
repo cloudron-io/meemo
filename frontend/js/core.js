@@ -276,7 +276,7 @@ SettingsApi.prototype.get = function (callback) {
         if (result.status !== 200) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
 
         // just ensure we have defaults
-        if (!result.body.settings.title) result.body.settings.title = 'Guacamoly';
+        if (!result.body.settings.title) result.body.settings.title = 'Meemo';
         if (typeof result.body.settings.wide === 'undefined') result.body.settings.wide = false;
         if (typeof result.body.settings.wideNavbar === 'undefined') result.body.settings.wideNavbar = true;
         if (!result.body.settings.backgroundImageDataUrl) result.body.settings.backgroundImageDataUrl = '';
