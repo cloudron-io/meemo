@@ -35,7 +35,7 @@ Possible env variables for configuration are:
 PORT=3000
 BIND_ADDRESS=0.0.0.0
 APP_ORIGIN="https://example.com"
-MONGODB_URL="mongodb://127.0.0.1:27017/meemo"
+MONGODB_URL="mongodb://username:password@127.0.0.1:27017/meemo" # username and password are optional
 ATTACHMENT_DIR="./storage"
 
 # using LDAP user management
