@@ -38,10 +38,10 @@
     <div v-show="mainView === 'content'" v-cloak>
       <div :class="{ 'container': !settings.wide, 'container-fluid': settings.wide }">
         <div class="row">
-          <div class="col-md-1">
-            <tag-sidebar :tags="tags" :settings="settings"></tag-sidebar>
+          <div class="col-md-1" v-show="settings.showTagSidebar">
+            <tag-sidebar :tags="tags"></tag-sidebar>
           </div>
-          <div :class="{ 'col-md-10': !settings.wide, 'col-md-11': settings.wide }">
+          <div :class="{ 'col-md-10': !settings.wide, 'col-md-offset-1': (!settings.wide && !settings.showTagSidebar), 'col-md-11': (settings.wide && settings.showTagSidebar), 'col-md-12': (settings.wide && !settings.showTagSidebar) }">
             <div class="well" :class="{ edit: !!thingContent }" @click="giveAddFocus()">
               <div class="card-content align-right">
                 <input id="addAttachment" type="file" @change="attachmentChanged($event)" class="hide">
