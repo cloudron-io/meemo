@@ -14,7 +14,8 @@ Vue.component('modal-settings', {
             wide: false,
             wideNavbar: true,
             keepPositionAfterEdit: false,
-            publicBackground: false
+            publicBackground: false,
+            showTagSidebar: false
         };
     },
     methods: {
@@ -27,6 +28,7 @@ Vue.component('modal-settings', {
             this.wideNavbar = this.$root.settings.wideNavbar;
             this.keepPositionAfterEdit = this.$root.settings.keepPositionAfterEdit;
             this.publicBackground = this.$root.settings.publicBackground;
+            this.showTagSidebar = this.$root.settings.showTagSidebar;
         },
         onHide: function () {
             this.busy = false;
@@ -37,6 +39,7 @@ Vue.component('modal-settings', {
             this.wideNavbar = true;
             this.keepPositionAfterEdit = false;
             this.publicBackground = false;
+            this.showTagSidebar = false;
         },
         save: function () {
             var that = this;
@@ -46,7 +49,8 @@ Vue.component('modal-settings', {
                 wide: this.wide,
                 wideNavbar: this.wideNavbar,
                 keepPositionAfterEdit: this.keepPositionAfterEdit,
-                publicBackground: this.publicBackground
+                publicBackground: this.publicBackground,
+                showTagSidebar: this.showTagSidebar
             };
 
             this.busy = true;

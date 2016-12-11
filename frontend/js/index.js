@@ -235,6 +235,7 @@ Core.settings.onChanged(function (data) {
     vue.settings.wideNavbar = data.wideNavbar;
     vue.settings.keepPositionAfterEdit = data.keepPositionAfterEdit;
     vue.settings.publicBackground = data.publicBackground;
+    vue.settings.showTagSidebar = data.showTagSidebar;
 
     window.document.title = data.title;
 

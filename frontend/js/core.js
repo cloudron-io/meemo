@@ -282,6 +282,7 @@ SettingsApi.prototype.get = function (callback) {
         if (!result.body.settings.backgroundImageDataUrl) result.body.settings.backgroundImageDataUrl = '';
         if (typeof result.body.settings.keepPositionAfterEdit === 'undefined') result.body.settings.keepPositionAfterEdit = false;
         if (typeof result.body.settings.publicBackground === 'undefined') result.body.settings.publicBackground = false;
+        if (typeof result.body.settings.showTagSidebar === 'undefined') result.body.settings.showTagSidebar = false;
 
         callback(null, result.body.settings);
     }));
