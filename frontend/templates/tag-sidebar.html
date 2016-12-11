@@ -1,0 +1,7 @@
+<script type="text/template" id="tag-sidebar-template">
+  <div class="tag-sidebar">
+    <a v-for="tag in tags | popularTags" href="#" class="item" @click.prevent="activateProposedTag(tag)">#{{ tag.name }}</a>
+  </div>
+</script>
+
+<script type="text/javascript"><%- include tag-sidebar.js %></script>
