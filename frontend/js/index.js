@@ -40,6 +40,14 @@ Vue.filter('proposeTagsThingsEdit', function (options, search, id) {
     return proposeTags(options, search, $('#textarea-' + id), true, 1);
 });
 
+function popularTags(options, amount) {
+    amount = amount || 10;
+
+    return options.slice().sort(function (a, b) { return b.usage - a.usage; });
+}
+
+Vue.filter('popularTags', popularTags);
+
 var vue = new Vue({
     el: '#application',
     data: {
