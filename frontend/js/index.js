@@ -41,9 +41,9 @@ Vue.filter('proposeTagsThingsEdit', function (options, search, id) {
 });
 
 function popularTags(options, amount) {
-    amount = amount || 10;
+    amount = amount || 15;
 
-    return options.slice().sort(function (a, b) { return b.usage - a.usage; });
+    return options.slice().sort(function (a, b) { return b.usage - a.usage; }).slice(0, amount);
 }
 
 Vue.filter('popularTags', popularTags);
