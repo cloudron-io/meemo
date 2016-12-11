@@ -1,6 +1,6 @@
 <script type="text/template" id="tag-sidebar-template">
   <div class="tag-sidebar">
-    <a v-for="tag in tags | popularTags" href="#" class="item" title="#{{ tag.name }}" @click.prevent="activateProposedTag(tag)">#{{ tag.name }}</a>
+    <a v-for="tag in tags | popularTags" href="#search?#{{ tag.name }}" class="item" title="#{{ tag.name }}">#{{ tag.name }}</a>
   </div>
 </script>
 
