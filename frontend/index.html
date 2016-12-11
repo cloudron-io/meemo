@@ -38,7 +38,10 @@
     <div v-show="mainView === 'content'" v-cloak>
       <div :class="{ 'container': !settings.wide, 'container-fluid': settings.wide }">
         <div class="row">
-          <div :class="{ 'col-md-10': !settings.wide, 'col-md-offset-1': !settings.wide, 'col-md-12': settings.wide }">
+          <div class="col-md-1">
+            <tag-sidebar :tags="tags" :settings="settings"></tag-sidebar>
+          </div>
+          <div :class="{ 'col-md-10': !settings.wide, 'col-md-11': settings.wide }">
             <div class="well" :class="{ edit: !!thingContent }" @click="giveAddFocus()">
               <div class="card-content align-right">
                 <input id="addAttachment" type="file" @change="attachmentChanged($event)" class="hide">
@@ -84,6 +87,7 @@
     <script type="text/javascript" src="js/core.js"></script>
 
     <%- include templates/navigation-bar.html %>
+    <%- include templates/tag-sidebar.html %>
     <%- include templates/modal-settings.html %>
     <%- include templates/modal-browser-extensions.html %>
     <%- include templates/modal-cheatsheet.html %>
