@@ -159,6 +159,19 @@ textarea {
     }
 }
 
+.tag-sidebar {
+    position: fixed;
+    width: 8.33333333%;
+    padding-right: 15px;
+
+    .item {
+        display: block;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
 .settings-menu {
     right: 0;
     left: auto;
