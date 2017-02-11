@@ -15,7 +15,7 @@
     "localstorage": {},
     "recvmail": {}
   },
-  "tags": ["notes", "bookmarks", "todo", "ideas", "feed"],
+  "tags": ["notes", "bookmarks", "todo", "ideas", "feed", "markdown"],
   "changelog": "file://CHANGELOG",
   "targetBoxVersion": "0.4.0",
   "manifestVersion": 1,
