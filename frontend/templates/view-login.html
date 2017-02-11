@@ -4,16 +4,7 @@
     <br/>
     <div class="container">
       <div class="row">
-        <div class="col-md-3 white-boxes shadow">
-          <h3>Public feeds</h3>
-          <div v-for="user in users">
-            <a href="/stream.html?userId={{ user.id }}" class="entry">
-              <h4>{{ user.username }}</h4>
-              <small>{{ user.displayName }}</small>
-            </a>
-          </div>
-        </div>
-        <div class="col-md-4 col-md-offset-1 white-boxes shadow">
+        <div class="col-md-4 col-md-offset-4 white-boxes shadow">
           <h3>Login</h3>
           <form @submit.prevent="login()">
             <div class="form-group" :class="{ 'has-error': error }">
