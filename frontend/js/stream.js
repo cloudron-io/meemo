@@ -36,7 +36,11 @@ function main() {
     $('head').append('<link rel="alternate" type="application/rss+xml" title="" href="/api/rss/' + userId + '" />');
 
     Core.users.publicProfile(userId, function (error, result) {
-        if (error) console.error(error);
+        if (error) {
+            vue.error = 'Not found';
+            vue.busy = false;
+            return;
+        }
 
         vue.publicProfile = result;
 
@@ -47,7 +51,6 @@ function main() {
             vue.busy = false;
 
             if (error) {
-                console.log(error);
                 vue.error = 'Not found';
                 return;
             }
