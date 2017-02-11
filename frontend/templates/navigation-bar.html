@@ -7,7 +7,7 @@
             <div class="input-group-btn">
               <!-- <button type="button" class="btn btn-default" title="Me">Me</button> -->
               <!-- <button type="button" class="btn btn-default" title="Friends">Friends</button> -->
-              <a class="btn btn-default hidden-xs hidden-sm" title="Public" href="/stream.html?userId={{ profile.id }}" target="_blank">Public</a>
+              <a class="btn btn-default hidden-xs hidden-sm" title="Public" href="/public/{{ profile.id }}" target="_blank">Public</a>
               <button type="button" class="btn btn-default" @click.stop="doSearch()" title="Search"><i class="fa fa-search"></i></button>
             </div>
             <input type="text" class="form-control search" id="searchBarInput" autocomplete="off" placeholder="Search..." v-model="search" @click.stop="showTags()" @keyup="handleSearchKeyInput(this, $event)" @keyup.enter="doSearch()">
