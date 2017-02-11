@@ -46,6 +46,7 @@ var assert = require('assert'),
     tar = require('tar-fs'),
     tokens = require('./database/tokens.js'),
     users = require('./users.js'),
+    UserError = users.UserError,
     uuid = require('uuid'),
     HttpError = require('connect-lastmile').HttpError,
     HttpSuccess = require('connect-lastmile').HttpSuccess;
@@ -131,6 +132,7 @@ function logout(req, res, next) {
 
 function profile(req, res, next) {
     users.profile(req.userId, function (error, result) {
+        if (error && error.code === UserError.NOT_FOUND) return next(new HttpError(404, error.message));
         if (error) return next(new HttpError(500, error));
 
         var out = {
@@ -313,6 +315,7 @@ function publicGetFile(req, res) {
 
 function publicUsers(req, res, next) {
     users.list(function (error, result) {
+        if (error && error.code === UserError.NOT_FOUND) return next(new HttpError(404, error.message));
         if (error) return next(new HttpError(500, error));
 
         next(new HttpSuccess(200, { users: result }));
@@ -321,7 +324,10 @@ function publicUsers(req, res, next) {
 
 function publicProfile(req, res, next) {
     users.profile(req.params.userId, function (error, result) {
+        if (error && error.code === UserError.NOT_FOUND) return next(new HttpError(404, error.message));
         if (error) return next(new HttpError(500, error));
+
+        console.log(error, result);
 
         var out = {
             id: result.id,
@@ -344,6 +350,7 @@ function publicGetRSS(req, res, next) {
     assert.strictEqual(typeof req.params.userId, 'string');
 
     users.profile(req.params.userId, function (error, user) {
+        if (error && error.code === UserError.NOT_FOUND) return next(new HttpError(404, error.message));
         if (error) return next(new HttpError(500, error));
 
         settings.get(req.params.userId, function (error, config) {

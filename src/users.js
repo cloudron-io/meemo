@@ -3,6 +3,8 @@
 'use strict';
 
 exports = module.exports = {
+    UserError: UserError,
+
     verify: verify,
     profile: profile,
     list: list
@@ -15,6 +17,16 @@ var assert = require('assert'),
     safe = require('safetydance');
 
 var LOCAL_AUTH_FILE = path.resolve(process.env.LOCAL_AUTH_FILE || './.users.json');
+
+function UserError(code, messageOrError) {
+    assert.strictEqual(typeof code, 'string');
+
+    this.code = code;
+    this.message = messageOrError || code;
+}
+
+UserError.NOT_FOUND = 'not found';
+UserError.INTERNAL_ERROR = 'internal error';
 
 function verify(username, password, callback) {
     if (process.env.LDAP_URL) {
@@ -61,11 +73,11 @@ function profile(identifier, callback) {
         var ldapClient = ldapjs.createClient({ url: process.env.LDAP_URL });
         ldapClient.on('error', function (error) {
             console.error('LDAP error', error);
-            callback(error);
+            callback(new UserError(UserError.INTERNAL_ERROR, error));
         });
 
         ldapClient.search(process.env.LDAP_USERS_BASE_DN, { filter: '(|(uid=' + identifier + ')(mail=' + identifier + ')(username=' + identifier + '))' }, function (error, result) {
-            if (error) return callback(error);
+            if (error) return callback(new UserError(UserError.INTERNAL_ERROR, error));
 
             var items = [];
 
@@ -74,12 +86,12 @@ function profile(identifier, callback) {
             });
 
             result.on('error', function (error) {
-                callback(error);
+                callback(new UserError(UserError.INTERNAL_ERROR, error));
             });
 
             result.on('end', function (result) {
-                if (result.status !== 0) return callback(new Error('non-zero status from LDAP search: ' + result.status));
-                if (items.length === 0) return callback(new Error('Duplicate entries found'));
+                if (result.status !== 0) return callback(new UserError(UserError.NOT_FOUND, 'non-zero status from LDAP search: ' + result.status));
+                if (items.length === 0) return callback(new UserError(UserError.INTERNAL_ERROR, 'Duplicate entries found'));
 
                 var out = {
                     id: items[0].uid,
@@ -93,8 +105,8 @@ function profile(identifier, callback) {
         });
     } else {
         var users = safe.JSON.parse(safe.fs.readFileSync(LOCAL_AUTH_FILE));
-        if (!users) return callback(null, null);
-        if (!users[identifier]) return callback(null, null);
+        if (!users) return callback(new UserError(UserError.NOT_FOUND));
+        if (!users[identifier]) return callback(new UserError(UserError.NOT_FOUND));
 
         var result = {
             id: users[identifier].username,
@@ -110,10 +122,10 @@ function list(callback) {
     if (process.env.LDAP_URL) {
         var client = ldapjs.createClient({ url: process.env.LDAP_URL });
         client.bind(process.env.LDAP_BIND_DN, process.env.LDAP_BIND_PASSWORD, function (error) {
-            if (error) return callback(error);
+            if (error) return callback(new UserError(UserError.INTERNAL_ERROR, error));
 
             client.search(process.env.LDAP_USERS_BASE_DN, { scope: 'sub' }, function (error, res) {
-                if (error) return callback(error);
+                if (error) return callback(new UserError(UserError.INTERNAL_ERROR, error));
 
                 var entries = [];
                 res.on('searchEntry', function(entry) {
@@ -125,7 +137,9 @@ function list(callback) {
 
                     entries.push(data);
                 });
-                res.on('error', callback);
+                res.on('error', function (error) {
+                    callback(new UserError(UserError.INTERNAL_ERROR, error));
+                });
                 res.on('end', function () {
                     callback(null, entries);
                 });
@@ -133,7 +147,7 @@ function list(callback) {
         });
     } else {
         var users = safe.JSON.parse(safe.fs.readFileSync(LOCAL_AUTH_FILE));
-        if (!users) return callback('No users found');
+        if (!users) return callback(null, []);
 
         var result = Object.keys(users).map(function (u) {
             return {
