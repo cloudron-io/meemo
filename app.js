@@ -65,6 +65,9 @@ router.get ('/api/users/:userId', routes.public.profile);
 
 router.get ('/api/healthcheck', routes.healthcheck);
 
+// page overlay for pretty public streams
+router.get ('/public/:userId', routes.public.streamPage);
+
 app.use(morgan('dev', { immediate: false, stream: { write: function (str) { console.log(str.slice(0, -1)); } } }));
 app.use(serveStatic(__dirname + '/public', { etag: false }));
 app.use(cors());

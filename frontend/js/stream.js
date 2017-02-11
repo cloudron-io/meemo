@@ -20,19 +20,22 @@ var vue = new Vue({
 });
 
 var search = window.location.search.slice(1).split('&').map(function (item) { return item.split('='); }).reduce(function (o, k) { o[k[0]] = k[1]; return o; }, {});
+var userId;
 
 function main() {
+    // support both streams.html?userId=<userId> AND /public/<userId>
+    userId = search.userId || location.pathname.slice('/public/'.length);
 
-    if (!search.userId) {
+    if (!userId) {
         vue.error = 'No userId provided';
         vue.busy = false;
         return;
     }
 
     // add rss link tag
-    $('head').append('<link rel="alternate" type="application/rss+xml" title="" href="/api/rss/' + search.userId + '" />');
+    $('head').append('<link rel="alternate" type="application/rss+xml" title="" href="/api/rss/' + userId + '" />');
 
-    Core.users.publicProfile(search.userId, function (error, result) {
+    Core.users.publicProfile(userId, function (error, result) {
         if (error) console.error(error);
 
         vue.publicProfile = result;
@@ -40,7 +43,7 @@ function main() {
         if (result.title) window.document.title = result.title;
         if (result.backgroundImageDataUrl) window.document.body.style.backgroundImage = 'url("' + result.backgroundImageDataUrl + '")';
 
-        Core.things.getPublic(search.userId, '', function (error, result) {
+        Core.things.getPublic(userId, '', function (error, result) {
             vue.busy = false;
 
             if (error) {
@@ -55,7 +58,7 @@ function main() {
 }
 
 function scrollHandler() {
-    if (!search.userId) return;
+    if (!userId) return;
 
     // add 1 full pixel to be on the safe side for zoom settings, where pixel values might be floats
     if ($(window).height() + $(window).scrollTop() + 1 >= $(document).height()) {
@@ -64,7 +67,7 @@ function scrollHandler() {
 
         vue.busyFetchMore = true;
 
-        Core.things.fetchMorePublic(search.userId, function (error, result) {
+        Core.things.fetchMorePublic(userId, function (error, result) {
             vue.busyFetchMore = false;
 
             if (error) return console.error(error);

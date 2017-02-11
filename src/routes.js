@@ -27,7 +27,8 @@ exports = module.exports = {
         getAll: publicGetAll,
         getThing: publicGetThing,
         getFile: publicGetFile,
-        getRSS: publicGetRSS
+        getRSS: publicGetRSS,
+        streamPage: publicStreamPage
     }
 };
 
@@ -379,6 +380,11 @@ function publicGetRSS(req, res, next) {
     });
 }
 
+function publicStreamPage(req, res) {
+    assert.strictEqual(typeof req.params.userId, 'string');
+
+    res.sendFile(path.resolve(__dirname, '../public/stream.html'));
+}
 
 
 // THIS DOES NOT BELONG HERE
