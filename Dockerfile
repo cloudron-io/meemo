@@ -6,7 +6,7 @@ EXPOSE 3000
 RUN mkdir -p /app/code
 WORKDIR /app/code
 
-ENV PATH /usr/local/node-4.2.6/bin:$PATH
+ENV PATH /usr/local/node-6.9.5/bin:$PATH
 
 ADD src/ /app/code/src/
 ADD frontend/ /app/code/frontend/
