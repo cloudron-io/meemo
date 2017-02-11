@@ -71,7 +71,7 @@ ThingsApi.prototype.get = function (filter, callback) {
             return;
         }
 
-        if (error) return callback(error);
+        if (error && !error.response) return callback(error);
         if (result.status !== 200) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
 
         var tmp = result.body.things.map(function (thing) {
@@ -92,7 +92,7 @@ ThingsApi.prototype.fetchMore = function (callback) {
     if (!this._query) return callback(new Error('no previous query'));
 
     superagent.get(u).query(this._query).end(errorWrapper(function (error, result) {
-        if (error) return callback(error);
+        if (error && !error.response) return callback(error);
         if (result.status !== 200) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
 
         var tmp = result.body.things.map(function (thing) {
@@ -110,7 +110,7 @@ ThingsApi.prototype.add = function (content, attachments, callback) {
     var that = this;
 
     superagent.post(url('/api/things')).send({ content: content, attachments: attachments }).end(errorWrapper(function (error, result) {
-        if (error) return callback(error);
+        if (error && !error.response) return callback(error);
         if (result.status !== 201) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
 
         var tmp = result.body.thing;
@@ -128,7 +128,7 @@ ThingsApi.prototype.edit = function (thing, callback) {
     var that = this;
 
     superagent.put(url('/api/things/' + thing.id)).send(thing).end(errorWrapper(function (error, result) {
-        if (error) return callback(error);
+        if (error && !error.response) return callback(error);
         if (result.status !== 201) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
 
         that._editCallbacks.forEach(function (callback) {
@@ -143,7 +143,7 @@ ThingsApi.prototype.del = function (thing, callback) {
     var that = this;
 
     superagent.del(url('/api/things/' + thing.id)).end(errorWrapper(function (error, result) {
-        if (error) return callback(error);
+        if (error && !error.response) return callback(error);
         if (result.status !== 200) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
 
         that._delCallbacks.forEach(function (callback) {
@@ -156,8 +156,8 @@ ThingsApi.prototype.del = function (thing, callback) {
 
 ThingsApi.prototype.getPublicThing = function (userId, thingId, callback) {
     superagent.get(url('/api/public/' + userId + '/things/' + thingId)).end(errorWrapper(function (error, result) {
-        if (result && result.status !== 200) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
-        if (error) return callback(error);
+        if (error && !error.response) return callback(error);
+        if (result.status !== 200) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
 
         var thing = result.body.thing;
 
@@ -185,7 +185,7 @@ ThingsApi.prototype.getPublic = function (userId, filter, callback) {
             return;
         }
 
-        if (error) return callback(error);
+        if (error && !error.response) return callback(error);
         if (result.status !== 200) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
 
         var tmp = result.body.things.map(function (thing) {
@@ -206,7 +206,7 @@ ThingsApi.prototype.fetchMorePublic = function (userId, callback) {
     if (!this._query) return callback(new Error('no previous query'));
 
     superagent.get(u).query(this._query).end(errorWrapper(function (error, result) {
-        if (error) return callback(error);
+        if (error && !error.response) return callback(error);
         if (result.status !== 200) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
 
         var tmp = result.body.things.map(function (thing) {
@@ -259,7 +259,7 @@ SettingsApi.prototype.save = function (data, callback) {
     var that = this;
 
     superagent.post(url('/api/settings')).send({ settings: data }).end(errorWrapper(function (error, result) {
-        if (error) return callback(error);
+        if (error && !error.response) return callback(error);
         if (result.status !== 202) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
 
         that._changeCallbacks.forEach(function (callback) {
@@ -272,7 +272,7 @@ SettingsApi.prototype.save = function (data, callback) {
 
 SettingsApi.prototype.get = function (callback) {
     superagent.get(url('/api/settings')).end(errorWrapper(function (error, result) {
-        if (error) return callback(error);
+        if (error && !error.response) return callback(error);
         if (result.status !== 200) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
 
         // just ensure we have defaults
@@ -296,7 +296,7 @@ function TagsApi() {}
 
 TagsApi.prototype.get = function (callback) {
     superagent.get(url('/api/tags')).end(errorWrapper(function (error, result) {
-        if (error) return callback(error);
+        if (error && !error.response) return callback(error);
         if (result.status !== 200) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
 
         result.body.tags.sort(function (a, b) { return a.name > b.name; });
@@ -309,7 +309,7 @@ function SessionApi() {}
 
 SessionApi.prototype.login = function (username, password, callback) {
     superagent.post(g_server + '/api/login').send({ username: username, password: password }).end(function (error, result) {
-        if (error) return callback(error);
+        if (error && !error.response) return callback(error);
         if (result.status !== 201) return callback(new Error('Login failed. ' + result.status + '. ' + result.text));
 
         g_token = result.body.token;
@@ -321,7 +321,7 @@ SessionApi.prototype.login = function (username, password, callback) {
 
 SessionApi.prototype.logout = function () {
     superagent.get(url('/api/logout')).end(function (error, result) {
-        if (error) console.error(error);
+        if (error && !error.response) console.error(error);
         if (result.status !== 200) console.error('Logout failed.', result.status, result.text);
 
         g_token = '';
@@ -333,7 +333,7 @@ SessionApi.prototype.logout = function () {
 
 SessionApi.prototype.profile = function (callback) {
     superagent.get(url('/api/profile')).end(errorWrapper(function (error, result) {
-        if (error) return callback(error);
+        if (error && !error.response) return callback(error);
         if (result.status !== 200) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
 
         callback(null, result.body);
@@ -344,7 +344,7 @@ function UsersApi() {}
 
 UsersApi.prototype.list = function (callback) {
     superagent.get(url('/api/users')).end(function (error, result) {
-        if (error) return callback(error);
+        if (error && !error.response) return callback(error);
         if (result.status !== 200) return callback(new Error('User listing failed. ' + result.status + '. ' + result.text));
 
         callback(null, result.body.users);
@@ -353,7 +353,7 @@ UsersApi.prototype.list = function (callback) {
 
 UsersApi.prototype.publicProfile = function (userId, callback) {
     superagent.get(url('/api/users/' + userId)).end(function (error, result) {
-        if (error) return callback(error);
+        if (error && !error.response) return callback(error);
         if (result.status !== 200) return callback(new Error('Fetching public profile failed. ' + result.status + '. ' + result.text));
 
         callback(null, result.body);
