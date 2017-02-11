@@ -60,6 +60,13 @@ function auth(req, res, next) {
     tokens.get(req.query.token, function (error, result) {
         if (error) return next(new HttpError(401, 'invalid credentials'));
 
+        // make old versions relogin and invalidate token
+        if (!result.userId) {
+            next(new HttpError(401, 'old token'));
+
+            return tokens.del(req.query.token, function () {});
+        }
+
         req.token = req.query.token;
         req.userId = result.userId;
 
