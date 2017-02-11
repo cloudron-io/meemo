@@ -92,8 +92,8 @@ function login(req, res, next) {
     if (typeof req.body.password !== 'string' || !req.body.password) return next(new HttpError(400, 'missing password'));
 
     users.verify(req.body.username, req.body.password, function (error, result) {
+        if (error && error.code === UserError.NOT_AUTHORIZED) return next(new HttpError(401, 'invalid credentials'));
         if (error) return next(new HttpError(500, error));
-        if (!result) return next(new HttpError(401, 'invalid credentials'));
 
         var token = uuid.v4();
         tokens.add(token, '', result.user.id, function (error) {
@@ -131,7 +131,7 @@ function logout(req, res, next) {
 }
 
 function profile(req, res, next) {
-    users.profile(req.userId, function (error, result) {
+    users.profile(req.userId, false, function (error, result) {
         if (error && error.code === UserError.NOT_FOUND) return next(new HttpError(404, error.message));
         if (error) return next(new HttpError(500, error));
 
@@ -323,7 +323,7 @@ function publicUsers(req, res, next) {
 }
 
 function publicProfile(req, res, next) {
-    users.profile(req.params.userId, function (error, result) {
+    users.profile(req.params.userId, false, function (error, result) {
         if (error && error.code === UserError.NOT_FOUND) return next(new HttpError(404, error.message));
         if (error) return next(new HttpError(500, error));
 
@@ -349,7 +349,7 @@ function publicProfile(req, res, next) {
 function publicGetRSS(req, res, next) {
     assert.strictEqual(typeof req.params.userId, 'string');
 
-    users.profile(req.params.userId, function (error, user) {
+    users.profile(req.params.userId, false, function (error, user) {
         if (error && error.code === UserError.NOT_FOUND) return next(new HttpError(404, error.message));
         if (error) return next(new HttpError(500, error));
 

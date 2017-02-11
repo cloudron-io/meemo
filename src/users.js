@@ -26,47 +26,45 @@ function UserError(code, messageOrError) {
 }
 
 UserError.NOT_FOUND = 'not found';
+UserError.NOT_AUTHORIZED = 'not authorized';
 UserError.INTERNAL_ERROR = 'internal error';
 
 function verify(username, password, callback) {
-    if (process.env.LDAP_URL) {
-        profile(username, function (error, result) {
-            if (error) return callback(null, null);
+    profile(username, true, function (error, result) {
+        if (error) return callback(error);
 
+        if (process.env.LDAP_URL) {
             var ldapClient = ldapjs.createClient({ url: process.env.LDAP_URL });
             ldapClient.on('error', function (error) {
                 console.error('LDAP error', error);
-                callback(error);
+                callback(new UserError(UserError.INTERNAL_ERROR, error));
             });
 
             var ldapDn = 'cn=' + result.username + ',' + process.env.LDAP_USERS_BASE_DN;
 
             ldapClient.bind(ldapDn, password, function (error) {
-                if (error) return callback(null, null);
+                if (error) return callback(new UserError(UserError.NOT_AUTHORIZED));
 
                 callback(null, { user: result });
             });
-        });
-    } else {
-        var users = safe.JSON.parse(safe.fs.readFileSync(LOCAL_AUTH_FILE));
-        if (!users) return callback(null, null);
-        if (!users[username]) return callback(null, null);
+        } else {
+            bcrypt.compare(password, result.passwordHash, function (error, valid) {
+                if (error) return callback(new UserError(UserError.INTERNAL_ERROR, error));
+                if (!valid) return callback(new UserError(UserError.NOT_AUTHORIZED));
 
-        bcrypt.compare(password, users[username].passwordHash, function (error, valid) {
-            if (error || !valid) return callback(null, null);
+                // strip passwordHash
+                delete result.passwordHash;
 
-            callback(null, { user: {
-                id: username,
-                username: username,
-                displayName: users[username].displayName
-            }});
-        });
-    }
+                callback(null, { user: result });
+            });
+        }
+    });
 }
 
 // identifier may be userId, email, username
-function profile(identifier, callback) {
+function profile(identifier, full, callback) {
     assert.strictEqual(typeof identifier, 'string');
+    assert.strictEqual(typeof full, 'boolean');
     assert.strictEqual(typeof callback, 'function');
 
     if (process.env.LDAP_URL) {
@@ -93,6 +91,8 @@ function profile(identifier, callback) {
                 if (result.status !== 0) return callback(new UserError(UserError.NOT_FOUND, 'non-zero status from LDAP search: ' + result.status));
                 if (items.length === 0) return callback(new UserError(UserError.INTERNAL_ERROR, 'Duplicate entries found'));
 
+                if (full) return callback(null, items[0]);
+
                 var out = {
                     id: items[0].uid,
                     username: items[0].username,
@@ -108,10 +108,13 @@ function profile(identifier, callback) {
         if (!users) return callback(new UserError(UserError.NOT_FOUND));
         if (!users[identifier]) return callback(new UserError(UserError.NOT_FOUND));
 
+        if (full) return callback(null, users[identifier]);
+
         var result = {
             id: users[identifier].username,
             username: users[identifier].username,
-            displayName: users[identifier].displayName
+            displayName: users[identifier].displayName,
+            email: users[identifier].email
         };
 
         callback(null, result);
