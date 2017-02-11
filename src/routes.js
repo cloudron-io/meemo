@@ -92,6 +92,7 @@ function login(req, res, next) {
     if (typeof req.body.password !== 'string' || !req.body.password) return next(new HttpError(400, 'missing password'));
 
     users.verify(req.body.username, req.body.password, function (error, result) {
+        if (error && error.code === UserError.NOT_FOUND) return next(new HttpError(401, 'invalid credentials'));
         if (error && error.code === UserError.NOT_AUTHORIZED) return next(new HttpError(401, 'invalid credentials'));
         if (error) return next(new HttpError(500, error));
 

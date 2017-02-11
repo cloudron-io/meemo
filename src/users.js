@@ -14,16 +14,21 @@ var assert = require('assert'),
     bcrypt = require('bcryptjs'),
     path = require('path'),
     ldapjs = require('ldapjs'),
-    safe = require('safetydance');
+    safe = require('safetydance'),
+    util = require('util');
 
 var LOCAL_AUTH_FILE = path.resolve(process.env.LOCAL_AUTH_FILE || './.users.json');
 
 function UserError(code, messageOrError) {
     assert.strictEqual(typeof code, 'string');
 
+    Error.call(this);
+    Error.captureStackTrace(this, this.constructor);
+
     this.code = code;
     this.message = messageOrError || code;
 }
+util.inherits(UserError, Error);
 
 UserError.NOT_FOUND = 'not found';
 UserError.NOT_AUTHORIZED = 'not authorized';
@@ -108,13 +113,12 @@ function profile(identifier, full, callback) {
         if (!users) return callback(new UserError(UserError.NOT_FOUND));
         if (!users[identifier]) return callback(new UserError(UserError.NOT_FOUND));
 
-        if (full) return callback(null, users[identifier]);
-
         var result = {
             id: users[identifier].username,
             username: users[identifier].username,
             displayName: users[identifier].displayName,
-            email: users[identifier].email
+            email: users[identifier].email,
+            passwordHash: full ? users[identifier].passwordHash : undefined
         };
 
         callback(null, result);
