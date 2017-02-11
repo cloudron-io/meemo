@@ -1,4 +1,4 @@
-FROM cloudron/base:0.9.0
+FROM cloudron/base:0.10.0
 MAINTAINER Johannes Zellner <johannes@nebulon.de>
 
 EXPOSE 3000
