@@ -1,0 +1,42 @@
+
+// This is the markdown styling
+
+.thing-content {
+
+    table {
+        border: 1px solid #ddd;
+        background-color: transparent;
+        border-spacing: 0;
+        border-collapse: collapse;
+        margin: 0 0 10px;
+
+        thead {
+            tr {
+                th {
+                    border: 1px solid #ddd;
+                    vertical-align: bottom;
+                    padding: 8px;
+                    text-align: left;
+                }
+            }
+        }
+
+        tbody {
+            tr {
+                &:nth-of-type(2n+1) {
+                    background-color: #f9f9f9;
+                }
+
+                &:hover {
+                    background-color: #f5f5f5;
+                }
+
+                td {
+                    border: 1px solid #ddd;
+                    padding: 8px;
+                    vertical-align: top;
+                }
+            }
+        }
+    }
+}
