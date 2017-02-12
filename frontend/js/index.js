@@ -179,6 +179,7 @@ var vue = new Vue({
         // Register event handlers
         shortcut.add('Ctrl+s', this.addThing.bind(this), { target: 'addTextarea' });
         shortcut.add('Ctrl+Enter', this.addThing.bind(this), { target: 'addTextarea' });
+        shortcut.add('Ctrl+f', function () { $('#searchBarInput').focus(); }, {});
 
         this.main();
     }
