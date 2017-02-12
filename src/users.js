@@ -96,6 +96,9 @@ function profile(identifier, full, callback) {
                 if (result.status !== 0) return callback(new UserError(UserError.NOT_FOUND, 'non-zero status from LDAP search: ' + result.status));
                 if (items.length === 0) return callback(new UserError(UserError.INTERNAL_ERROR, 'Duplicate entries found'));
 
+                // translate proprety names
+                items[0].id = items[0].uid;
+
                 if (full) return callback(null, items[0]);
 
                 var out = {
