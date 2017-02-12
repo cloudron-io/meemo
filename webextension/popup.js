@@ -44,6 +44,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // setting autofocus or set focus immediately wont work
         setTimeout(function () { document.getElementById('content').focus(); }, 250);
+
+        // Register event handlers
+        shortcut.add('Ctrl+s', add, {});
+        shortcut.add('Ctrl+Enter', add, {});
     }
 });
 
