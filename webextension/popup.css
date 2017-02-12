@@ -1,8 +1,8 @@
 body {
-    font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
+    font-family: Helvetica, Tahoma, sans-serif;
     font-size: 100%;
     width: 450px;
-    background: #eee;
+    background: white;
 }
 
 textarea {

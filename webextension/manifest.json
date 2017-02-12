@@ -1,12 +1,12 @@
 {
   "manifest_version": 2,
-  "name": "Guacamoly",
-  "description": "This extension allows to add the current page as a Guacamoly thing.",
-  "homepage_url": "https://git.nebulon.info/nebulon/holyguacamoly",
+  "name": "Meemo",
+  "description": "This extension allows to add the current page with notes into Meemo.",
+  "homepage_url": "https://meemo.minimal-space.de",
   "icons": { "128": "logo.png" },
-  "version": "0.1.1",
+  "version": "0.2.0",
   "browser_action": {
-    "default_title": "Guacamoly",
+    "default_title": "Meemo",
     "default_icon": "logo.png",
     "default_popup": "popup.html"
   },
@@ -18,7 +18,7 @@
   ],
   "applications": {
     "gecko": {
-      "id": "guacamoly@nebulon.de"
+      "id": "johannes@nebulon.de"
     }
   }
 }

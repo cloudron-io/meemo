@@ -38,7 +38,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     document.getElementById('actionAdd').addEventListener('click', add);
-    document.getElementById('disconnectButton').addEventListener('click', disconnectApp);
 
     getCurrentTabUrl(function(url) {
         document.getElementById('content').value = url;
@@ -49,24 +48,16 @@ var views = [
     'main',
     'done',
     'home',
-    'disconnected',
     'setup',
     'busy'
 ];
 
 function show(view) {
     views.forEach(function (view) {
-        document.getElementById(view).classList.add('hide');
+        document.getElementById(view).style.display = 'none';
     });
 
-    document.getElementById(view).classList.remove('hide');
-}
-
-function disconnectApp() {
-    delete localStorage.origin;
-    delete localStorage.token;
-    delete localStorage.title;
-    show('disconnected');
+    document.getElementById(view).style.display = 'block';
 }
 
 function add() {
