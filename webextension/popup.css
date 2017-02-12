@@ -16,6 +16,23 @@ textarea {
 
 button {
     width: 100%;
+    color: #fff;
+    background-color: #5cb85c;
+    border-color: #4cae4c;
+    padding: 6px 12px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+button:hover {
+    background-color: #449d44;
+    border-color: #398439;
+}
+
+button:active {
+    background-color: #398439;
+    border-color: #255625;
 }
 
 .spinner {
