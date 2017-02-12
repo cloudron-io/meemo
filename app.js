@@ -17,10 +17,11 @@ var express = require('express'),
     cors = require('cors'),
     multer  = require('multer'),
     routes = require('./src/routes.js'),
-    logic = require('./src/logic.js'),
-    morgan = require('morgan'),
-    MongoClient = require('mongodb').MongoClient,
     lastmile = require('connect-lastmile'),
+    logic = require('./src/logic.js'),
+    MongoClient = require('mongodb').MongoClient,
+    morgan = require('morgan'),
+    path = require('path'),
     serveStatic = require('serve-static');
 
 var app = express();
@@ -68,8 +69,13 @@ router.get ('/api/healthcheck', routes.healthcheck);
 // page overlay for pretty public streams
 router.get ('/public/:userId', routes.public.streamPage);
 
+// Add pretty 404 handler
+router.get ('*', function (req, res) {
+    res.sendFile(path.resolve(__dirname, 'public/error.html'));
+});
+
 app.use(morgan('dev', { immediate: false, stream: { write: function (str) { console.log(str.slice(0, -1)); } } }));
-app.use(serveStatic(__dirname + '/public', { etag: false, fallthrough: true }));
+app.use(serveStatic(__dirname + '/public', { etag: false }));
 app.use(cors());
 app.use(json({ strict: true, limit: '5mb' }));
 app.use(router);
