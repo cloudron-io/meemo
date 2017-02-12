@@ -35,13 +35,16 @@ document.addEventListener('DOMContentLoaded', function() {
         show('setup');
     } else {
         show('main');
+
+        document.getElementById('actionAdd').addEventListener('click', add);
+
+        getCurrentTabUrl(function(url) {
+            document.getElementById('content').value = url + '\n\n';
+        });
+
+        // setting autofocus or set focus immediately wont work
+        setTimeout(function () { document.getElementById('content').focus(); }, 250);
     }
-
-    document.getElementById('actionAdd').addEventListener('click', add);
-
-    getCurrentTabUrl(function(url) {
-        document.getElementById('content').value = url;
-    });
 });
 
 var views = [
