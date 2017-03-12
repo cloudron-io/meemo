@@ -190,7 +190,7 @@ function facelift(userId, thing, callback) {
 
         console.log('[INFO] update %s with new external content.', thing._id, result);
 
-        things.put(userId, thing._id, thing.content, thing.tags, attachments, result, function (error) {
+        things.put(userId, thing._id, thing.content, thing.tags, attachments, result, false, false, false, function (error) {
             if (error) console.error('Failed to update external content:', error);
 
             wrapper();
@@ -312,13 +312,14 @@ function add(userId, content, attachments, callback) {
     });
 }
 
-function put(userId, thingId, content, attachments, isPublic, isShared, callback) {
+function put(userId, thingId, content, attachments, isPublic, isShared, isArchived, callback) {
     assert.strictEqual(typeof userId, 'string');
     assert.strictEqual(typeof thingId, 'string');
     assert.strictEqual(typeof content, 'string');
     assert(Array.isArray(attachments));
     assert.strictEqual(typeof isPublic, 'boolean');
     assert.strictEqual(typeof isShared, 'boolean');
+    assert.strictEqual(typeof isArchived, 'boolean');
     assert.strictEqual(typeof callback, 'function');
 
     var tagObjects = extractTags(content);
@@ -329,7 +330,7 @@ function put(userId, thingId, content, attachments, isPublic, isShared, callback
         extractExternalContent(content, function (error, externalContent) {
             if (error) console.error('Failed to extract external content:', error);
 
-            things.put(userId, thingId, content, tagObjects, attachments, externalContent, isPublic, isShared, function (error) {
+            things.put(userId, thingId, content, tagObjects, attachments, externalContent, isPublic, isShared, isArchived, function (error) {
                 if (error) return callback(error);
 
                 get(userId, thingId, callback);

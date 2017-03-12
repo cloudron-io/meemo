@@ -187,13 +187,15 @@ function put(req, res, next) {
     if (req.body.attachments && !Array.isArray(req.body.attachments)) return next(new HttpError(400, 'attachments must be an array'));
     if (req.body.public && typeof req.body.public !== 'boolean') return next(new HttpError(400, 'public must be a boolean'));
     if (req.body.shared && typeof req.body.shared !== 'boolean') return next(new HttpError(400, 'shared must be a boolean'));
+    if (req.body.archived && typeof req.body.archived !== 'boolean') return next(new HttpError(400, 'archived must be a boolean'));
 
     if (!req.body.attachments) req.body.attachments = [];
 
     req.body.public = !!req.body.public;
     req.body.shared = !!req.body.shared;
+    req.body.archived = !!req.body.archived;
 
-    logic.put(req.userId, req.params.id, req.body.content, req.body.attachments, req.body.public, req.body.shared, function (error, result) {
+    logic.put(req.userId, req.params.id, req.body.content, req.body.attachments, req.body.public, req.body.shared, req.body.archived, function (error, result) {
         if (error) return next(new HttpError(500, error));
         next(new HttpSuccess(201, { thing: result }));
     });
