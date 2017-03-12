@@ -5,6 +5,15 @@ Vue.config.debug = true;
 
 window.Guacamoly = window.Guacamoly || {};
 
+window.Guacamoly.disableCheckboxes = function () {
+    // disable interactive checkboxes
+    Vue.nextTick(function () {
+        $('.card-content input[type="checkbox"]').on('click', function (event) {
+            event.preventDefault();
+        });
+    });
+}
+
 // https://github.com/markdown-it/markdown-it/blob/master/docs/architecture.md#renderer
 function markdownTargetBlank(md) {
     // stash the default renderer

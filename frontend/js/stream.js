@@ -56,6 +56,8 @@ function main() {
             }
 
             vue.things = result;
+
+            window.Guacamoly.disableCheckboxes();
         });
     });
 }
@@ -76,6 +78,8 @@ function scrollHandler() {
             if (error) return console.error(error);
 
             vue.things = vue.things.concat(result);
+
+            window.Guacamoly.disableCheckboxes();
         });
     }
 }

@@ -129,5 +129,7 @@ Vue.component('thing', {
     ready: function () {
         shortcut.add('Ctrl+s', this.saveEdit.bind(this), { target: 'textarea-' + this.thing.id });
         shortcut.add('Ctrl+Enter', this.saveEdit.bind(this), { target: 'textarea-' + this.thing.id });
+
+        window.Guacamoly.disableCheckboxes();
     }
 });

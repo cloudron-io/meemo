@@ -51,6 +51,8 @@ function main() {
             }
 
             vue.thing = result;
+
+            window.Guacamoly.disableCheckboxes();
         });
     });
 }
