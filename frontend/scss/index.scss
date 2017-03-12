@@ -99,6 +99,38 @@ body {
         max-width: 100%;
         max-height: 600px;
     }
+
+    input[type="checkbox"],
+    input[type="radio"] {
+        display: none;
+    }
+
+    input[type="checkbox"] + label:before{
+        font-family: FontAwesome;
+        content: "\f096";
+        padding-right: 5px;
+    }
+
+    input[type="radio"] + label:before {
+        font-family: FontAwesome;
+        content: "\f10c";
+        padding-right: 5px;
+    }
+
+    input[type="checkbox"]:checked + label:before {
+        content: "\f046";
+        padding-right: 3px;
+    }
+
+    input[type="radio"]:checked + label:before {
+        content: "\f05d";
+        padding-right: 3px;
+    }
+
+    label {
+        margin-bottom: 0;
+        font-weight: normal;
+    }
 }
 
 .new-thing {
