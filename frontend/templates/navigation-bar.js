@@ -12,7 +12,7 @@ Vue.component('navigation-bar', {
             type: String,
             required: true
         },
-        archive: {
+        archived: {
             type: Boolean,
             required: true
         },
@@ -92,21 +92,20 @@ Vue.component('navigation-bar', {
             if (!word) this.search += '#' + tag.name;
             else this.search = this.search.replace(Vue.getCurrentSearchWord(this.search, $('#searchBarInput')), '#' + tag.name);
 
-            if (this.search === '#' + tag.name) window.location.href = '/#search?#' + tag.name;
-
+            this.$root.refresh(this.search);
             Vue.nextTick(function () { $('#searchBarInput').focus(); });
         },
         doSearch: function () {
-            window.location.href = '/#search?' + encodeURIComponent(this.search);
             $('#tagsDropdown').hide();
+            this.$root.refresh(this.search);
         },
         toggleArchivedSearch: function () {
-            console.log(this, this.$el, arguments)
-            this.archive = !this.archive;
+            this.archived = !this.archived;
+            this.$root.refresh(this.search);
         },
         clearSearch: function () {
-            window.location.href = '/#search?';
-            Vue.nextTick(function () { $('#inputSearch').focus(); });
+            this.$root.refresh('');
+            Vue.nextTick(function () { $('#searchBarInput').focus(); });
         },
         exportThings: function () {
             this.$root.Core.things.export();

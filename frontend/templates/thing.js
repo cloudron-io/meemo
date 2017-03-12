@@ -96,6 +96,19 @@ Vue.component('thing', {
                 that.shareLink = '';
             });
         },
+        toggleArchive: function () {
+            var that = this;
+
+            this.busy = true;
+
+            this.thing.archived = !this.thing.archived;
+            this.thing.public = this.thing.archived ? false : this.thing.public;
+
+            this.$root.Core.things.edit(this.thing, function (error) {
+                that.busy = false;
+                if (error) return console.error(error);
+            });
+        },
         uploadFileChanged: function (event) {
             var that = this;
             var data = new FormData();

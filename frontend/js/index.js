@@ -58,7 +58,7 @@ var vue = new Vue({
         busyThings: true,
         busyFetchMore: false,
         search: '',
-        archive: false,
+        archived: false,
         profile: {},
         mailbox: '',
         settings: {},
@@ -102,7 +102,11 @@ var vue = new Vue({
 
             this.busyThings = true;
 
-            window.location.href = '/#search?' + (search ? encodeURIComponent(search) : '');
+            var href = '/#search';
+            if (this.archived) href += '?archived=true&';
+            else href += '?';
+
+            window.location.href = href  + (search ? encodeURIComponent(search) : '');
 
             Core.things.get(search || '', function (error, data) {
                 if (error) return console.error(error);

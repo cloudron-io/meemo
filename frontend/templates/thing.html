@@ -44,10 +44,12 @@
         <button class="btn btn-default" @click="saveEdit()" title="Save (Ctrl+S)"><i class="fa fa-check"></i></button>
       </span>
       <span v-show="!thing.edit">
-        <button class="btn btn-default" @click="togglePublic()" title="{{ thing.public ? 'Make private' : 'Make public' }}"><i class="fa" :class="{ 'fa-eye': thing.public, 'fa-eye-slash': !thing.public }"></i></button>
-        <button class="btn btn-default" @click="showShareLink()" title="Share"><i class="fa fa-share-alt"></i></button>
+        <button class="btn btn-default" @click="togglePublic()" title="{{ thing.public ? 'Make private' : 'Make public' }}" v-show="!thing.archived"><i class="fa" :class="{ 'fa-eye': thing.public, 'fa-eye-slash': !thing.public }"></i></button>
+        <button class="btn btn-default" @click="showShareLink()" title="Share" v-show="!thing.archived"><i class="fa fa-share-alt"></i></button>
         <button class="btn btn-default" @click="showEdit()" title="Edit"><i class="fa fa-pencil"></i></button>
         <button class="btn btn-default" @click="showDelete()" title="Delete"><i class="fa fa-trash"></i></button>
+        <button class="btn btn-default" @click="toggleArchive()" title="Archive" v-show="!thing.archived"><i class="fa fa-archive"></i></button>
+        <button class="btn btn-default" @click="toggleArchive()" title="Restore from archive" v-show="thing.archived"><i class="fa fa-reply"></i></button>
       </span>
     </div>
     <div class="card-content">

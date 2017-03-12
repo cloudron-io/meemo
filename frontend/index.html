@@ -19,7 +19,7 @@
   </head>
   <body id="application" @click="$refs.navbar.hideTags()">
 
-    <navigation-bar :active-view="mainView" :tags="tags" :profile="profile" :search="search" :settings="settings" :archive="archive" v-ref:navbar></navigation-bar>
+    <navigation-bar :active-view="mainView" :tags="tags" :profile="profile" :search="search" :settings="settings" :archived="archived" v-ref:navbar></navigation-bar>
 
     <modal-settings id="modalSettings"></modal-settings>
     <modal-browser-extensions id="modalExtensions"></modal-browser-extensions>
