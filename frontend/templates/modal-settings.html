@@ -17,42 +17,27 @@
             <div class="form-group">
               <label class="col-xs-3 control-label">Display</label>
               <div class="col-xs-8">
-                <div class="checkbox">
-                  <label class="control-label">
-                    <input type="checkbox" v-model="wide" /> Wide notes
-                  </label>
-                </div>
+                <input type="checkbox" v-model="wide" id="settingsCheckboxWideNotes"/>
+                <label class="control-label" for="settingsCheckboxWideNotes">Wide notes</label>
               </div>
               <div class="col-xs-8 col-xs-offset-3">
-                <div class="checkbox">
-                  <label class="control-label">
-                    <input type="checkbox" v-model="wideNavbar" /> Wide toolbar
-                  </label>
-                </div>
+                <input type="checkbox" v-model="wideNavbar" id="settingsCheckboxWideNavbar"/>
+                <label class="control-label" for="settingsCheckboxWideNavbar">Wide toolbar</label>
               </div>
               <div class="col-xs-8 col-xs-offset-3">
-                <div class="checkbox">
-                  <label class="control-label">
-                    <input type="checkbox" v-model="publicBackground" /> Show background image on public stream
-                  </label>
-                </div>
+                <input type="checkbox" v-model="publicBackground" id="settingsCheckboxPublicBackground"/>
+                <label class="control-label" for="settingsCheckboxPublicBackground">Show background image on public stream</label>
               </div>
               <div class="col-xs-8 col-xs-offset-3">
-                <div class="checkbox">
-                  <label class="control-label">
-                    <input type="checkbox" v-model="showTagSidebar" /> Show most used tags in sidebar
-                  </label>
-                </div>
+                <input type="checkbox" v-model="showTagSidebar" id="settingsCheckboxTagSidebar"/>
+                <label class="control-label" for="settingsCheckboxTagSidebar">Show most used tags in sidebar</label>
               </div>
             </div>
             <div class="form-group">
               <label class="col-xs-3 control-label">Behavior</label>
               <div class="col-xs-8">
-                <div class="checkbox">
-                  <label class="control-label">
-                    <input type="checkbox" v-model="keepPositionAfterEdit" /> Keep scroll position after edit
-                  </label>
-                </div>
+                <input type="checkbox" v-model="keepPositionAfterEdit" id="settingsCheckboxKeepPos"/>
+                <label class="control-label" for="settingsCheckboxKeepPos">Keep scroll position after edit</label>
               </div>
             </div>
             <div class="form-group">

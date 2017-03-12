@@ -1,6 +1,23 @@
 .settings {
-    .checkbox {
-        padding-top: 0 !important;
+    input[type="checkbox"] {
+        display: none;
+    }
+
+    input[type="checkbox"] + label:before{
+        font-family: FontAwesome;
+        content: "\f096";
+        padding-right: 5px;
+    }
+
+    input[type="checkbox"]:checked + label:before {
+        content: "\f046";
+        padding-right: 3px;
+    }
+
+    label {
+        margin-bottom: 0;
+        font-weight: normal;
+        cursor: pointer;
     }
 
     .image-picker {
