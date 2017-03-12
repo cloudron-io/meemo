@@ -12,6 +12,10 @@ Vue.component('navigation-bar', {
             type: String,
             required: true
         },
+        archive: {
+            type: Boolean,
+            required: true
+        },
         activeView: {
             type: String,
             required: true
@@ -95,6 +99,10 @@ Vue.component('navigation-bar', {
         doSearch: function () {
             window.location.href = '/#search?' + encodeURIComponent(this.search);
             $('#tagsDropdown').hide();
+        },
+        toggleArchivedSearch: function () {
+            console.log(this, this.$el, arguments)
+            this.archive = !this.archive;
         },
         clearSearch: function () {
             window.location.href = '/#search?';
