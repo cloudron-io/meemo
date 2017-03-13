@@ -61,6 +61,9 @@ Vue.component('thing', {
         cancelEdit: function () {
             this.thing.edit = false;
         },
+        showArchive: function () {
+            $('#modalArchive-' + this.thing.id).modal('show');
+        },
         showDelete: function () {
             $('#modalDel-' + this.thing.id).modal('show');
         },
@@ -69,6 +72,8 @@ Vue.component('thing', {
 
             this.$root.Core.things.del(this.thing, function (error) {
                 if (error) return console.error(error);
+
+                $('#modalArchive-' + that.thing.id).modal('hide');
                 $('#modalDel-' + that.thing.id).modal('hide');
             });
         },
@@ -107,7 +112,7 @@ Vue.component('thing', {
             this.$root.Core.things.edit(this.thing, function (error) {
                 that.busy = false;
                 if (error) return console.error(error);
-                $('#modalDel-' + that.thing.id).modal('hide');
+                $('#modalArchive-' + that.thing.id).modal('hide');
             });
         },
         uploadFileChanged: function (event) {
