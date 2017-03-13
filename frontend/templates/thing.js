@@ -107,6 +107,7 @@ Vue.component('thing', {
             this.$root.Core.things.edit(this.thing, function (error) {
                 that.busy = false;
                 if (error) return console.error(error);
+                $('#modalDel-' + that.thing.id).modal('hide');
             });
         },
         uploadFileChanged: function (event) {

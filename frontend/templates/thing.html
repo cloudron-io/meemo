@@ -21,11 +21,12 @@
         <div class="modal-header">
         </div>
         <div class="modal-body">
-          <h4>Really delete this Note?</h4>
+          <h4>What do you want to do with this Note?</h4>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-          <button type="button" class="btn btn-danger" @click="deleteThing()">Yes</button>
+            <button type="button" class="btn btn-danger btn-outline pull-left" @click="deleteThing()">Delete permanently</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-success" @click="toggleArchive()">Archive</button>
         </div>
       </div>
     </div>
@@ -46,10 +47,9 @@
       <span v-show="!thing.edit">
         <button class="btn btn-default" @click="togglePublic()" title="{{ thing.public ? 'Make private' : 'Make public' }}" v-show="!thing.archived"><i class="fa" :class="{ 'fa-eye': thing.public, 'fa-eye-slash': !thing.public }"></i></button>
         <button class="btn btn-default" @click="showShareLink()" title="Share" v-show="!thing.archived"><i class="fa fa-share-alt"></i></button>
-        <button class="btn btn-default" @click="showEdit()" title="Edit"><i class="fa fa-pencil"></i></button>
-        <button class="btn btn-default" @click="showDelete()" title="Delete"><i class="fa fa-trash"></i></button>
-        <button class="btn btn-default" @click="toggleArchive()" title="Archive" v-show="!thing.archived"><i class="fa fa-archive"></i></button>
+        <button class="btn btn-default" @click="showDelete()" title="Archive or delete"><i class="fa fa-trash"></i></button>
         <button class="btn btn-default" @click="toggleArchive()" title="Restore from archive" v-show="thing.archived"><i class="fa fa-reply"></i></button>
+        <button class="btn btn-default" @click="showEdit()" title="Edit"><i class="fa fa-pencil"></i></button>
       </span>
     </div>
     <div class="card-content">
