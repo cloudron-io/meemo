@@ -1,5 +1,5 @@
 <script type="text/template" id="navigation-bar-template">
-  <div id="mainNavigationBar" class="navigation">
+  <div id="mainNavigationBar" class="navigation" :class="{ 'inverse': archived }">
     <div :class="{ 'container': (activeView === 'content' && !settings.wideNavbar), 'container-fluid': (activeView !== 'content' || settings.wideNavbar) }">
       <div class="row">
         <div class="shadow content" :class="{ 'col-md-10': (activeView === 'content' && !settings.wideNavbar), 'col-md-offset-1': (activeView === 'content' && !settings.wideNavbar) }">
@@ -7,7 +7,7 @@
             <div class="input-group-btn">
               <!-- <button type="button" class="btn btn-default" title="Me">Me</button> -->
               <!-- <button type="button" class="btn btn-default" title="Friends">Friends</button> -->
-              <button type="button" class="btn btn-default" @click.stop="toggleArchivedSearch()" title="Show Archived Notes" :class="{ 'archive': archived }"><i class="fa fa-archive"></i></button>
+              <button type="button" class="btn btn-default" @click.stop="toggleArchivedSearch()" title="Show Archived Notes" :class="{ 'archive': archived }"><i class="fa" :class="{ 'fa-archive': !archived, 'fa-home': archived }"></i></button>
               <button type="button" class="btn btn-default" @click.stop="doSearch()" title="Search"><i class="fa fa-search"></i></button>
             </div>
             <input type="text" class="form-control search" id="searchBarInput" autocomplete="off" placeholder="Search..." v-model="search" @click.stop="showTags()" @keyup="handleSearchKeyInput(this, $event)" @keyup.enter="doSearch()">

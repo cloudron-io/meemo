@@ -175,9 +175,9 @@ textarea {
     top: 0;
     left: 0;
     width: 100%;
+    background-color: white;
 
     .content {
-        background-color: white;
         padding: 5px;
     }
 
@@ -185,15 +185,21 @@ textarea {
         border: 0;
         border-radius: 0;
         box-shadow: none;
-
-        &.archive {
-            background-color: #449d44;
-            color: white;
-        }
+        margin-left: 0 !important;
     }
 
     h2 {
         margin: 0;
+    }
+
+    &.inverse {
+        background-color: #333 !important;
+        color: white !important;
+
+        .btn {
+            background-color: #333 !important;
+            color: white !important;
+        }
     }
 }
 
