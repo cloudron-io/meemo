@@ -7,7 +7,7 @@
             <div class="input-group-btn">
               <!-- <button type="button" class="btn btn-default" title="Me">Me</button> -->
               <!-- <button type="button" class="btn btn-default" title="Friends">Friends</button> -->
-              <button type="button" class="btn btn-default" @click.stop="toggleArchivedSearch()" title="Archived Notes" :class="{ 'active': archived }"><i class="fa fa-archive"></i></button>
+              <button type="button" class="btn btn-default" @click.stop="toggleArchivedSearch()" title="Show Archived Notes" :class="{ 'archive': archived }"><i class="fa fa-archive"></i></button>
               <button type="button" class="btn btn-default" @click.stop="doSearch()" title="Search"><i class="fa fa-search"></i></button>
             </div>
             <input type="text" class="form-control search" id="searchBarInput" autocomplete="off" placeholder="Search..." v-model="search" @click.stop="showTags()" @keyup="handleSearchKeyInput(this, $event)" @keyup.enter="doSearch()">
