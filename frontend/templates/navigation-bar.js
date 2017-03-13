@@ -100,7 +100,7 @@ Vue.component('navigation-bar', {
             this.$root.refresh(this.search);
         },
         toggleArchivedSearch: function () {
-            this.archived = !this.archived;
+            this.$root.archived = !this.$root.archived;
             this.$root.refresh(this.search);
         },
         clearSearch: function () {

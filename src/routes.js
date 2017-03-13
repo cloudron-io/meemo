@@ -146,12 +146,24 @@ function profile(req, res, next) {
 }
 
 function getAll(req, res, next) {
-    var query = {};
+    var query = { $and: [] };
 
     if (req.query && req.query.filter) {
-        query = {
+        query.$and.push({
             $text: { $search: String(req.query.filter) }
-        };
+        });
+    }
+
+    if (req.query && req.query.archived) {
+        query.$and.push({
+            archived: true
+        });
+    } else {
+        query.$and.push({ $or: [{
+            archived: false
+        }, {
+            archived: { $exists: false }
+        }]});
     }
 
     var skip = isNaN(parseInt(req.query.skip)) ? 0 : parseInt(req.query.skip);

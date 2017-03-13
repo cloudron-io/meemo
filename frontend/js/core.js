@@ -52,7 +52,7 @@ function ThingsApi() {
     this._query = null;
 }
 
-ThingsApi.prototype.get = function (filter, callback) {
+ThingsApi.prototype.get = function (filter, isArchived, callback) {
     var that = this;
     var u = url('/api/things');
     var operation = guid();
@@ -62,6 +62,8 @@ ThingsApi.prototype.get = function (filter, callback) {
     this._query = {};
 
     if (filter) this._query.filter = filter;
+    if (isArchived) this._query.archived = true;
+
     this._query.skip = 0;
     this._query.limit = 10;
 

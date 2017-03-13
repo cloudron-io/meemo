@@ -102,13 +102,9 @@ var vue = new Vue({
 
             this.busyThings = true;
 
-            var href = '/#search';
-            if (this.archived) href += '?archived=true&';
-            else href += '?';
+            window.location.href = '/#search?' + (search ? encodeURIComponent(search) : '');
 
-            window.location.href = href  + (search ? encodeURIComponent(search) : '');
-
-            Core.things.get(search || '', function (error, data) {
+            Core.things.get(search || '', this.archived, function (error, data) {
                 if (error) return console.error(error);
 
                 that.things = data;
