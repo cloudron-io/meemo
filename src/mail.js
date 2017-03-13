@@ -4,8 +4,8 @@
 
 exports = module.exports = {};
 
-var CHECK_INBOX_INTERVAL = 60 * 1000;
-var CLEANUP_TRASH_INTERVAL = 60 * 1000;
+var CHECK_INBOX_INTERVAL = 5 * 60 * 1000;
+var CLEANUP_TRASH_INTERVAL = 5 * 60 * 1000;
 
 var assert = require('assert'),
     async = require('async'),
