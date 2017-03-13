@@ -113,3 +113,9 @@
 * Support ctrl+f to search within the app
 * Support markdown tables
 * Update to latest base image
+
+[1.5.0]
+* Add archive functionality
+* Better checkbox styling
+* Improved markdown cheatsheet
+* Improved mobile responsiveness
