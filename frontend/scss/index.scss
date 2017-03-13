@@ -185,6 +185,11 @@ textarea {
         border: 0;
         border-radius: 0;
         box-shadow: none;
+
+        &.archive {
+            background-color: #449d44;
+            color: white;
+        }
     }
 
     h2 {
