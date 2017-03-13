@@ -119,3 +119,8 @@
 * Better checkbox styling
 * Improved markdown cheatsheet
 * Improved mobile responsiveness
+
+[1.5.1]
+* Improve archive mode visibility
+* Collapse archive and delete buttons
+* Fix visibility of notes when edited in feed
