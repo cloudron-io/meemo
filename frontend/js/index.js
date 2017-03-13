@@ -256,8 +256,18 @@ Core.things.onDeleted(function (thing) {
 });
 
 Core.things.onEdited(function (thing) {
-    // move to first spot
-    vue.things.splice(0, 0, vue.things.splice(vue.things.indexOf(thing), 1)[0]);
+    if ((thing.archived && !vue.archived) || (!thing.archived && vue.archived)) {
+        // remove if found
+        for (var i = 0; i < vue.things.length; ++i) {
+            if (vue.things[i].id === thing.id) {
+                vue.things.splice(i, 1);
+                return;
+            }
+        }
+    } else {
+        // move to first spot
+        vue.things.splice(0, 0, vue.things.splice(vue.things.indexOf(thing), 1)[0]);
+    }
 });
 
 window.addEventListener('hashchange', hashChangeHandler, false);
