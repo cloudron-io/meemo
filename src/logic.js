@@ -31,6 +31,7 @@ exports = module.exports = {
 var assert = require('assert'),
     async = require('async'),
     config = require('./config.js'),
+    debug = require('debug')('logic'),
     path = require('path'),
     fs = require('fs'),
     mkdirp = require('mkdirp'),
@@ -112,13 +113,13 @@ function extractExternalContent(content, callback) {
             var obj = { url: url, type: exports.TYPE_UNKNOWN };
 
             if (error) {
-                console.log('[WARN] failed to fetch external content %s', url);
+                debug('failed to fetch external content %s', url);
             } else {
                 if (result.type.indexOf('image/') === 0) {
                     obj = { url: url, type: exports.TYPE_IMAGE };
                 }
 
-                console.log('[INFO] external content type %s - %s', obj.type, obj.url);
+                debug('external content type %s - %s', obj.type, obj.url);
             }
 
             externalContent.push(obj);
@@ -188,7 +189,7 @@ function facelift(userId, thing, callback) {
         // set for wrapper()
         externalContent = result;
 
-        console.log('[INFO] update %s with new external content.', thing._id, result);
+        debug('update %s with new external content.', thing._id, result);
 
         things.put(userId, thing._id, thing.content, thing.tags, attachments, result, false, false, false, function (error) {
             if (error) console.error('Failed to update external content:', error);
@@ -408,7 +409,7 @@ function cleanupTags() {
                 async.each(result, function (tag, callback) {
                     if (activeTags.indexOf(tag.name) !== -1) return callback(null);
 
-                    console.log('Cleanup tag', tag.name);
+                    debug('Cleanup tag', tag.name);
 
                     tags.del(userId, String(tag._id), callback);
                 }, callback);
