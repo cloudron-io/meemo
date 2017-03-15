@@ -74,7 +74,10 @@ router.get ('*', function (req, res) {
     res.sendFile(path.resolve(__dirname, 'public/error.html'));
 });
 
-app.use(morgan('dev', { immediate: false, stream: { write: function (str) { console.log(str.slice(0, -1)); } } }));
+if (process.env.DEBUG) {
+    app.use(morgan('dev', { immediate: false, stream: { write: function (str) { console.log(str.slice(0, -1)); } } }));
+}
+
 app.use(serveStatic(__dirname + '/public', { etag: false }));
 app.use(cors());
 app.use(json({ strict: true, limit: '5mb' }));
