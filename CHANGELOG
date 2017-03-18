@@ -124,3 +124,8 @@
 * Improve archive mode visibility
 * Collapse archive and delete buttons
 * Fix visibility of notes when edited in feed
+
+[1.6.0]
+* Add support for drag'n'drop of text, images and files
+* Add support for pasting content like image buffers
+* Open uploaded files in new tab
