@@ -236,12 +236,23 @@ function dropOrPasteHandler(event) {
                 data[i].getAsString(function (s) {
                     vue.thingContent = s;
                 });
-                event.preventDefault(); // We are already handling the data from the clipboard, we do not want it inserted into the document
+
+                event.preventDefault();
             } else {
                 console.log('Drop type', data[i].type, 'not supported.');
             }
         } else if (data[i].kind === 'file') {
-            console.log('file drop', data[i]);
+            var formData = new FormData();
+            formData.append('file', data[i].getAsFile());
+
+            Core.things.uploadFile(formData, function (error, result) {
+                if (error) console.error(error);
+
+                vue.thingContent += ' [' + result.fileName + '] ';
+                vue.thingAttachments.push(result);
+            });
+
+            event.preventDefault();
         } else {
             console.error('Unknown drop type', data[i].kind, data[i].type);
         }
