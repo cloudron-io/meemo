@@ -5,6 +5,8 @@ The user interface resembles a news feed organized with tags. Full text search f
 
 For better bookmarking, there are chrome and firefox webextensions available.
 
+Support meemo development: [![Flattr Meemo](https://button.flattr.com/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=cloudron&url=https://cloudron.io&title=Cloudron&tags=opensource&category=software)
+
 [![Build Status](https://travis-ci.org/nebulade/meemo.svg?branch=master)](https://travis-ci.org/nebulade/meemo)
 
 ## Installation
