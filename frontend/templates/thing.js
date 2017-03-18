@@ -144,6 +144,13 @@ Vue.component('thing', {
             });
 
             Vue.nextTick(function () { $('#textarea-' + that.thing.id).focus(); });
+        },
+        // prevent from bubbling up to the main drop handler to allow textarea drops
+        dragOver: function (event) {
+            event.cancelBubble = true;
+        },
+        drop: function (event) {
+            event.cancelBubble = true;
         }
     },
     ready: function () {

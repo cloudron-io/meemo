@@ -138,6 +138,13 @@ var vue = new Vue({
 
             Vue.nextTick(function () { $('#addTextarea').focus(); });
         },
+        // prevent from bubbling up to the main drop handler to allow textarea drops
+        ignoreDragOver: function (event) {
+            event.cancelBubble = true;
+        },
+        ignoreDrop: function (event) {
+            event.cancelBubble = true;
+        },
         dragOver: function (event) {
             event.preventDefault();
         },

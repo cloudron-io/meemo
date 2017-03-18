@@ -54,7 +54,7 @@
                     <button class="btn btn-default" @click="addThing()" title="Add (Ctrl+S)"><i class="fa fa-check"></i></button>
                   </span>
                 </div>
-                <textarea id="addTextarea" class="new-thing" placeholder="Add something..." v-model="thingContent" :class="{ active: !!thingContent }" v-show="!busyAdd"></textarea>
+                <textarea id="addTextarea" class="new-thing" placeholder="Add something..." v-model="thingContent" :class="{ active: !!thingContent }" v-show="!busyAdd" @drop="ignoreDrop" @dragover="ignoreDragOver"></textarea>
                 <div class="propose-tags">
                   <div class="item" v-for="tag in tags | proposeTags thingContent '#addTextarea' true 1">
                     <a href="#" @click.prevent="activateProposedTag(tag)">#{{ tag.name }}</a>
