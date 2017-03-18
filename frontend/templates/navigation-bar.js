@@ -110,6 +110,10 @@ Vue.component('navigation-bar', {
         exportThings: function () {
             this.$root.Core.things.export();
         },
+        // prevent from bubbling up to the main drop handler to allow textarea drops and paste
+        preventEventBubble: function (event) {
+            event.cancelBubble = true;
+        },
     },
     ready: function () {
 
