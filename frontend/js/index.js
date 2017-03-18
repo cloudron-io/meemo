@@ -138,6 +138,29 @@ var vue = new Vue({
 
             Vue.nextTick(function () { $('#addTextarea').focus(); });
         },
+        dragOver: function (event) {
+            event.preventDefault();
+        },
+        drop: function (event) {
+            event.preventDefault();
+
+            var data = event.dataTransfer.items;
+            for (var i = 0; i < data.length; ++i) {
+                if (data[i].kind === 'string') {
+                    if (data[i].type.match('^text/plain')) {
+                        data[i].getAsString(function (s) {
+                            vue.thingContent = s;
+                        });
+                    } else {
+                        console.log('Drop type', data[i].type, 'not supported.');
+                    }
+                } else if (data[i].kind === 'file') {
+                    console.log('file drop', data[i]);
+                } else {
+                    console.error('Unknown drop type', data[i].kind, data[i].type);
+                }
+            }
+        },
         main: function () {
             var that = this;
 

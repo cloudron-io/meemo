@@ -35,7 +35,7 @@
       <view-login></view-login>
     </div>
 
-    <div v-show="mainView === 'content'" v-cloak>
+    <div v-show="mainView === 'content'" @drop="drop" @dragover="dragOver" v-cloak>
       <div :class="{ 'container': !settings.wide, 'container-fluid': settings.wide }">
         <div class="row">
           <div class="col-md-1" v-show="settings.showTagSidebar">
