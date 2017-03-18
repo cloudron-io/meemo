@@ -148,6 +148,34 @@ Vue.component('thing', {
         // prevent from bubbling up to the main drop handler to allow textarea drops
         preventEventBubble: function (event) {
             event.cancelBubble = true;
+        },
+        dropOrPasteHandler: function (event) {
+            event.cancelBubble = true;
+            var that = this;
+
+            var data;
+            if (event.type === 'paste') data = event.clipboardData.items;
+            else if (event.type === 'drop') data = event.dataTransfer.items;
+            else return;
+
+            for (var i = 0; i < data.length; ++i) {
+                if (data[i].kind === 'file') {
+                    // do not let it bubble as we handle it here
+                    event.cancelBubble = false;
+
+                    var formData = new FormData();
+                    formData.append('file', data[i].getAsFile());
+
+                    this.$root.Core.things.uploadFile(formData, function (error, result) {
+                        if (error) console.error(error);
+
+                        that.thing.content += ' [' + result.fileName + '] ';
+                        that.thing.attachments.push(result);
+                    });
+
+                    event.preventDefault();
+                }
+            }
         }
     },
     ready: function () {
