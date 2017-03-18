@@ -167,7 +167,7 @@ function facelift(userId, thing, callback) {
             if (a.type === exports.TYPE_IMAGE) {
                 data = data.replace(new RegExp('\\[' + a.fileName + '\\]', 'gmi'), '![/api/files/' + userId + '/' + a.identifier + '](/api/files/' + userId + '/' + a.identifier + ')');
             } else {
-                data = data.replace(new RegExp('\\[' + a.fileName + '\\]', 'gmi'), '[/api/files/' + userId + '/' + a.identifier + '](/api/files/' + userId + '/' + a.identifier + ')');
+                data = data.replace(new RegExp('\\[' + a.fileName + '\\]', 'gmi'), '[' + a.identifier + '](/api/files/' + userId + '/' + a.identifier + ')');
             }
         });
 
