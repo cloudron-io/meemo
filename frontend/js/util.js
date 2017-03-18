@@ -24,7 +24,7 @@ function markdownTargetBlank(md) {
     md.renderer.rules.link_open = function (tokens, idx, options, env, self) {
         var href = tokens[idx].attrs[tokens[idx].attrIndex('href')][1];
 
-        if (href.indexOf('https://') === 0 || href.indexOf('http://') === 0) {
+        if (href.indexOf('https://') === 0 || href.indexOf('http://') === 0 || href.indexOf('/api/files/') === 0) {
             // in case another plugin added that attribute already
             var aIndex = tokens[idx].attrIndex('target');
 
