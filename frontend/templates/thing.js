@@ -56,6 +56,7 @@ Vue.component('thing', {
                 }
 
                 that.$root.refreshTags();
+                window.Guacamoly.disableCheckboxes();
             });
         },
         cancelEdit: function () {
