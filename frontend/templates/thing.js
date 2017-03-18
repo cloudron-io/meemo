@@ -118,15 +118,20 @@ Vue.component('thing', {
         },
         uploadFileChanged: function (event) {
             var that = this;
-            var data = new FormData();
-            data.append('file', event.target.files[0]);
 
-            this.$root.Core.things.uploadFile(data, function (error, result) {
-                if (error) console.error(error);
+            var data = event.target.files;
 
-                that.thing.content += ' [' + result.fileName + '] ';
-                that.thing.attachments.push(result);
-            });
+            for (var i = 0; i < data.length; ++i) {
+                var formData = new FormData();
+                formData.append('file', event.target.files[i]);
+
+                this.$root.Core.things.uploadFile(formData, function (error, result) {
+                    if (error) console.error(error);
+
+                    that.thing.content += ' [' + result.fileName + '] ';
+                    that.thing.attachments.push(result);
+                });
+            }
         },
         triggerUploadFileInput: function () {
             $('#fileUpload-' + this.thing.id).click();

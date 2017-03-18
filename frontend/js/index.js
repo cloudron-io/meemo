@@ -116,15 +116,19 @@ var vue = new Vue({
         },
         attachmentChanged: function (event) {
             var that = this;
-            var data = new FormData();
-            data.append('file', event.target.files[0]);
+            var data = event.target.files;
 
-            this.$root.Core.things.uploadFile(data, function (error, result) {
-                if (error) console.error(error);
+            for (var i = 0; i < data.length; ++i) {
+                var formData = new FormData();
+                formData.append('file', event.target.files[i]);
 
-                that.thingContent += ' [' + result.fileName + '] ';
-                that.thingAttachments.push(result);
-            });
+                this.$root.Core.things.uploadFile(formData, function (error, result) {
+                    if (error) console.error(error);
+
+                    that.thingContent += ' [' + result.fileName + '] ';
+                    that.thingAttachments.push(result);
+                });
+            }
         },
         activateProposedTag: function (tag) {
             var word = Vue.getCurrentSearchWord(this.thingContent, $('#addTextarea'));

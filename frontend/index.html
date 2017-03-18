@@ -44,7 +44,7 @@
           <div :class="{ 'col-md-10': !settings.wide, 'col-md-offset-1': (!settings.wide && !settings.showTagSidebar), 'col-md-11': (settings.wide && settings.showTagSidebar), 'col-md-12': (settings.wide && !settings.showTagSidebar) }">
             <div class="well" :class="{ edit: !!thingContent }" @click="giveAddFocus()" v-show="!archived">
               <div class="card-content align-right">
-                <input id="addAttachment" type="file" @change="attachmentChanged($event)" class="hide">
+                <input id="addAttachment" type="file" @change="attachmentChanged($event)" class="hide" multiple>
                 <div class="card-actions" v-show="thingContent">
                   <span>
                     <button class="btn btn-default" title="Insert Image" @click="triggerAttachmentUpload()"><i class="fa fa-image"></i></button>
