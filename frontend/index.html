@@ -35,7 +35,7 @@
       <view-login></view-login>
     </div>
 
-    <div v-show="mainView === 'content'" @drop="drop" @dragover="dragOver" v-cloak>
+    <div v-show="mainView === 'content'" @drop="dropOrPasteHandler" @dragover="dragOver" v-cloak>
       <div :class="{ 'container': !settings.wide, 'container-fluid': settings.wide }">
         <div class="row">
           <div class="col-md-1" v-show="settings.showTagSidebar">
@@ -54,7 +54,7 @@
                     <button class="btn btn-default" @click="addThing()" title="Add (Ctrl+S)"><i class="fa fa-check"></i></button>
                   </span>
                 </div>
-                <textarea id="addTextarea" class="new-thing" placeholder="Add something..." v-model="thingContent" :class="{ active: !!thingContent }" v-show="!busyAdd" @drop="preventEventBubble" @dragover="preventEventBubble" @paste="preventEventBubble"></textarea>
+                <textarea id="addTextarea" class="new-thing" placeholder="Add something..." v-model="thingContent" :class="{ active: !!thingContent }" v-show="!busyAdd" @drop="dropOrPasteHandler" @dragover="preventEventBubble" @paste="dropOrPasteHandler"></textarea>
                 <div class="propose-tags">
                   <div class="item" v-for="tag in tags | proposeTags thingContent '#addTextarea' true 1">
                     <a href="#" @click.prevent="activateProposedTag(tag)">#{{ tag.name }}</a>

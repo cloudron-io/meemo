@@ -149,7 +149,7 @@ var vue = new Vue({
         dragOver: function (event) {
             event.preventDefault();
         },
-        drop: dropOrPasteHandler,
+        dropOrPasteHandler: dropOrPasteHandler,
         main: function () {
             var that = this;
 
@@ -229,6 +229,8 @@ function scrollHandler() {
 }
 
 function dropOrPasteHandler(event) {
+    event.cancelBubble = true;
+
     var data;
     if (event.type === 'paste') data = event.clipboardData.items;
     else if (event.type === 'drop') data = event.dataTransfer.items;
@@ -241,11 +243,14 @@ function dropOrPasteHandler(event) {
                     vue.thingContent = s;
                 });
 
+                event.cancelBubble = false;
                 event.preventDefault();
             } else {
                 console.log('Drop type', data[i].type, 'not supported.');
             }
         } else if (data[i].kind === 'file') {
+            event.cancelBubble = false;
+
             var formData = new FormData();
             formData.append('file', data[i].getAsFile());
 
