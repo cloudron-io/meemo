@@ -138,36 +138,14 @@ var vue = new Vue({
 
             Vue.nextTick(function () { $('#addTextarea').focus(); });
         },
-        // prevent from bubbling up to the main drop handler to allow textarea drops
-        ignoreDragOver: function (event) {
-            event.cancelBubble = true;
-        },
-        ignoreDrop: function (event) {
+        // prevent from bubbling up to the main drop handler to allow textarea drops and paste
+        preventEventBubble: function (event) {
             event.cancelBubble = true;
         },
         dragOver: function (event) {
             event.preventDefault();
         },
-        drop: function (event) {
-            event.preventDefault();
-
-            var data = event.dataTransfer.items;
-            for (var i = 0; i < data.length; ++i) {
-                if (data[i].kind === 'string') {
-                    if (data[i].type.match('^text/plain')) {
-                        data[i].getAsString(function (s) {
-                            vue.thingContent = s;
-                        });
-                    } else {
-                        console.log('Drop type', data[i].type, 'not supported.');
-                    }
-                } else if (data[i].kind === 'file') {
-                    console.log('file drop', data[i]);
-                } else {
-                    console.error('Unknown drop type', data[i].kind, data[i].type);
-                }
-            }
-        },
+        drop: dropOrPasteHandler,
         main: function () {
             var that = this;
 
@@ -246,6 +224,30 @@ function scrollHandler() {
     }
 }
 
+function dropOrPasteHandler(event) {
+    var data;
+    if (event.type === 'paste') data = event.clipboardData.items;
+    else if (event.type === 'drop') data = event.dataTransfer.items;
+    else return;
+
+    for (var i = 0; i < data.length; ++i) {
+        if (data[i].kind === 'string') {
+            if (data[i].type.match('^text/plain')) {
+                data[i].getAsString(function (s) {
+                    vue.thingContent = s;
+                });
+                event.preventDefault(); // We are already handling the data from the clipboard, we do not want it inserted into the document
+            } else {
+                console.log('Drop type', data[i].type, 'not supported.');
+            }
+        } else if (data[i].kind === 'file') {
+            console.log('file drop', data[i]);
+        } else {
+            console.error('Unknown drop type', data[i].kind, data[i].type);
+        }
+    }
+}
+
 function reset() {
     vue.mainView = 'login';
     vue.things = [];
@@ -302,5 +304,6 @@ Core.things.onEdited(function (thing) {
 
 window.addEventListener('hashchange', hashChangeHandler, false);
 window.addEventListener('scroll', scrollHandler, false);
+window.addEventListener('paste', dropOrPasteHandler);
 
 })();

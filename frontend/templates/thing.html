@@ -71,7 +71,7 @@
     </div>
     <div class="card-content">
       <input type="file" id="fileUpload-{{ thing.id }}" @change="uploadFileChanged($event)" class="hide">
-      <div v-show="!busy && thing.edit" @drop="drop" @dragover="dragOver"><textarea v-model="thing.content" id="{{ 'textarea-' + thing.id }}" style="height: 200px" @keyup.esc.stop.prevent="cancelEdit()"></textarea></div>
+      <div v-show="!busy && thing.edit" @drop="preventEventBubble" @dragover="preventEventBubble" @paste="preventEventBubble"><textarea v-model="thing.content" id="{{ 'textarea-' + thing.id }}" style="height: 200px" @keyup.esc.stop.prevent="cancelEdit()"></textarea></div>
       <div class="thing-content" v-show="!busy && !thing.edit">{{{ thing.richContent | markdown }}}</div>
       <div class="propose-tags" v-show="thing.edit">
         <div class="item" v-for="tag in $root.tags | proposeTagsThingsEdit thing.content thing.id">
