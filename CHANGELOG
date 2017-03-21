@@ -129,3 +129,7 @@
 * Add support for drag'n'drop of text, images and files
 * Add support for pasting content like image buffers
 * Open uploaded files in new tab
+
+[1.6.1]
+* Fix copy and paste handling for chrome
+
