@@ -155,7 +155,7 @@ Vue.component('thing', {
             event.cancelBubble = true;
         },
         dropOrPasteHandler: function (event) {
-            event.cancelBubble = true;
+            event.cancelBubble = false;
             var that = this;
 
             var data;
@@ -165,9 +165,6 @@ Vue.component('thing', {
 
             for (var i = 0; i < data.length; ++i) {
                 if (data[i].kind === 'file') {
-                    // do not let it bubble as we handle it here
-                    event.cancelBubble = false;
-
                     var formData = new FormData();
                     formData.append('file', data[i].getAsFile());
 
@@ -178,6 +175,7 @@ Vue.component('thing', {
                         that.thing.attachments.push(result);
                     });
 
+                    event.cancelBubble = true;
                     event.preventDefault();
                 }
             }

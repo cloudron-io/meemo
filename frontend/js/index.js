@@ -229,7 +229,7 @@ function scrollHandler() {
 }
 
 function dropOrPasteHandler(event) {
-    event.cancelBubble = true;
+    event.cancelBubble = false;
 
     var data;
     if (event.type === 'paste') data = event.clipboardData.items;
@@ -246,14 +246,12 @@ function dropOrPasteHandler(event) {
                     vue.thingContent = vue.thingContent + s;
                 });
 
-                event.cancelBubble = false;
+                event.cancelBubble = true;
                 event.preventDefault();
             } else {
                 console.log('Drop type', data[i].type, 'not supported.');
             }
         } else if (data[i].kind === 'file') {
-            event.cancelBubble = false;
-
             var formData = new FormData();
             formData.append('file', data[i].getAsFile());
 
@@ -264,6 +262,7 @@ function dropOrPasteHandler(event) {
                 vue.thingAttachments.push(result);
             });
 
+            event.cancelBubble = true;
             event.preventDefault();
         } else {
             console.error('Unknown drop type', data[i].kind, data[i].type);
