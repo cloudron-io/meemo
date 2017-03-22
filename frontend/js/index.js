@@ -239,7 +239,7 @@ function dropOrPasteHandler(event) {
     for (var i = 0; i < data.length; ++i) {
         if (data[i].kind === 'string') {
             // stop if we got a string on a textarea native handling is better
-            if (event.target.localName === 'textarea') return;
+            if (event.target.localName === 'textarea') continue;
 
             if (data[i].type.match('^text/plain')) {
                 data[i].getAsString(function (s) {
