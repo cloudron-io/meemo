@@ -9,4 +9,4 @@ mkdir -p "$ATTACHMENT_DIR"
 
 chown -R cloudron:cloudron /app/data
 
-/usr/local/bin/gosu cloudron:cloudron node /app/code/app.js
+exec /usr/local/bin/gosu cloudron:cloudron node /app/code/app.js
