@@ -179,12 +179,35 @@ Vue.component('thing', {
                     event.preventDefault();
                 }
             }
+        },
+        handleCheckbox: function (event) {
+            var checkboxId = event.currentTarget.id;
+            var number = parseInt(checkboxId.slice('checkbox'.length), 10);
+            var checked = event.currentTarget.checked;
+
+            console.log('clicked', this, checkboxId, checked, number);
+
+            // var regex = /\[(X|\s|\_|\-)\]\s(.*)/g;
+            var regex = new RegExp('\\[(X|\\s|\\_|\\-)\\]\\s(.*)', 'g');
+            var subst = checked ? ('$' + number + '\[x\]') : ('$' + number + '\[ \]');
+            var matches = this.thing.content.match(regex);
+            if (matches.length === 0) return;
+
+            var result = this.thing.content.replace(regex, subst);
+            // console.log(regex, this.thing.content.match(regex));
+            console.log(subst, result);
+
         }
     },
     ready: function () {
+        var that = this;
+
         shortcut.add('Ctrl+s', this.saveEdit.bind(this), { target: 'textarea-' + this.thing.id });
         shortcut.add('Ctrl+Enter', this.saveEdit.bind(this), { target: 'textarea-' + this.thing.id });
 
-        window.Guacamoly.disableCheckboxes();
+        Vue.nextTick(function () {
+            $('#card-' + that.thing.id + ' .card-content input[type="checkbox"]').on('click', that.handleCheckbox.bind(that));
+        });
+        // window.Guacamoly.disableCheckboxes();
     }
 });
