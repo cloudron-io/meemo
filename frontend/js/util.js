@@ -12,6 +12,82 @@ window.Guacamoly.disableCheckboxes = function () {
             event.preventDefault();
         });
     });
+};
+
+function markdownitCheckbox (md) {
+    var arrayReplaceAt = md.utils.arrayReplaceAt;
+    var lastId = 0;
+    var pattern = /\[(X|\s|\_|\-)\]\s(.*)/i;
+
+    function splitTextToken (original, Token) {
+        var checked, id, label, matches, nodes, ref, text, token, value;
+        text = original.content;
+        nodes = [];
+        matches = text.match(pattern);
+        value = matches[1];
+        label = matches[2];
+        checked = (ref = value === 'X' || value === 'x') !== null ? ref : { 'true' : false };
+
+        /**
+        * <input type="checkbox" id="checkbox{n}" checked="true">
+        */
+        id = 'checkbox' + lastId;
+        lastId += 1;
+        token = new Token('checkbox_input', 'input', 0);
+        token.attrs = [['type', 'checkbox'], ['id', id]];
+        if (checked === true) {
+            token.attrs.push(['checked', 'true']);
+        }
+        nodes.push(token);
+
+        /**
+        * <label for="checkbox{n}">
+        */
+        token = new Token('label_open', 'label', 1);
+        token.attrs = [['for', id]];
+        nodes.push(token);
+
+        /**
+        * content of label tag
+        */
+        token = new Token('text', '', 0);
+        token.content = label;
+        nodes.push(token);
+
+        /**
+        * closing tags
+        */
+        nodes.push(new Token('label_close', 'label', -1));
+
+        return nodes;
+    }
+
+    md.core.ruler.push('checkbox', function (state) {
+        var token, tokens;
+        var blockTokens = state.tokens;
+        var i = 0;
+        var j = 0;
+        var l = blockTokens.length;
+
+        while (j < l) {
+            if (blockTokens[j].type !== 'inline') {
+                j++;
+                continue;
+            }
+
+            tokens = blockTokens[j].children;
+            i = tokens.length - 1;
+
+            while (i >= 0) {
+                token = tokens[i];
+                if (token.type === 'text' && pattern.test(token.content)) {
+                    blockTokens[j].children = tokens = arrayReplaceAt(tokens, i, splitTextToken(token, state.Token));
+                }
+                i--;
+            }
+            j++;
+        }
+    });
 }
 
 // https://github.com/markdown-it/markdown-it/blob/master/docs/architecture.md#renderer
@@ -39,7 +115,7 @@ function markdownTargetBlank(md) {
     };
 }
 
-function colorizeIt(md, options) {
+function colorizeIt (md) {
     var regexp = /\:([#\w\-]+)\:/;
 
     function isColor(color) {
@@ -72,7 +148,7 @@ function colorizeIt(md, options) {
         return true;
     });
 
-    md.renderer.rules['colorizeIt'] = function (tokens, id, options, env) {
+    md.renderer.rules.colorizeIt = function (tokens, id/*, options, env*/) {
         if (tokens[id].meta.color === 'clear') {
             return '</span>';
         } else {
@@ -87,7 +163,7 @@ var md = window.markdownit({
     linkify: true
 }).use(window.markdownitEmoji)
 .use(colorizeIt)
-.use(window.markdownitCheckbox)
+.use(markdownitCheckbox)
 .use(markdownTargetBlank);
 
 md.renderer.rules.emoji = function(token, idx) {
