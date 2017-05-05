@@ -136,3 +136,5 @@
 [1.6.2]
 * Support inlined checkboxes
 
+[1.6.3]
+* Fix markdown regression
