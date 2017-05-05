@@ -57,7 +57,6 @@ gulp.task('other', function () {
         'node_modules/superagent/superagent.js',
         'node_modules/vue/dist/vue.min.js',
         'node_modules/markdown-it/dist/markdown-it.min.js',
-        'node_modules/markdown-it-checkbox/dist/markdown-it-checkbox.min.js',
         'node_modules/markdown-it-emoji/dist/markdown-it-emoji.min.js'
     ]).pipe(gulp.dest('public/3rdparty/js/'));
 });

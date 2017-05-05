@@ -704,18 +704,6 @@
         }
       }
     },
-    "markdown-it-checkbox": {
-      "version": "1.1.0",
-      "from": "markdown-it-checkbox@>=1.1.0 <2.0.0",
-      "resolved": "https://registry.npmjs.org/markdown-it-checkbox/-/markdown-it-checkbox-1.1.0.tgz",
-      "dependencies": {
-        "underscore": {
-          "version": "1.8.3",
-          "from": "underscore@>=1.8.2 <2.0.0",
-          "resolved": "https://registry.npmjs.org/underscore/-/underscore-1.8.3.tgz"
-        }
-      }
-    },
     "markdown-it-emoji": {
       "version": "1.2.0",
       "from": "markdown-it-emoji@>=1.1.0 <2.0.0",
