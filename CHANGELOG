@@ -133,3 +133,6 @@
 [1.6.1]
 * Fix copy and paste handling for chrome
 
+[1.6.2]
+* Support inlined checkboxes
+
