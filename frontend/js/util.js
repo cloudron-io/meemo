@@ -17,16 +17,24 @@ window.Guacamoly.disableCheckboxes = function () {
 function markdownitCheckbox (md) {
     var arrayReplaceAt = md.utils.arrayReplaceAt;
     var lastId = 0;
-    var pattern = /\[(X|\s|\_|\-)\]\s(.*)/i;
+    var pattern = /(.*)\[(X|\s|\_|\-)\]\s(.*)/i;
 
     function splitTextToken (original, Token) {
-        var checked, id, label, matches, nodes, ref, text, token, value;
+        var checked, id, prelabel, label, matches, nodes, ref, text, token, value;
         text = original.content;
         nodes = [];
         matches = text.match(pattern);
-        value = matches[1];
-        label = matches[2];
+        prelabel = matches[1];
+        value = matches[2];
+        label = matches[3];
         checked = (ref = value === 'X' || value === 'x') !== null ? ref : { 'true' : false };
+
+        /**
+        * content pre-checkbox
+        */
+        token = new Token('text', '', 0);
+        token.content = prelabel;
+        nodes.push(token);
 
         /**
         * <input type="checkbox" id="checkbox{n}" checked="true">
