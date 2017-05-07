@@ -435,7 +435,7 @@ function markdownTargetBlank(md) {
     };
 }
 
-function colorizeIt(md, options) {
+function colorizeIt(md/*, options*/) {
     var regexp = /\:([#\w\-]+)\:/;
 
     function isColor(color) {
@@ -468,7 +468,7 @@ function colorizeIt(md, options) {
         return true;
     });
 
-    md.renderer.rules['colorizeIt'] = function (tokens, id, options, env) {
+    md.renderer.rules.colorizeIt = function (tokens, id/*, options, env*/) {
         if (tokens[id].meta.color === 'clear') {
             return '</span>';
         } else {
