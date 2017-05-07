@@ -326,6 +326,5 @@ Core.things.onEdited(function (thing) {
 
 window.addEventListener('hashchange', hashChangeHandler, false);
 window.addEventListener('scroll', scrollHandler, false);
-window.addEventListener('paste', dropOrPasteHandler);
 
 })();
