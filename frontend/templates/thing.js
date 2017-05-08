@@ -166,7 +166,16 @@ Vue.component('thing', {
             for (var i = 0; i < data.length; ++i) {
                 if (data[i].kind === 'file') {
                     var formData = new FormData();
-                    formData.append('file', data[i].getAsFile());
+                    var file = data[i].getAsFile();
+
+                    // find unused filename
+                    var j = 0;
+                    var name = file.name;
+                    while (that.thing.content.indexOf(name) !== -1) {
+                        name = j + '_' + file.name;
+                        ++j;
+                    }
+                    formData.append('file', file, name);
 
                     this.$root.Core.things.uploadFile(formData, function (error, result) {
                         if (error) console.error(error);
