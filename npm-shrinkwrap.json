@@ -1,6 +1,6 @@
 {
   "name": "meemo-app",
-  "version": "1.6.3",
+  "version": "1.6.4",
   "dependencies": {
     "async": {
       "version": "1.5.2",

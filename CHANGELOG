@@ -138,3 +138,6 @@
 
 [1.6.3]
 * Fix markdown regression
+
+[1.6.4]
+* Always use unique filenames on upload
