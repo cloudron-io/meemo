@@ -76,39 +76,42 @@ function profile(identifier, full, callback) {
         var ldapClient = ldapjs.createClient({ url: process.env.LDAP_URL });
         ldapClient.on('error', function (error) {
             console.error('LDAP error', error);
-            callback(new UserError(UserError.INTERNAL_ERROR, error));
         });
 
-        ldapClient.search(process.env.LDAP_USERS_BASE_DN, { filter: '(|(uid=' + identifier + ')(mail=' + identifier + ')(username=' + identifier + '))' }, function (error, result) {
+        ldapClient.bind(process.env.LDAP_BIND_DN, process.env.LDAP_BIND_PASSWORD, function (error) {
             if (error) return callback(new UserError(UserError.INTERNAL_ERROR, error));
 
-            var items = [];
+            ldapClient.search(process.env.LDAP_USERS_BASE_DN, { filter: '(|(uid=' + identifier + ')(mail=' + identifier + ')(username=' + identifier + '))' }, function (error, result) {
+                if (error) return callback(new UserError(UserError.INTERNAL_ERROR, error));
 
-            result.on('searchEntry', function(entry) {
-                items.push(entry.object);
-            });
+                var items = [];
 
-            result.on('error', function (error) {
-                callback(new UserError(UserError.INTERNAL_ERROR, error));
-            });
+                result.on('searchEntry', function(entry) {
+                    items.push(entry.object);
+                });
 
-            result.on('end', function (result) {
-                if (result.status !== 0) return callback(new UserError(UserError.NOT_FOUND, 'non-zero status from LDAP search: ' + result.status));
-                if (items.length === 0) return callback(new UserError(UserError.INTERNAL_ERROR, 'Duplicate entries found'));
+                result.on('error', function (error) {
+                    callback(new UserError(UserError.INTERNAL_ERROR, error));
+                });
 
-                // translate proprety names
-                items[0].id = items[0].uid;
+                result.on('end', function (result) {
+                    if (result.status !== 0) return callback(new UserError(UserError.NOT_FOUND, 'non-zero status from LDAP search: ' + result.status));
+                    if (items.length === 0) return callback(new UserError(UserError.INTERNAL_ERROR, 'Duplicate entries found'));
 
-                if (full) return callback(null, items[0]);
+                    // translate proprety names
+                    items[0].id = items[0].uid;
 
-                var out = {
-                    id: items[0].uid,
-                    username: items[0].username,
-                    displayName: items[0].displayname,
-                    email: items[0].mail
-                };
+                    if (full) return callback(null, items[0]);
 
-                callback(null, out);
+                    var out = {
+                        id: items[0].uid,
+                        username: items[0].username,
+                        displayName: items[0].displayname,
+                        email: items[0].mail
+                    };
+
+                    callback(null, out);
+                });
             });
         });
     } else {
