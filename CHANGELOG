@@ -141,3 +141,7 @@
 
 [1.6.4]
 * Always use unique filenames on upload
+
+[1.6.5]
+* Ensure all LDAP queries use bind
+
