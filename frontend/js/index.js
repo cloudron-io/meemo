@@ -59,6 +59,7 @@ var vue = new Vue({
         busyFetchMore: false,
         search: '',
         archived: false,
+        sticky: false,
         profile: {},
         mailbox: '',
         settings: {},

@@ -313,7 +313,7 @@ function add(userId, content, attachments, callback) {
     });
 }
 
-function put(userId, thingId, content, attachments, isPublic, isShared, isArchived, callback) {
+function put(userId, thingId, content, attachments, isPublic, isShared, isArchived, isSticky, callback) {
     assert.strictEqual(typeof userId, 'string');
     assert.strictEqual(typeof thingId, 'string');
     assert.strictEqual(typeof content, 'string');
@@ -321,6 +321,7 @@ function put(userId, thingId, content, attachments, isPublic, isShared, isArchiv
     assert.strictEqual(typeof isPublic, 'boolean');
     assert.strictEqual(typeof isShared, 'boolean');
     assert.strictEqual(typeof isArchived, 'boolean');
+    assert.strictEqual(typeof isSticky, 'boolean');
     assert.strictEqual(typeof callback, 'function');
 
     var tagObjects = extractTags(content);
@@ -331,7 +332,7 @@ function put(userId, thingId, content, attachments, isPublic, isShared, isArchiv
         extractExternalContent(content, function (error, externalContent) {
             if (error) console.error('Failed to extract external content:', error);
 
-            things.put(userId, thingId, content, tagObjects, attachments, externalContent, isPublic, isShared, isArchived, function (error) {
+            things.put(userId, thingId, content, tagObjects, attachments, externalContent, isPublic, isShared, isArchived, isSticky, function (error) {
                 if (error) return callback(error);
 
                 get(userId, thingId, callback);

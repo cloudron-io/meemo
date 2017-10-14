@@ -29,6 +29,7 @@ function postProcess(userId, thing) {
     thing.public = !!thing.public;
     thing.shared = !!thing.shared;
     thing.archived = !!thing.archived;
+    thing.sticky = !!thing.sticky;
 }
 
 function getCollection(userId) {
@@ -52,7 +53,7 @@ function getAll(userId, query, skip, limit, callback) {
     assert.strictEqual(typeof limit, 'number');
     assert.strictEqual(typeof callback, 'function');
 
-    getCollection(userId).find(query).skip(skip).limit(limit).sort({ modifiedAt: -1 }).toArray(function (error, result) {
+    getCollection(userId).find(query).skip(skip).limit(limit).sort({ sticky: -1, modifiedAt: -1 }).toArray(function (error, result) {
         if (error) return callback(error);
         if (!result) return callback(null, []);
 
@@ -66,7 +67,7 @@ function getAllLean(userId, callback) {
     assert.strictEqual(typeof userId, 'string');
     assert.strictEqual(typeof callback, 'function');
 
-    getCollection(userId).find({}).toArray(function (error, result) {
+    getCollection(userId).find({}).sort({ modifiedAt: -1, isSticky: 1 }).toArray(function (error, result) {
         if (error) return callback(error);
         if (!result) return callback(null, []);
 
@@ -114,7 +115,8 @@ function addFull(userId, content, tags, attachments, externalContent, createdAt,
         attachments: attachments,
         public: false,
         shared: false,
-        archived: false
+        archived: false,
+        sticky: false
     };
 
     getCollection(userId).insert(doc, function (error, result) {
@@ -125,7 +127,7 @@ function addFull(userId, content, tags, attachments, externalContent, createdAt,
     });
 }
 
-function put(userId, thingId, content, tags, attachments, externalContent, isPublic, isShared, isArchived, callback) {
+function put(userId, thingId, content, tags, attachments, externalContent, isPublic, isShared, isArchived, isSticky, callback) {
     assert.strictEqual(typeof userId, 'string');
     assert.strictEqual(typeof thingId, 'string');
     assert.strictEqual(typeof content, 'string');
@@ -135,6 +137,7 @@ function put(userId, thingId, content, tags, attachments, externalContent, isPub
     assert.strictEqual(typeof isPublic, 'boolean');
     assert.strictEqual(typeof isShared, 'boolean');
     assert.strictEqual(typeof isArchived, 'boolean');
+    assert.strictEqual(typeof isSticky, 'boolean');
     assert.strictEqual(typeof callback, 'function');
 
     var data = {
@@ -145,7 +148,8 @@ function put(userId, thingId, content, tags, attachments, externalContent, isPub
         attachments: attachments,
         public: isPublic,
         shared: isShared,
-        archived: isArchived
+        archived: isArchived,
+        sticky: isSticky
     };
 
     getCollection(userId).update({_id: new ObjectId(thingId) }, { $set: data }, function (error) {

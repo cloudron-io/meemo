@@ -102,6 +102,13 @@ Vue.component('thing', {
                 that.shareLink = '';
             });
         },
+        toggleSticky: function () {
+            this.thing.sticky = !this.thing.sticky;
+
+            this.$root.Core.things.edit(this.thing, function (error) {
+                if (error) return console.error(error);
+            });
+        },
         toggleArchive: function () {
             var that = this;
 

@@ -50,7 +50,7 @@
 
   <div class="well" id="card-{{ thing.id }}" :class="{ edit: thing.edit }">
     <div class="card-actions">
-      {{ thing.createdAt | prettyDateOffset }}
+      {{ thing.modifiedAt | prettyDateOffset }}
       <span v-show="thing.edit">
         <button class="btn btn-default" title="Insert Image" @click="triggerUploadFileInput()"><i class="fa fa-image"></i></button>
         &nbsp;
@@ -61,6 +61,7 @@
         <button class="btn btn-default" @click="saveEdit()" title="Save (Ctrl+S)"><i class="fa fa-check"></i></button>
       </span>
       <span v-show="!thing.edit">
+        <button class="btn btn-default" @click="toggleSticky()" title="{{ thing.sticky ? 'Remove sticky' : 'Make sticky' }}" v-show="!thing.archived"><i class="fa" :class="{ 'fa-sticky-note': thing.sticky, 'fa-sticky-note-o': !thing.sticky }"></i></button>
         <button class="btn btn-default" @click="togglePublic()" title="{{ thing.public ? 'Make private' : 'Make public' }}" v-show="!thing.archived"><i class="fa" :class="{ 'fa-eye': thing.public, 'fa-eye-slash': !thing.public }"></i></button>
         <button class="btn btn-default" @click="showShareLink()" title="Share" v-show="!thing.archived"><i class="fa fa-share-alt"></i></button>
         <button class="btn btn-default" @click="showArchive()" title="Archive or delete" v-show="!thing.archived"><i class="fa fa-trash"></i></button>

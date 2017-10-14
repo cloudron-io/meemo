@@ -32,9 +32,10 @@ function token() {
     return g_token;
 }
 
-function Thing(id, createdAt, tags, content, richContent, attachments, isPublic, isArchived) {
+function Thing(id, createdAt, modifiedAt, tags, content, richContent, attachments, isPublic, isArchived, isSticky) {
     this.id = id;
     this.createdAt = createdAt || 0;
+    this.modifiedAt = modifiedAt || 0;
     this.tags = tags || [];
     this.content = content;
     this.edit = false;
@@ -42,6 +43,7 @@ function Thing(id, createdAt, tags, content, richContent, attachments, isPublic,
     this.attachments = attachments || [];
     this.public = !!isPublic;
     this.archived = !!isArchived;
+    this.sticky = !!isSticky;
 }
 
 function ThingsApi() {
@@ -78,7 +80,7 @@ ThingsApi.prototype.get = function (filter, isArchived, callback) {
         if (result.status !== 200) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
 
         var tmp = result.body.things.map(function (thing) {
-            return new Thing(thing._id, new Date(thing.createdAt).getTime(), thing.tags, thing.content, thing.richContent, thing.attachments, thing.public, thing.archived);
+            return new Thing(thing._id, new Date(thing.createdAt).getTime(), new Date(thing.modifiedAt).getTime(), thing.tags, thing.content, thing.richContent, thing.attachments, thing.public, thing.archived, thing.sticky);
         });
 
         // update skip for fetch more call
@@ -99,7 +101,7 @@ ThingsApi.prototype.fetchMore = function (callback) {
         if (result.status !== 200) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
 
         var tmp = result.body.things.map(function (thing) {
-            return new Thing(thing._id, new Date(thing.createdAt).getTime(), thing.tags, thing.content, thing.richContent, thing.attachments, thing.public, thing.archived);
+            return new Thing(thing._id, new Date(thing.createdAt).getTime(), new Date(thing.modifiedAt).getTime(), thing.tags, thing.content, thing.richContent, thing.attachments, thing.public, thing.archived, thing.sticky);
         });
 
         // update skip for next call
@@ -117,7 +119,7 @@ ThingsApi.prototype.add = function (content, attachments, callback) {
         if (result.status !== 201) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
 
         var tmp = result.body.thing;
-        var thing = new Thing(tmp._id, new Date(tmp.createdAt).getTime(), tmp.tags, tmp.content, tmp.richContent, tmp.attachments, tmp.public, tmp.archived);
+        var thing = new Thing(tmp._id, new Date(tmp.createdAt).getTime(), new Date(tmp.modifiedAt).getTime(), tmp.tags, tmp.content, tmp.richContent, tmp.attachments, tmp.public, tmp.archived, tmp.sticky);
 
         that._addCallbacks.forEach(function (callback) {
             setTimeout(callback.bind(null, thing), 0);
@@ -164,7 +166,7 @@ ThingsApi.prototype.getPublicThing = function (userId, thingId, callback) {
 
         var thing = result.body.thing;
 
-        callback(null, new Thing(thing._id, new Date(thing.createdAt).getTime(), thing.tags, thing.content, thing.richContent, thing.attachments, thing.public));
+        callback(null, new Thing(thing._id, new Date(thing.createdAt).getTime(), new Date(thing.modifiedAt).getTime(), thing.tags, thing.content, thing.richContent, thing.attachments, thing.public));
     }));
 };
 
@@ -192,7 +194,7 @@ ThingsApi.prototype.getPublic = function (userId, filter, callback) {
         if (result.status !== 200) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
 
         var tmp = result.body.things.map(function (thing) {
-            return new Thing(thing._id, new Date(thing.createdAt).getTime(), thing.tags, thing.content, thing.richContent, thing.attachments, thing.public);
+            return new Thing(thing._id, new Date(thing.createdAt).getTime(), new Date(thing.modifiedAt).getTime(), thing.tags, thing.content, thing.richContent, thing.attachments, thing.public);
         });
 
         // update skip for fetch more call
@@ -213,7 +215,7 @@ ThingsApi.prototype.fetchMorePublic = function (userId, callback) {
         if (result.status !== 200) return callback(new Error('Failed: ' + result.status + '. ' + result.text));
 
         var tmp = result.body.things.map(function (thing) {
-            return new Thing(thing._id, new Date(thing.createdAt).getTime(), thing.tags, thing.content, thing.richContent, thing.attachments, thing.public);
+            return new Thing(thing._id, new Date(thing.createdAt).getTime(), new Date(thing.modifiedAt).getTime(), thing.tags, thing.content, thing.richContent, thing.attachments, thing.public);
         });
 
         // update skip for next call
