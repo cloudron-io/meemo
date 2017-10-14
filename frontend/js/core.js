@@ -66,6 +66,9 @@ ThingsApi.prototype.get = function (filter, isArchived, callback) {
     if (filter) this._query.filter = filter;
     if (isArchived) this._query.archived = true;
 
+    // TODO add ui to toggle this based on user preference
+    this._query.sticky = true;
+
     this._query.skip = 0;
     this._query.limit = 10;
 

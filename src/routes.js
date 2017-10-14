@@ -146,10 +146,9 @@ function profile(req, res, next) {
 }
 
 function getAll(req, res, next) {
-    // TODO make sticky selectable by the api to optionally not show sticky ones on search
-    var query = { $or: [ { sticky: true } ]};
+    var query = { $or: [] };
 
-    if (req.query && req.query.filter) {
+    if (req.query.filter) {
         query.$or.push({
             $text: { $search: String(req.query.filter) }
         });
@@ -157,8 +156,12 @@ function getAll(req, res, next) {
         query.$or.push({ content: { $exists: true }});
     }
 
+    if (req.query.sticky) {
+        query.$or.push({ sticky: true });
+    }
+
     var archiveQuery;
-    if (req.query && req.query.archived) {
+    if (req.query.archived) {
         archiveQuery = {
             archived: true
         };
