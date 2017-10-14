@@ -41,6 +41,7 @@ function getCollection(userId) {
         config.db.createCollection(userId + '_things');
         g_collections[userId] = config.db.collection(userId + '_things');
         g_collections[userId].createIndex({ content: 'text' }, { default_language: 'none' });
+        g_collections[userId].createIndex({ sticky: 1 });
     }
 
     return g_collections[userId];

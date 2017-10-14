@@ -146,30 +146,36 @@ function profile(req, res, next) {
 }
 
 function getAll(req, res, next) {
-    var query = { $and: [] };
+    // TODO make sticky selectable by the api to optionally not show sticky ones on search
+    var query = { $or: [ { sticky: true } ]};
 
     if (req.query && req.query.filter) {
-        query.$and.push({
+        query.$or.push({
             $text: { $search: String(req.query.filter) }
         });
+    } else {
+        query.$or.push({ content: { $exists: true }});
     }
 
+    var archiveQuery;
     if (req.query && req.query.archived) {
-        query.$and.push({
+        archiveQuery = {
             archived: true
-        });
+        };
     } else {
-        query.$and.push({ $or: [{
+        archiveQuery = { $or: [{
             archived: false
         }, {
             archived: { $exists: false }
-        }]});
+        }]};
     }
+
+    var endQuery = { $and: [ archiveQuery, query ]};
 
     var skip = isNaN(parseInt(req.query.skip)) ? 0 : parseInt(req.query.skip);
     var limit = isNaN(parseInt(req.query.limit)) ? 10 : parseInt(req.query.limit);
 
-    logic.getAll(req.userId, query, skip, limit, function (error, result) {
+    logic.getAll(req.userId, endQuery, skip, limit, function (error, result) {
         if (error) return next(new HttpError(500, error));
         next(new HttpSuccess(200, { things: result }));
     });
