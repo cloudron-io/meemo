@@ -67,6 +67,7 @@
                 <h3 style="margin-top: 0">Archive</h3>
              </div>
             <div v-show="!busyThings">
+              <div v-show="things.length === 0" class="align-center">Nothing found</div>
               <thing v-for="item in things" :thing="item" :profile="profile" track-by="id"></thing>
               <view-loading v-show="busyFetchMore"></view-loading>
             </div>
