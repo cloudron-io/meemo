@@ -145,3 +145,6 @@
 [1.6.5]
 * Ensure all LDAP queries use bind
 
+[1.7.0]
+* Support sticky notes
+
