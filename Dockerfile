@@ -1,7 +1,5 @@
 FROM cloudron/base:0.10.0
 
-EXPOSE 3000
-
 RUN mkdir -p /app/code
 WORKDIR /app/code
 
