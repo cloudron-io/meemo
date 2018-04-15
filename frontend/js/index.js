@@ -82,7 +82,8 @@ var vue = new Vue({
         settings: {},
         mainView: '',
         thingContent: '',
-        thingAttachments: []
+        thingAttachments: [],
+        uploadProgress: -1
     },
     methods: {
         giveAddFocus: function () {
@@ -134,19 +135,32 @@ var vue = new Vue({
         },
         attachmentChanged: function (event) {
             var that = this;
-            var data = event.target.files;
 
-            for (var i = 0; i < data.length; ++i) {
+            var count = event.target.files.length;
+            var stepSize = 100 / count;
+
+            this.uploadProgress = 1;
+
+            asyncForEach(event.target.files, function (file, callback) {
                 var formData = new FormData();
-                formData.append('file', event.target.files[i]);
+                formData.append('file', file);
 
-                this.$root.Core.things.uploadFile(formData, function (error, result) {
-                    if (error) console.error(error);
+                that.$root.Core.things.uploadFile(formData, function (error, result) {
+                    if (error) return callback(error);
+
+                    var tmp = Math.ceil(that.uploadProgress + stepSize);
+                    that.uploadProgress = tmp > 100 ? 100 : tmp;
 
                     that.thingContent += ' [' + result.fileName + '] ';
                     that.thingAttachments.push(result);
+
+                    callback();
                 });
-            }
+            }, function (error) {
+                if (error) console.error('Error uploading file.', error);
+
+                that.uploadProgress = -1;
+            });
         },
         activateProposedTag: function (tag) {
             var word = Vue.getCurrentSearchWord(this.thingContent, $('#addTextarea'));

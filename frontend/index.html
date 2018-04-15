@@ -52,6 +52,7 @@
                     <a class="btn btn-default" title="Cheatsheet" href="#modalCheatSheet" data-toggle="modal"><i class="fa fa-keyboard-o"></i></a>
                     &nbsp;
                     <button class="btn btn-default" @click="addThing()" title="Add (Ctrl+S)"><i class="fa fa-check"></i></button>
+                    <div class="progress" v-show="uploadProgress > -1"><div class="progress-bar progress-bar-striped active" role="progressbar" style="min-width: 12em; width: {{ uploadProgress }}%">Uploading files...{{ uploadProgress }}%</div></div>
                   </span>
                 </div>
                 <textarea id="addTextarea" class="new-thing" placeholder="Add something..." v-model="thingContent" :class="{ active: !!thingContent }" v-show="!busyAdd" @drop="dropOrPasteHandler" @dragover="preventEventBubble" @paste="dropOrPasteHandler"></textarea>

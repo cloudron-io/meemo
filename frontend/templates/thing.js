@@ -9,7 +9,8 @@ Vue.component('thing', {
     data: function () {
         return {
             shareLink: '',
-            busy: false
+            busy: false,
+            uploadProgress: -1
         };
     },
     props: {
@@ -127,12 +128,20 @@ Vue.component('thing', {
         uploadFileChanged: function (event) {
             var that = this;
 
+            var count = event.target.files.length;
+            var stepSize = 100 / count;
+
+            this.uploadProgress = 1;
+
             asyncForEach(event.target.files, function (file, callback) {
                 var formData = new FormData();
                 formData.append('file', file);
 
                 that.$root.Core.things.uploadFile(formData, function (error, result) {
                     if (error) return callback(error);
+
+                    var tmp = Math.ceil(that.uploadProgress + stepSize);
+                    that.uploadProgress = tmp > 100 ? 100 : tmp;
 
                     that.thing.content += ' [' + result.fileName + '] ';
                     that.thing.attachments.push(result);
@@ -141,6 +150,8 @@ Vue.component('thing', {
                 });
             }, function (error) {
                 if (error) console.error('Error uploading file.', error);
+
+                that.uploadProgress = -1;
             });
         },
         triggerUploadFileInput: function () {
