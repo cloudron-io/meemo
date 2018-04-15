@@ -45,7 +45,6 @@ Vue.component('view-login', {
 
         this.$root.Core.users.list(function (error, result) {
             that.users = result;
-            console.log(result)
         });
 
         Vue.nextTick(function () { $('#inputUsername').focus(); });
