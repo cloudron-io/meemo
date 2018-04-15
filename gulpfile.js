@@ -1,6 +1,7 @@
 'use strict';
 
 var autoprefixer = require('gulp-autoprefixer'),
+    argv = require('yargs').argv,
     del = require('del'),
     ejs = require('gulp-ejs'),
     gulp = require('gulp'),
@@ -9,6 +10,19 @@ var autoprefixer = require('gulp-autoprefixer'),
     run = require('gulp-run'),
     sass = require('gulp-sass'),
     sourcemaps = require('gulp-sourcemaps');
+
+if (argv.help || argv.h) {
+    console.log('Supported arguments:');
+    console.log(' --revision <revision>');
+
+    process.exit(1);
+}
+
+var revision = argv.revision || '';
+
+console.log();
+console.log('Building for revision: %s', revision);
+console.log();
 
 gulp.task('styles', function () {
     return gulp.src('frontend/scss/index.scss')
@@ -28,7 +42,7 @@ gulp.task('javascript', function () {
 
 gulp.task('html', function () {
     return gulp.src('frontend/*.html')
-        .pipe(ejs({}).on('error', console.error))
+        .pipe(ejs({ revision: revision }).on('error', console.error))
         .pipe(gulp.dest('public/'));
 });
 
