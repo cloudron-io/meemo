@@ -4,7 +4,6 @@ var autoprefixer = require('gulp-autoprefixer'),
     del = require('del'),
     ejs = require('gulp-ejs'),
     gulp = require('gulp'),
-    gutil = require('gulp-util'),
     minifycss = require('gulp-cssnano'),
     rename = require('gulp-rename'),
     run = require('gulp-run'),
@@ -29,7 +28,7 @@ gulp.task('javascript', function () {
 
 gulp.task('html', function () {
     return gulp.src('frontend/*.html')
-        .pipe(ejs({}).on('error', gutil.log))
+        .pipe(ejs({}).on('error', console.error))
         .pipe(gulp.dest('public/'));
 });
 

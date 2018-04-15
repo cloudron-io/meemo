@@ -56,7 +56,6 @@
     "gulp-run": "^1.6.12",
     "gulp-sass": "^2.1.1",
     "gulp-sourcemaps": "^1.6.0",
-    "gulp-util": "^3.0.7",
     "jquery": "^2.1.4",
     "mocha": "^3.0.2",
     "vue": "^1.0.21"
