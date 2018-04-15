@@ -4,8 +4,8 @@
 .travis.yml
 .jshintrc
 node_modules/
-bower_components/
 public/
 attachments/
+storage/
 src/test/
 screenshots/
