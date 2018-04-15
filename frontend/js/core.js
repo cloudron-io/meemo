@@ -318,7 +318,7 @@ function SessionApi() {}
 SessionApi.prototype.login = function (username, password, callback) {
     superagent.post(g_server + '/api/login').send({ username: username, password: password }).end(function (error, result) {
         if (error && !error.response) return callback(error);
-        if (result.status !== 201) return callback(new Error('Login failed. ' + result.status + '. ' + result.text));
+        if (result.status !== 201) return callback(error);
 
         g_token = result.body.token;
         localStorage.token = g_token;

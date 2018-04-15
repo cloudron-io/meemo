@@ -30,7 +30,10 @@ Vue.component('view-login', {
 
                     Vue.nextTick(function () { $('#inputUsername').focus(); });
 
-                    return console.error('Login failed:', error.status ? error.status : error);
+                    // print unexpected errors
+                    if (error.status !== 401) console.error('Login failed:', error);
+
+                    return;
                 }
 
                 that.error = false;
