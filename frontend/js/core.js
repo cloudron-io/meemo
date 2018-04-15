@@ -236,8 +236,10 @@ ThingsApi.prototype.import = function (formData, callback) {
     }));
 };
 
-ThingsApi.prototype.uploadFile = function (formData, callback) {
-    superagent.post(url('/api/files')).send(formData).end(errorWrapper(function (error, result) {
+ThingsApi.prototype.uploadFile = function (formData, progressHandler, callback) {
+    superagent.post(url('/api/files')).send(formData).on('progress', function (event) {
+        if (event.loaded && event.total) progressHandler(event.loaded / event.total);
+    }).end(errorWrapper(function (error, result) {
         if (error) return callback(error);
         callback(null, result.body);
     }));

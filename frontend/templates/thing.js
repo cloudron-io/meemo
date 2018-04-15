@@ -130,6 +130,7 @@ Vue.component('thing', {
 
             var count = event.target.files.length;
             var stepSize = 100 / count;
+            var currentIndex = 0;
 
             this.uploadProgress = 1;
 
@@ -137,11 +138,13 @@ Vue.component('thing', {
                 var formData = new FormData();
                 formData.append('file', file);
 
-                that.$root.Core.things.uploadFile(formData, function (error, result) {
+                that.$root.Core.things.uploadFile(formData, function (progress) {
+                    var tmp = Math.ceil(stepSize * currentIndex + (stepSize * progress));
+                    that.uploadProgress = tmp > 100 ? 100 : tmp;
+                }, function (error, result) {
                     if (error) return callback(error);
 
-                    var tmp = Math.ceil(that.uploadProgress + stepSize);
-                    that.uploadProgress = tmp > 100 ? 100 : tmp;
+                    currentIndex++;
 
                     that.thing.content += ' [' + result.fileName + '] ';
                     that.thing.attachments.push(result);
@@ -198,7 +201,7 @@ Vue.component('thing', {
                     }
                     formData.append('file', file, name);
 
-                    this.$root.Core.things.uploadFile(formData, function (error, result) {
+                    this.$root.Core.things.uploadFile(formData, function () {}, function (error, result) {
                         if (error) console.error(error);
 
                         that.thing.content += ' [' + result.fileName + '] ';

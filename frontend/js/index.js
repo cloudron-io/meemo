@@ -138,6 +138,7 @@ var vue = new Vue({
 
             var count = event.target.files.length;
             var stepSize = 100 / count;
+            var currentIndex = 0;
 
             this.uploadProgress = 1;
 
@@ -145,11 +146,13 @@ var vue = new Vue({
                 var formData = new FormData();
                 formData.append('file', file);
 
-                that.$root.Core.things.uploadFile(formData, function (error, result) {
+                that.$root.Core.things.uploadFile(formData, function (progress) {
+                    var tmp = Math.ceil(stepSize * currentIndex + (stepSize * progress));
+                    that.uploadProgress = tmp > 100 ? 100 : tmp;
+                }, function (error, result) {
                     if (error) return callback(error);
 
-                    var tmp = Math.ceil(that.uploadProgress + stepSize);
-                    that.uploadProgress = tmp > 100 ? 100 : tmp;
+                    currentIndex++;
 
                     that.thingContent += ' [' + result.fileName + '] ';
                     that.thingAttachments.push(result);
@@ -296,7 +299,7 @@ function dropOrPasteHandler(event) {
             }
             formData.append('file', file, name);
 
-            Core.things.uploadFile(formData, function (error, result) {
+            Core.things.uploadFile(formData, function () {}, function (error, result) {
                 if (error) console.error(error);
 
                 vue.thingContent += ' [' + result.fileName + '] ';
