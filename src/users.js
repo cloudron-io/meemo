@@ -81,7 +81,7 @@ function profile(identifier, full, callback) {
         ldapClient.bind(process.env.LDAP_BIND_DN, process.env.LDAP_BIND_PASSWORD, function (error) {
             if (error) return callback(new UserError(UserError.INTERNAL_ERROR, error));
 
-            ldapClient.search(process.env.LDAP_USERS_BASE_DN, { filter: '(|(uid=' + identifier + ')(mail=' + identifier + ')(username=' + identifier + '))' }, function (error, result) {
+            ldapClient.search(process.env.LDAP_USERS_BASE_DN, { filter: '(|(uid=' + identifier + ')(mail=' + identifier + ')(username=' + identifier + ')(sAMAccountName=' + identifier + '))' }, function (error, result) {
                 if (error) return callback(new UserError(UserError.INTERNAL_ERROR, error));
 
                 var items = [];
