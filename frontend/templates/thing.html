@@ -59,7 +59,7 @@
         <button class="btn btn-default" @click="cancelEdit()" title="Cancel"><i class="fa fa-times"></i></button>
         &nbsp;
         <button class="btn btn-default" @click="saveEdit()" title="Save (Ctrl+S)"><i class="fa fa-check"></i></button>
-        <div class="progress" v-show="uploadProgress > -1"><div class="progress-bar progress-bar-striped active" role="progressbar" style="min-width: 12em; width: {{ uploadProgress }}%">Uploading files...{{ uploadProgress }}%</div></div>
+        <div class="progress" v-show="uploadProgress > -1"><div class="progress-bar" role="progressbar" style="min-width: 12em; width: {{ uploadProgress }}%">Uploading files...{{ uploadProgress }}%</div></div>
       </span>
       <span v-show="!thing.edit">
         <button class="btn btn-default" @click="toggleSticky()" title="{{ thing.sticky ? 'Remove sticky' : 'Make sticky' }}" v-show="!thing.archived"><i class="fa" :class="{ 'fa-sticky-note': thing.sticky, 'fa-sticky-note-o': !thing.sticky }"></i></button>

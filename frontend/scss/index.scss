@@ -17,6 +17,16 @@ body {
      border: 0px solid;
 }
 
+.progress {
+    border-radius: 2px;
+    box-shadow: none;
+}
+
+.progress-bar {
+    box-shadow: none;
+    background-color: #66afe9;
+}
+
 .brand-link {
     color: black;
     font-size: 17px;
