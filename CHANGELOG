@@ -148,3 +148,6 @@
 [1.7.0]
 * Support sticky notes
 
+[1.8.0]
+* Update project dependencies
+* Add file upload progress

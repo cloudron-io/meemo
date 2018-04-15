@@ -1,4 +1,4 @@
-This app packages Meemo 1.6.5
+This app packages Meemo 1.8.0
 
 ### Overview
 
