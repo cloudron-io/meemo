@@ -2,6 +2,7 @@
 
 /* global Vue */
 /* global shortcut */
+/* global asyncForEach */
 
 Vue.component('thing', {
     template: '#thing-template',
@@ -126,19 +127,21 @@ Vue.component('thing', {
         uploadFileChanged: function (event) {
             var that = this;
 
-            var data = event.target.files;
-
-            for (var i = 0; i < data.length; ++i) {
+            asyncForEach(event.target.files, function (file, callback) {
                 var formData = new FormData();
-                formData.append('file', event.target.files[i]);
+                formData.append('file', file);
 
-                this.$root.Core.things.uploadFile(formData, function (error, result) {
-                    if (error) console.error(error);
+                that.$root.Core.things.uploadFile(formData, function (error, result) {
+                    if (error) return callback(error);
 
                     that.thing.content += ' [' + result.fileName + '] ';
                     that.thing.attachments.push(result);
+
+                    callback();
                 });
-            }
+            }, function (error) {
+                if (error) console.error('Error uploading file.', error);
+            });
         },
         triggerUploadFileInput: function () {
             $('#fileUpload-' + this.thing.id).click();

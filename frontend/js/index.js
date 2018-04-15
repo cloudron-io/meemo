@@ -3,6 +3,23 @@
 
 var Core = window.Guacamoly.Core;
 
+// poor man's async in the global namespace
+window.asyncForEach = function asyncForEach(items, handler, callback) {
+    var cur = 0;
+
+    if (items.length === 0) return callback();
+
+    (function iterator() {
+        handler(items[cur], function (error) {
+            if (error) return callback(error);
+            if (cur >= items.length-1) return callback();
+            ++cur;
+
+            iterator();
+        });
+    })();
+};
+
 // Tag propasal filter
 Vue.getCurrentSearchWord = function (search, inputElement) {
     var cursorPos = $(inputElement)[0] ? $(inputElement)[0].selectionStart : -1;
