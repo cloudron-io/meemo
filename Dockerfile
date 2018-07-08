@@ -9,6 +9,6 @@ ADD src/ /app/code/src/
 ADD frontend/ /app/code/frontend/
 ADD gulpfile.js package.json app.js start.sh things.json logo.png /app/code/
 
-RUN npm install && npm install -g gulp-cli && gulp default --revision 1.8.0
+RUN npm install && npm install -g gulp-cli && gulp default --revision 1.8.1
 
 CMD [ "/app/code/start.sh" ]

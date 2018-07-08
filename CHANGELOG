@@ -151,3 +151,7 @@
 [1.8.0]
 * Update project dependencies
 * Add file upload progress
+
+[1.8.1]
+* Improve mobile view
+
