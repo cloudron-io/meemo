@@ -7,6 +7,11 @@ body {
     background-size: cover;
     padding-top: 80px;
     font-family: Noto Sans, Arial, Helvetica;
+
+    // reduce spacing on mobile for a more condensed view
+    @media (max-width: 768px) {
+        padding-top: 50px;
+    }
 }
 
 .modal-content .modal-body {
@@ -37,6 +42,11 @@ body {
     }
 }
 
+// remove padding to use full space on mobile
+.feed {
+    padding: 0;
+}
+
 .well {
     overflow: hidden;
     padding: 10px !important;
@@ -44,6 +54,11 @@ body {
     background-color: white;
     border-radius: 2px;
     box-shadow: none;
+
+    // reduce spacing on mobile for a more condensed view
+    @media (max-width: 768px) {
+        margin-bottom: 5px;
+    }
 
     &.edit {
         border-color: #66afe9;
