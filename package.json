@@ -1,6 +1,6 @@
 {
   "name": "meemo-app",
-  "version": "1.6.4",
+  "version": "1.9.0",
   "description": "A personal ideas, notes or links manager",
   "main": "index.js",
   "scripts": {
