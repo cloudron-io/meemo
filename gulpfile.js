@@ -24,7 +24,7 @@ console.log();
 console.log('Building for revision: %s', revision);
 console.log();
 
-gulp.task('styles', function () {
+function buildCss() {
     return gulp.src('frontend/scss/index.scss')
         .pipe(sourcemaps.init())
         .pipe(sass({ includePaths: [] }).on('error', sass.logError))
@@ -33,76 +33,95 @@ gulp.task('styles', function () {
         .pipe(minifycss())
         .pipe(sourcemaps.write())
         .pipe(gulp.dest('public/'));
-});
+}
 
-gulp.task('javascript', function () {
-    return gulp.src('frontend/js/*.js')
-        .pipe(gulp.dest('public/js/'));
-});
+function buildJavascript() {
+    return gulp.src('frontend/js/*.js').pipe(gulp.dest('public/js/'));
+}
 
-gulp.task('html', function () {
+function buildHtml() {
     return gulp.src('frontend/*.html')
         .pipe(ejs({ revision: revision }).on('error', console.error))
         .pipe(gulp.dest('public/'));
-});
+}
 
-gulp.task('favicon', function () {
+function buildFavicon() {
     return gulp.src('logo.png')
         .pipe(rename('favicon.png'))
         .pipe(gulp.dest('public/'));
-});
+}
 
-gulp.task('3rdparty', ['other'], function () {
-    return gulp.src([
-        'node_modules/jquery/dist/*.min.js*',
-        'frontend/3rdparty/**/*.min.css*',
-        'frontend/3rdparty/**/*.min.js*',
-        'frontend/3rdparty/**/*.js*',
-        'frontend/3rdparty/**/*.otf',
-        'frontend/3rdparty/**/*.svg',
-        'frontend/3rdparty/**/*.ttf',
-        'frontend/3rdparty/**/*.woff*',
-    ]).pipe(gulp.dest('public/3rdparty/'));
-});
+var build3rdParty = gulp.series(
+    function build3rdPartyFromNodeModules() {
+        return gulp.src([
+            'node_modules/superagent/superagent.js',
+            'node_modules/vue/dist/vue.min.js',
+            'node_modules/markdown-it/dist/markdown-it.min.js',
+            'node_modules/markdown-it-emoji/dist/markdown-it-emoji.min.js'
+        ]).pipe(gulp.dest('public/3rdparty/js/'));
+    },
+    function build3rdPartyFromFrontend() {
+        return gulp.src([
+            'node_modules/jquery/dist/*.min.js*',
+            'frontend/3rdparty/**/*.min.css*',
+            'frontend/3rdparty/**/*.min.js*',
+            'frontend/3rdparty/**/*.js*',
+            'frontend/3rdparty/**/*.otf',
+            'frontend/3rdparty/**/*.svg',
+            'frontend/3rdparty/**/*.ttf',
+            'frontend/3rdparty/**/*.woff*',
+        ]).pipe(gulp.dest('public/3rdparty/'));
+    }
+);
 
-gulp.task('other', function () {
-    return gulp.src([
-        'node_modules/superagent/superagent.js',
-        'node_modules/vue/dist/vue.min.js',
-        'node_modules/markdown-it/dist/markdown-it.min.js',
-        'node_modules/markdown-it-emoji/dist/markdown-it-emoji.min.js'
-    ]).pipe(gulp.dest('public/3rdparty/js/'));
-});
-
-gulp.task('images', function () {
+function buildImages() {
     return gulp.src([
         'frontend/img/*',
     ]).pipe(gulp.dest('public/img/'));
-});
+}
 
 gulp.task('chrome_extension', function () {
-    del.sync(['webextension-chrome.zip']);
-    run('zip -r webextension-chrome.zip webextension/').exec();
+    return del(['webextension-chrome.zip'], function () {
+        return run('zip -r webextension-chrome.zip webextension/').exec();
+    });
 });
 
 gulp.task('firefox_extension', function () {
-    del.sync(['webextension-firefox.xpi']);
-    run('zip -r ../webextension-firefox.xpi .', { cwd: process.cwd() + '/webextension' }).exec();
+    return del(['webextension-firefox.xpi'], function () {
+        return run('zip -r ../webextension-firefox.xpi .', { cwd: process.cwd() + '/webextension' }).exec();
+    });
 });
-
-gulp.task('extensions', ['chrome_extension', 'firefox_extension'], function () {});
-
-gulp.task('default', ['clean', 'html', 'favicon', 'images', 'styles', 'javascript', '3rdparty'], function () {});
 
 gulp.task('clean', function () {
-    del.sync(['public/']);
+    return del(['public/']);
 });
 
-gulp.task('develop', ['default'], function () {
-    gulp.watch('frontend/scss/*.scss', ['styles']);
-    gulp.watch('frontend/js/*.js', ['javascript']);
-    gulp.watch('frontend/*.html', ['html']);
-    gulp.watch('frontend/templates/*', ['html']);
-    gulp.watch('frontend/img/*', ['images']);
-    gulp.watch('webextension/*', ['extensions']);
-});
+gulp.task('extensions', gulp.series('chrome_extension', 'firefox_extension', function extensions(done) {
+    done();
+}));
+
+gulp.task('default', gulp.series('clean', buildHtml, buildFavicon, buildImages, buildCss, buildJavascript, build3rdParty, function defaultTask(done) {
+    done();
+}));
+
+function watchCss() {
+    return gulp.watch('frontend/scss/*.scss', buildCss);
+}
+
+function watchJavascript() {
+    return gulp.watch('frontend/js/*.js', buildJavascript);
+}
+
+function watchHtml() {
+    return gulp.watch(['frontend/*.html', 'frontend/templates/*'], gulp.series('default'));
+}
+
+function watchImages() {
+    return gulp.watch('frontend/img/*', buildImages);
+}
+
+function watchExtensions() {
+    return gulp.watch('webextension/*', gulp.series('extensions'));
+}
+
+gulp.task('develop', gulp.series('default', gulp.parallel(watchCss, watchJavascript, watchHtml, watchImages, watchExtensions)));

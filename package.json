@@ -19,7 +19,7 @@
     "body-parser": "^1.18.3",
     "checksum": "^0.1.1",
     "commander": "^2.19.0",
-    "connect-lastmile": "0.0.13",
+    "connect-lastmile": "^1.0.2",
     "cookie-parser": "^1.4.0",
     "cors": "^2.8.5",
     "debug": "^2.6.9",
@@ -48,7 +48,7 @@
   "devDependencies": {
     "del": "^2.2.0",
     "expect.js": "^0.3.1",
-    "gulp": "^3.9.0",
+    "gulp": "^4.0.0",
     "gulp-autoprefixer": "^3.1.0",
     "gulp-cssnano": "^2.1.1",
     "gulp-ejs": "^2.1.1",
@@ -57,7 +57,7 @@
     "gulp-sass": "^2.1.1",
     "gulp-sourcemaps": "^1.6.0",
     "jquery": "^3.3.1",
-    "mocha": "^3.0.2",
+    "mocha": "^5.2.0",
     "vue": "^1.0.21",
     "yargs": "^11.1.0"
   }
