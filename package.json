@@ -39,7 +39,7 @@
     "rss": "^1.2.2",
     "safetydance": "^0.1.1",
     "serve-static": "^1.13.2",
-    "superagent": "^1.8.5",
+    "superagent": "^4.0.0",
     "supererror": "^0.7.2",
     "tar-fs": "^1.16.3",
     "twemoji": "^1.4.1",
