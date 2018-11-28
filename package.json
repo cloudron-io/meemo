@@ -4,7 +4,7 @@
   "description": "A personal ideas, notes or links manager",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha src/test/*-test.js"
+    "test": "./node_modules/.bin/mocha --exit src/test/*-test.js "
   },
   "repository": {
     "type": "git",
