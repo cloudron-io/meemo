@@ -70,7 +70,7 @@
             <div v-show="!busyThings">
               <div v-show="things.length === 0" class="align-center">Nothing found</div>
               <thing v-for="item in things" :thing="item" :profile="profile" track-by="id"></thing>
-              <view-loading v-show="busyFetchMore"></view-loading>
+              <view-loading :active="busyFetchMore"></view-loading>
             </div>
           </div>
         </div>
