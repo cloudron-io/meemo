@@ -7,6 +7,10 @@ var queryInfo = {
     currentWindow: true
 };
 
+console.log('----')
+window.resizeTo(400, 500);
+console.log(window.document)
+
 chrome.runtime.onMessage.addListener(function (msg, sender) {
     if (msg.origin && msg.token && msg.title) {
         localStorage.origin = msg.origin;

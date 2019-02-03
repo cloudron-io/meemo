@@ -6,7 +6,7 @@
   "changelog": "file://CHANGELOG",
   "icon": "file://logo.png",
   "tagline": "Your personal notes",
-  "version": "1.9.0",
+  "version": "1.9.1",
   "healthCheckPath": "/api/healthcheck",
   "httpPort": 3000,
   "addons": {
@@ -21,10 +21,10 @@
   "website": "https://meemo.minimal-space.de/",
   "contactEmail": "johannes@nebulon.de",
   "mediaLinks": [
-    "https://s3.amazonaws.com/meemo/1.3.1/screenshot0.png",
-    "https://s3.amazonaws.com/meemo/1.3.1/screenshot1.png",
-    "https://s3.amazonaws.com/meemo/1.3.1/screenshot2.png",
-    "https://s3.amazonaws.com/meemo/1.3.1/screenshot3.png",
-    "https://s3.amazonaws.com/meemo/1.3.1/screenshot4.png"
+    "https://s3.amazonaws.com/cloudron-app-screenshots/de.nebulon.guacamoly/0a8d992c9297def66dc534ac2da8fdd29b8c43d6/screenshot0.png",
+    "https://s3.amazonaws.com/cloudron-app-screenshots/de.nebulon.guacamoly/0a8d992c9297def66dc534ac2da8fdd29b8c43d6/screenshot1.png",
+    "https://s3.amazonaws.com/cloudron-app-screenshots/de.nebulon.guacamoly/0a8d992c9297def66dc534ac2da8fdd29b8c43d6/screenshot2.png",
+    "https://s3.amazonaws.com/cloudron-app-screenshots/de.nebulon.guacamoly/0a8d992c9297def66dc534ac2da8fdd29b8c43d6/screenshot3.png",
+    "https://s3.amazonaws.com/cloudron-app-screenshots/de.nebulon.guacamoly/0a8d992c9297def66dc534ac2da8fdd29b8c43d6/screenshot4.png"
   ]
 }

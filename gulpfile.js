@@ -87,9 +87,10 @@ gulp.task('chrome_extension', function () {
 });
 
 gulp.task('firefox_extension', function () {
-    return del(['webextension-firefox.xpi'], function () {
+    // return del(['webextension-firefox.xpi'], function () {
+        console.log('---')
         return run('zip -r ../webextension-firefox.xpi .', { cwd: process.cwd() + '/webextension' }).exec();
-    });
+    // });
 });
 
 gulp.task('clean', function () {
