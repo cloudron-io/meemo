@@ -46,8 +46,7 @@ function buildHtml() {
 }
 
 function buildFavicon() {
-    return gulp.src('logo.png')
-        .pipe(rename('favicon.png'))
+    return gulp.src('frontend/favicon.png')
         .pipe(gulp.dest('public/'));
 }
 
