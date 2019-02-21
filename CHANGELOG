@@ -160,3 +160,8 @@
 
 [1.9.1]
 * Update Cloudron screenshot location
+
+[1.9.2]
+* Introduce new icon
+* Update sass to be windows compatible
+
