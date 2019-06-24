@@ -136,10 +136,10 @@ function fetchMessage(connection, handler, callback) {
 
 function checkInbox() {
     var conn = new Imap({
-        user: process.env.MAIL_IMAP_USERNAME,
-        password: process.env.MAIL_IMAP_PASSWORD,
-        host: process.env.MAIL_IMAP_SERVER,
-        port: process.env.MAIL_IMAP_PORT,
+        user: process.env.CLOUDRON_MAIL_IMAP_USERNAME,
+        password: process.env.CLOUDRON_MAIL_IMAP_PASSWORD,
+        host: process.env.CLOUDRON_MAIL_IMAP_SERVER,
+        port: process.env.CLOUDRON_MAIL_IMAP_PORT,
         tls: true,
         tlsOptions: { rejectUnauthorized: false }
     });
@@ -214,10 +214,10 @@ function checkInbox() {
 
 function cleanupTrash() {
     var conn = new Imap({
-        user: process.env.MAIL_IMAP_USERNAME,
-        password: process.env.MAIL_IMAP_PASSWORD,
-        host: process.env.MAIL_IMAP_SERVER,
-        port: process.env.MAIL_IMAP_PORT,
+        user: process.env.CLOUDRON_MAIL_IMAP_USERNAME,
+        password: process.env.CLOUDRON_MAIL_IMAP_PASSWORD,
+        host: process.env.CLOUDRON_MAIL_IMAP_SERVER,
+        port: process.env.CLOUDRON_MAIL_IMAP_PORT,
         tls: true,
         tlsOptions: { rejectUnauthorized: false }
     });

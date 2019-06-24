@@ -16,8 +16,8 @@
     "recvmail": {}
   },
   "tags": ["notes", "bookmarks", "todo", "ideas", "feed", "markdown"],
-  "targetBoxVersion": "0.4.0",
-  "manifestVersion": 1,
+  "minBoxVersion": "4.1.4",
+  "manifestVersion": 2,
   "website": "https://meemo.minimal-space.de/",
   "contactEmail": "johannes@nebulon.de",
   "mediaLinks": [

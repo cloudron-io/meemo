@@ -5,7 +5,7 @@
 exports = module.exports = {
     db: null,
 
-    databaseUrl: process.env.MONGODB_URL || 'mongodb://127.0.0.1:27017/meemo',
+    databaseUrl: process.env.CLOUDRON_MONGODB_URL || 'mongodb://127.0.0.1:27017/meemo',
     _clearDatabase: clearDatabase,
     attachmentDir: process.env.ATTACHMENT_DIR || (__dirname + '/../storage')
 };

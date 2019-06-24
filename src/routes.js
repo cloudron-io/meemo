@@ -137,7 +137,7 @@ function profile(req, res, next) {
         if (error) return next(new HttpError(500, error));
 
         var out = {
-            mailbox: process.env.MAIL_TO ? (process.env.MAIL_IMAP_USERNAME + '+' + result.username + '@' + process.env.MAIL_DOMAIN) : null,
+            mailbox: process.env.CLOUDRON_MAIL_TO ? (process.env.CLOUDRON_MAIL_IMAP_USERNAME + '+' + result.username + '@' + process.env.CLOUDRON_MAIL_DOMAIN) : null,
             user: result
         };
 
@@ -385,8 +385,7 @@ function publicGetRSS(req, res, next) {
             logic.getAllPublic(req.params.userId, {}, 0, 50, function (error, result) {
                 if (error) return next(new HttpError(500, error));
 
-                // TODO
-                var webServer = process.env.APP_ORIGIN || 'http://localhost';
+                var webServer = process.env.CLOUDRON_APP_ORIGIN || 'http://localhost';
 
                 var feed = new rss({
                     title: config.title,

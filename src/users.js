@@ -17,7 +17,7 @@ var assert = require('assert'),
     safe = require('safetydance'),
     util = require('util');
 
-var LOCAL_AUTH_FILE = path.resolve(process.env.LOCAL_AUTH_FILE || './.users.json');
+var LOCAL_AUTH_FILE = path.resolve(process.env.CLOUDRON_LOCAL_AUTH_FILE || './.users.json');
 
 function UserError(code, messageOrError) {
     assert.strictEqual(typeof code, 'string');
@@ -38,14 +38,14 @@ function verify(username, password, callback) {
     profile(username, true, function (error, result) {
         if (error) return callback(error);
 
-        if (process.env.LDAP_URL) {
-            var ldapClient = ldapjs.createClient({ url: process.env.LDAP_URL });
+        if (process.env.CLOUDRON_LDAP_URL) {
+            var ldapClient = ldapjs.createClient({ url: process.env.CLOUDRON_LDAP_URL });
             ldapClient.on('error', function (error) {
                 console.error('LDAP error', error);
                 callback(new UserError(UserError.INTERNAL_ERROR, error));
             });
 
-            var ldapDn = 'cn=' + result.username + ',' + process.env.LDAP_USERS_BASE_DN;
+            var ldapDn = 'cn=' + result.username + ',' + process.env.CLOUDRON_LDAP_USERS_BASE_DN;
 
             ldapClient.bind(ldapDn, password, function (error) {
                 if (error) return callback(new UserError(UserError.NOT_AUTHORIZED));
@@ -72,16 +72,16 @@ function profile(identifier, full, callback) {
     assert.strictEqual(typeof full, 'boolean');
     assert.strictEqual(typeof callback, 'function');
 
-    if (process.env.LDAP_URL) {
-        var ldapClient = ldapjs.createClient({ url: process.env.LDAP_URL });
+    if (process.env.CLOUDRON_LDAP_URL) {
+        var ldapClient = ldapjs.createClient({ url: process.env.CLOUDRON_LDAP_URL });
         ldapClient.on('error', function (error) {
             console.error('LDAP error', error);
         });
 
-        ldapClient.bind(process.env.LDAP_BIND_DN, process.env.LDAP_BIND_PASSWORD, function (error) {
+        ldapClient.bind(process.env.CLOUDRON_LDAP_BIND_DN, process.env.CLOUDRON_LDAP_BIND_PASSWORD, function (error) {
             if (error) return callback(new UserError(UserError.INTERNAL_ERROR, error));
 
-            ldapClient.search(process.env.LDAP_USERS_BASE_DN, { filter: '(|(uid=' + identifier + ')(mail=' + identifier + ')(username=' + identifier + ')(sAMAccountName=' + identifier + '))' }, function (error, result) {
+            ldapClient.search(process.env.CLOUDRON_LDAP_USERS_BASE_DN, { filter: '(|(uid=' + identifier + ')(mail=' + identifier + ')(username=' + identifier + ')(sAMAccountName=' + identifier + '))' }, function (error, result) {
                 if (error) return callback(new UserError(UserError.INTERNAL_ERROR, error));
 
                 var items = [];
@@ -132,12 +132,12 @@ function profile(identifier, full, callback) {
 }
 
 function list(callback) {
-    if (process.env.LDAP_URL) {
-        var client = ldapjs.createClient({ url: process.env.LDAP_URL });
-        client.bind(process.env.LDAP_BIND_DN, process.env.LDAP_BIND_PASSWORD, function (error) {
+    if (process.env.CLOUDRON_LDAP_URL) {
+        var client = ldapjs.createClient({ url: process.env.CLOUDRON_LDAP_URL });
+        client.bind(process.env.CLOUDRON_LDAP_BIND_DN, process.env.CLOUDRON_LDAP_BIND_PASSWORD, function (error) {
             if (error) return callback(new UserError(UserError.INTERNAL_ERROR, error));
 
-            client.search(process.env.LDAP_USERS_BASE_DN, { scope: 'sub' }, function (error, res) {
+            client.search(process.env.CLOUDRON_LDAP_USERS_BASE_DN, { scope: 'sub' }, function (error, res) {
                 if (error) return callback(new UserError(UserError.INTERNAL_ERROR, error));
 
                 var entries = [];

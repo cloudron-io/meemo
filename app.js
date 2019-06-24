@@ -7,7 +7,7 @@ require('supererror')({ splatchError: true });
 var PORT = process.env.PORT || 3000;
 var BIND_ADDRESS = process.env.BIND_ADDRESS || '0.0.0.0';
 
-if (!process.env.APP_ORIGIN) {
+if (!process.env.CLOUDRON_APP_ORIGIN) {
     console.log('No APP_ORIGIN env var set. Falling back to http://localhost');
 }
 
@@ -106,7 +106,7 @@ MongoClient.connect(config.databaseUrl, function (error, db) {
 
         setInterval(logic.cleanupTags, 1000 * 60);
 
-        if (process.env.MAIL_IMAP_SERVER) {
+        if (process.env.CLOUDRON_MAIL_IMAP_SERVER) {
             require('./src/mail.js');
         }
     });
