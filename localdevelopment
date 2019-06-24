@@ -1,0 +1,27 @@
+#!/bin/bash
+
+set -eu
+
+readonly source_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")"/../.. && pwd)"
+
+# create the same mongo server version as cloudron has
+CONTAINER_NAME="mongo-server-meemo"
+
+OUT=`docker inspect ${CONTAINER_NAME}` || true
+if [[ "${OUT}" = "[]" ]]; then
+    echo "Starting ${CONTAINER_NAME}..."
+    docker run --name ${CONTAINER_NAME} -d mongo:3.6-xenial
+else
+    echo "${CONTAINER_NAME} already running. If you want to start fresh, run 'docker rm --force ${CONTAINER_NAME}'"
+fi
+
+export MONGODB_IP=`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ${CONTAINER_NAME}`
+
+echo "Waiting for mysql server to be ready..."
+while ! docker exec -it ${CONTAINER_NAME} mongo --eval "print(\"waited for connection\")"; do
+    sleep 1
+done
+
+export MONGODB_URL="mongodb://${MONGODB_IP}:27017/meemo"
+
+node app.js
