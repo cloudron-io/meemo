@@ -165,3 +165,6 @@
 * Introduce new icon
 * Update sass to be windows compatible
 
+[1.10.0]
+* Rework database logic for better portability
+
