@@ -41,14 +41,14 @@ MongoClient.connect(process.env.CLOUDRON_MONGODB_URL || 'mongodb://127.0.0.1:270
                 async.eachSeries(collections, function (collection, callback) {
                     var user = users.find(function (u) { return collection.name.indexOf(u.uid) === 0; });
                     if (!user) {
-                        console.log('No user found for collection', collection.name,  'not migrating this collection');
+                        console.log('No user found for collection', collection.name,  'probably already migrated');
                         return callback();
                     }
 
                     var newName = user.username + '_' + collection.name.split('_')[1];
                     console.log('Collection', collection.name, 'belongs to user', user.username, 'renaming to', newName);
 
-                    db.renameCollection(collection.name, newName, {}, callback);
+                    db.renameCollection(collection.name, newName, { dropTarget: true }, callback);
                 }, function (error) {
                     if (error) exit(error);
 
