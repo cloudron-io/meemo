@@ -23,5 +23,6 @@ while ! docker exec -it ${CONTAINER_NAME} mongo --eval "print(\"waited for conne
 done
 
 export CLOUDRON_MONGODB_URL="mongodb://${MONGODB_IP}:27017/meemo"
+echo "export CLOUDRON_MONGODB_URL=\"mongodb://${MONGODB_IP}:27017/meemo\""
 
 node app.js
