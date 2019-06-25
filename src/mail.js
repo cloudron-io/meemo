@@ -187,7 +187,7 @@ function checkInbox() {
                             return;
                         }
 
-                        logic.add(result.id, body, [], function (error) {
+                        logic.add(result.username, body, [], function (error) {
                             if (error) return callback(error);
 
                             // done now move to trash

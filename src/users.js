@@ -98,13 +98,9 @@ function profile(identifier, full, callback) {
                     if (result.status !== 0) return callback(new UserError(UserError.NOT_FOUND, 'non-zero status from LDAP search: ' + result.status));
                     if (items.length === 0) return callback(new UserError(UserError.NOT_FOUND, 'No LDAP entries found'));
 
-                    // translate proprety names
-                    items[0].id = items[0].uid;
-
                     if (full) return callback(null, items[0]);
 
                     var out = {
-                        id: items[0].uid,
                         username: items[0].username,
                         displayName: items[0].displayname,
                         email: items[0].mail
@@ -120,7 +116,6 @@ function profile(identifier, full, callback) {
         if (!users[identifier]) return callback(new UserError(UserError.NOT_FOUND));
 
         var result = {
-            id: users[identifier].username,
             username: users[identifier].username,
             displayName: users[identifier].displayName,
             email: users[identifier].email,
@@ -143,7 +138,6 @@ function list(callback) {
                 var entries = [];
                 res.on('searchEntry', function(entry) {
                     var data = {
-                        id: entry.object.uid,
                         username: entry.object.username,
                         displayName: entry.object.displayname
                     };
@@ -164,7 +158,6 @@ function list(callback) {
 
         var result = Object.keys(users).map(function (u) {
             return {
-                id: users[u].username,
                 username: users[u].username,
                 displayName: users[u].displayName
             };

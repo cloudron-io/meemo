@@ -97,27 +97,27 @@ function login(req, res, next) {
         if (error) return next(new HttpError(500, error));
 
         var token = uuid.v4();
-        tokens.add(token, '', result.user.id, function (error) {
+        tokens.add(token, '', result.user.username, function (error) {
             if (error) return next(new HttpError(500, error));
             next(new HttpSuccess(201, { token: token, user: result.user }));
 
             // TODO remove this eventually
             // check for old data to import
             if (logic.hasOldData) {
-                logic.importThings(result.user.id, logic.hasOldData, function (error) {
+                logic.importThings(result.user.username, logic.hasOldData, function (error) {
                     if (error) return console.error('Failed to import old data', error);
 
                     logic.cleanupOldData(function (error) {
                         if (error) return console.error('Failed to cleanup old data', error);
 
-                        console.log('Importing old data for user %s done', result.user.id);
+                        console.log('Importing old data for user %s done', result.user.username);
                     });
                 });
             } else {
-                welcomeIfNeeded(result.user.id, function (error) {
+                welcomeIfNeeded(result.user.username, function (error) {
                     if (error) console.error(error);
 
-                    console.log('Seed welcome data for user %s', result.user.id);
+                    console.log('Seed welcome data for user %s', result.user.username);
                 });
             }
         });
@@ -356,7 +356,6 @@ function publicProfile(req, res, next) {
         console.log(error, result);
 
         var out = {
-            id: result.id,
             username: result.username,
             displayName: result.displayName,
         };
