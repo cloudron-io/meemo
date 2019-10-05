@@ -19,11 +19,6 @@ exports = module.exports = {
     cleanupTags: cleanupTags,
     importThings: importThings,
 
-    // TODO remove eventually
-    hasOldData: null,
-    expOldData: expOldData,
-    cleanupOldData: cleanupOldData,
-
     TYPE_IMAGE: 'image',
     TYPE_UNKNOWN: 'unknown'
 };
@@ -467,71 +462,4 @@ function importThings(userId, filePath, callback) {
     });
 
     outStream.pipe(extract);
-}
-
-function expOldData() {
-    var collection = config.db.collection('things');
-
-    collection.find({}).toArray(function (error, result) {
-        if (error) return console.error('Failed to export old data:', error);
-        if (!result || result.length === 0) return;   // nothing to do
-
-        console.log('Old data found, prepare for import');
-
-        var tmp = result.map(function (thing) {
-            return {
-                createdAt: thing.createdAt,
-                modifiedAt: thing.modifiedAt,
-                content: thing.content,
-                externalContent: thing.externalContent || [],
-                attachments: thing.attachments || []
-            };
-        });
-
-        var oldAttachmentFolder = '/app/data/attachments';
-
-        // ensure the folder exists in case the user has never uploaded a file
-        mkdirp.sync(oldAttachmentFolder);
-
-        var out = tar.pack(oldAttachmentFolder, {
-            map: function (header) {
-                header.name = 'attachments/' + header.name;
-                return header;
-            }
-        });
-
-        // add the db dump
-        out.entry({ name: 'things.json' }, JSON.stringify({ things: tmp }, null, 4));
-
-        out.pipe(fs.createWriteStream('/tmp/old_data_export.tar'));
-
-        out.on('end', function () {
-            exports.hasOldData = '/tmp/old_data_export.tar';
-            console.log('Old data available at %s', exports.hasOldData);
-        });
-    });
-}
-
-function cleanupOldData(callback) {
-    var oldAttachmentFolder = '/app/data/attachments';
-
-    // prevent from further importing
-    exports.hasOldData = null;
-
-    rimraf(oldAttachmentFolder, function (error) {
-        if (error) console.error(error);
-
-        var collections = [
-            config.db.collection('things'),
-            config.db.collection('publicLinks'),
-            config.db.collection('tags')
-        ];
-
-        async.eachSeries(collections, function (collection, callback) {
-            collection.drop(function(error) {
-                if (error) console.error(error);
-                callback();
-            });
-        }, callback);
-    });
 }

@@ -48,7 +48,7 @@ MongoClient.connect(process.env.CLOUDRON_MONGODB_URL || 'mongodb://127.0.0.1:270
                     var newName = user.username + '_' + collection.name.split('_')[1];
                     console.log('Collection', collection.name, 'belongs to user', user.username, 'renaming to', newName);
 
-                    db.renameCollection(collection.name, newName, { dropTarget: true }, callback);
+                    db.renameCollection(collection.name, newName, { dropTarget: false }, callback);
                 }, function (error) {
                     if (error) exit(error);
 

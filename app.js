@@ -95,9 +95,6 @@ MongoClient.connect(config.databaseUrl, function (error, db) {
     // stash for database code to be used
     config.db = db;
 
-    // export data from singleUser mode app
-    logic.expOldData();
-
     var server = app.listen(PORT, BIND_ADDRESS, function () {
         var host = server.address().address;
         var port = server.address().port;

@@ -76,17 +76,6 @@ function auth(req, res, next) {
     });
 }
 
-function welcomeIfNeeded(userId, callback) {
-    assert.strictEqual(typeof userId, 'string');
-    assert.strictEqual(typeof callback, 'function');
-
-    logic.getAllLean(userId, function (error, result) {
-        if (error) return callback(error);
-        if (result.length > 0) return callback(null);
-
-        logic.imp(userId, require('../things.json'), callback);
-    });
-}
 function login(req, res, next) {
     if (typeof req.body.username !== 'string' || !req.body.username) return next(new HttpError(400, 'missing username'));
     if (typeof req.body.password !== 'string' || !req.body.password) return next(new HttpError(400, 'missing password'));
@@ -100,26 +89,6 @@ function login(req, res, next) {
         tokens.add(token, '', result.user.username, function (error) {
             if (error) return next(new HttpError(500, error));
             next(new HttpSuccess(201, { token: token, user: result.user }));
-
-            // TODO remove this eventually
-            // check for old data to import
-            if (logic.hasOldData) {
-                logic.importThings(result.user.username, logic.hasOldData, function (error) {
-                    if (error) return console.error('Failed to import old data', error);
-
-                    logic.cleanupOldData(function (error) {
-                        if (error) return console.error('Failed to cleanup old data', error);
-
-                        console.log('Importing old data for user %s done', result.user.username);
-                    });
-                });
-            } else {
-                welcomeIfNeeded(result.user.username, function (error) {
-                    if (error) console.error(error);
-
-                    console.log('Seed welcome data for user %s', result.user.username);
-                });
-            }
         });
     });
 }
