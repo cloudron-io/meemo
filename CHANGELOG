@@ -168,3 +168,7 @@
 [1.10.0]
 * Rework database logic for better portability
 
+[1.11.0]
+* Remove outdated welcome message
+* Remove code to import old data format
+* Update meta information
