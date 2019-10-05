@@ -19,6 +19,7 @@
   "minBoxVersion": "4.1.4",
   "manifestVersion": 2,
   "website": "https://meemo.minimal-space.de/",
+  "documentationUrl": "https://cloudron.io/documentation/apps/meemo/",
   "contactEmail": "johannes@nebulon.de",
   "mediaLinks": [
     "https://s3.amazonaws.com/cloudron-app-screenshots/de.nebulon.guacamoly/0a8d992c9297def66dc534ac2da8fdd29b8c43d6/screenshot0.png",
