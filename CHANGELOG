@@ -172,3 +172,6 @@
 * Remove outdated welcome message
 * Remove code to import old data format
 * Update meta information
+
+[1.12.0]
+* Remove now obsolete db migration from startup
