@@ -3,15 +3,12 @@
 set -eu
 
 # create the same mongo server version as cloudron has
-CONTAINER_NAME="mongo-server-meemo"
+CONTAINER_NAME="mongo-server-meemo-test"
 
-OUT=`docker inspect ${CONTAINER_NAME}` || true
-if [[ "${OUT}" = "[]" ]]; then
-    echo "Starting ${CONTAINER_NAME}..."
-    docker run --name ${CONTAINER_NAME} -d mongo:3.6-xenial
-else
-    echo "${CONTAINER_NAME} already running. If you want to start fresh, run 'docker rm --force ${CONTAINER_NAME}'"
-fi
+docker rm --force ${CONTAINER_NAME} || true
+
+echo "Starting ${CONTAINER_NAME}..."
+docker run --name ${CONTAINER_NAME} -d mongo:3.6-xenial
 
 export MONGODB_IP=`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ${CONTAINER_NAME}`
 
@@ -23,4 +20,4 @@ done
 export CLOUDRON_MONGODB_URL="mongodb://${MONGODB_IP}:27017/meemo"
 echo "export CLOUDRON_MONGODB_URL=\"mongodb://${MONGODB_IP}:27017/meemo\""
 
-node app.js
+./node_modules/.bin/mocha --exit src/test/*-test.js
