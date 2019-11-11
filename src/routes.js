@@ -273,8 +273,13 @@ function fileAdd(req, res, next) {
     });
 }
 
-function fileGet(req, res) {
-    res.sendFile(req.params.identifier, { root: path.join(config.attachmentDir, req.params.userId) });
+function fileGet(req, res, next) {
+    logic.getPublic(req.params.userId, req.params.thingId, function (error) {
+        if (error === 'not allowed') return next(new HttpError(403, 'not allowed'));
+        if (error) return next(new HttpError(500, error));
+
+        res.sendFile(req.params.identifier, { root: path.join(config.attachmentDir, req.params.userId) });
+    });
 }
 
 function publicGetThing(req, res, next) {
@@ -321,8 +326,6 @@ function publicProfile(req, res, next) {
     users.profile(req.params.userId, false, function (error, result) {
         if (error && error.code === UserError.NOT_FOUND) return next(new HttpError(404, error.message));
         if (error) return next(new HttpError(500, error));
-
-        console.log(error, result);
 
         var out = {
             username: result.username,
