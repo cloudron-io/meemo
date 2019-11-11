@@ -15,6 +15,8 @@ var express = require('express'),
     json = require('body-parser').json,
     config = require('./src/config.js'),
     cors = require('cors'),
+    session = require('express-session'),
+    MongoStore = require('connect-mongo')(session),
     multer  = require('multer'),
     routes = require('./src/routes.js'),
     lastmile = require('connect-lastmile'),
@@ -40,7 +42,6 @@ router.put ('/api/things/:id', routes.auth, routes.put);
 router.del ('/api/things/:id', routes.auth, routes.del);
 
 router.post('/api/files', routes.auth, memoryUpload, routes.fileAdd);
-router.get ('/api/files/:userId/:identifier', routes.fileGet);
 router.get ('/api/files/:userId/:thingId/:identifier', routes.fileGet);
 
 router.get ('/api/tags', routes.auth, routes.getTags);
@@ -82,6 +83,12 @@ if (process.env.DEBUG) {
 app.use(serveStatic(__dirname + '/public', { etag: false }));
 app.use(cors());
 app.use(json({ strict: true, limit: '5mb' }));
+app.use(session({
+    secret: 'guacamoly should be',
+    saveUninitialized: false,
+    resave: false,
+    store: new MongoStore({ url: config.databaseUrl })
+}));
 app.use(router);
 app.use(lastmile());
 

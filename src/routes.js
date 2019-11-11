@@ -57,6 +57,13 @@ function healthcheck(req, res, next) {
 }
 
 function auth(req, res, next) {
+    // first try session
+    if (req.session.userId) {
+        req.userId = req.session.userId;
+        return next();
+    }
+
+
     if (!req.query.token) return next(new HttpError(401, 'missing token'));
 
     tokens.get(req.query.token, function (error, result) {
@@ -85,6 +92,8 @@ function login(req, res, next) {
         if (error && error.code === UserError.NOT_AUTHORIZED) return next(new HttpError(401, 'invalid credentials'));
         if (error) return next(new HttpError(500, error));
 
+        req.session.userId = result.user.username;
+
         var token = uuid.v4();
         tokens.add(token, '', result.user.username, function (error) {
             if (error) return next(new HttpError(500, error));
@@ -94,6 +103,10 @@ function login(req, res, next) {
 }
 
 function logout(req, res, next) {
+    delete req.session.userId;
+
+    if (!req.token) return next(new HttpSuccess(200, {}));
+
     tokens.del(req.token, function (error) {
         if (error) return next(new HttpError(500, error));
         next(new HttpSuccess(200, {}));
@@ -274,6 +287,8 @@ function fileAdd(req, res, next) {
 }
 
 function fileGet(req, res, next) {
+    if (req.session.userId) return res.sendFile(req.params.identifier, { root: path.join(config.attachmentDir, req.session.userId) });
+
     logic.getPublic(req.params.userId, req.params.thingId, function (error) {
         if (error === 'not allowed') return next(new HttpError(403, 'not allowed'));
         if (error) return next(new HttpError(500, error));

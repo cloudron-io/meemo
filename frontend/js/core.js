@@ -21,7 +21,7 @@ function errorWrapper(callback) {
 }
 
 function url(path) {
-    return g_server + path + '?token=' + g_token;
+    return g_server + path;
 }
 
 function origin() {
