@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   height="512"
+   width="512"
+   xml:space="preserve"
+   viewBox="0 0 512 512"
+   y="0px"
+   x="0px"
+   id="Layer_1"
+   version="1.1"><metadata
+   id="metadata20"><rdf:RDF><cc:Work
+       rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></metadata><defs
+   id="defs18" />
+<style
+   id="style2"
+   type="text/css">
+	.st0{fill:url(#SVGID_1_);}
+</style>
+<g
+   transform="matrix(3.0662756,0,0,3.0662756,-536.38302,-209.86334)"
+   id="g13">
+	<g
+   id="g11">
+		
+			<linearGradient
+   gradientTransform="translate(18.0858)"
+   y2="151.9209"
+   x2="290.70529"
+   y1="151.9209"
+   x1="189.93469"
+   gradientUnits="userSpaceOnUse"
+   id="SVGID_1_">
+			<stop
+   id="stop4"
+   style="stop-color:#B840FF"
+   offset="0" />
+			<stop
+   id="stop6"
+   style="stop-color:#00C7FF"
+   offset="1" />
+		</linearGradient>
+		<path
+   style="fill:url(#SVGID_1_)"
+   id="path9"
+   d="m 259.2,73.8 c -27.4,0 -49.6,22.2 -49.6,49.6 0,27.4 22.2,49.6 49.6,49.6 27.4,0 49.6,-22.2 49.6,-49.6 0,-27.4 -22.2,-49.6 -49.6,-49.6 z m 0,90.5 c -12.9,0 -24.4,-6 -31.9,-15.3 l 10.4,4.7 c 0,0 0.1,0 0.1,0 1.1,0.5 2.4,0.6 3.6,0 L 274.3,139 c 2.2,-1 3.2,-3.6 2.2,-5.8 v 0 c -1,-2.2 -3.6,-3.2 -5.8,-2.2 l -31,14 -19.3,-8.6 c -1.1,-3.3 -1.8,-6.7 -2,-10.3 l 19.4,8.7 c 0,0 0.1,0 0.1,0 1.1,0.5 2.4,0.6 3.6,0 l 32.9,-14.7 c 2.2,-1 3.2,-3.6 2.2,-5.8 -1,-2.2 -3.6,-3.2 -5.8,-2.2 l -31.1,13.9 -20.2,-9.1 c -0.2,-0.1 -0.4,-0.1 -0.6,-0.2 0.5,-2.9 1.3,-5.8 2.4,-8.4 l 16.5,7.4 c 0,0 0.1,0 0.1,0 1.1,0.5 2.4,0.6 3.6,0 L 274.4,101 c 2.2,-1 3.2,-3.6 2.2,-5.8 C 275.6,93 273,92 270.8,93 l -31.1,14 -14.4,-6.5 c 7.3,-10.9 19.8,-18 33.9,-18 22.6,0 40.9,18.3 40.9,40.9 0,22.6 -18.3,40.9 -40.9,40.9 z m -27,4.3 -23.5,51.9 c -1.6,3.5 -0.2,7.5 3.1,9 3.3,1.5 7.3,-0.1 8.9,-3.6 L 244.2,174 c -2.1,-0.6 -4.2,-1.4 -6.2,-2.3 -2,-0.9 -4,-1.9 -5.8,-3.1 z"
+   class="st0" />
+	</g>
+</g>
+</svg>

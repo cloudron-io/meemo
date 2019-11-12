@@ -1,20 +1,27 @@
 {
+  "author": "Johannes Zellner",
   "manifest_version": 2,
   "name": "Meemo",
   "description": "This extension allows to add the current page with notes into Meemo.",
   "homepage_url": "https://meemo.minimal-space.de",
-  "icons": { "128": "logo.png" },
+  "icons": {
+    "48": "logo.svg",
+    "96": "logo.svg",
+    "128": "logo.svg",
+    "256": "logo.svg",
+    "512": "logo.svg"
+  },
   "version": "0.2.0",
   "browser_action": {
     "default_title": "Meemo",
-    "default_icon": "logo.png",
+    "default_icon": "logo.svg",
     "default_popup": "popup.html"
   },
   "permissions": [
     "activeTab"
   ],
   "web_accessible_resources": [
-    "logo.png"
+    "logo.svg"
   ],
   "applications": {
     "gecko": {
