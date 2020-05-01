@@ -78,7 +78,6 @@ var vue = new Vue({
         archived: false,
         sticky: false,
         profile: {},
-        mailbox: '',
         settings: {},
         mainView: '',
         thingContent: '',
@@ -194,7 +193,6 @@ var vue = new Vue({
                 if (error) return console.error(error);
 
                 that.profile = profile.user;
-                that.mailbox = profile.mailbox;
 
                 Core.settings.get(function (error, settings) {
                     if (error) return console.error(error);

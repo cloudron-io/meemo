@@ -119,7 +119,6 @@ function profile(req, res, next) {
         if (error) return next(new HttpError(500, error));
 
         var out = {
-            mailbox: process.env.CLOUDRON_MAIL_TO ? (process.env.CLOUDRON_MAIL_IMAP_USERNAME.split('@')[0] + '+' + result.username + '@' + process.env.CLOUDRON_MAIL_DOMAIN) : null,
             user: result
         };
 

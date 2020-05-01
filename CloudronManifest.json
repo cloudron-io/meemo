@@ -12,8 +12,7 @@
   "addons": {
     "mongodb": {},
     "ldap": {},
-    "localstorage": {},
-    "recvmail": {}
+    "localstorage": {}
   },
   "tags": ["notes", "bookmarks", "todo", "ideas", "feed", "markdown"],
   "minBoxVersion": "4.1.4",
