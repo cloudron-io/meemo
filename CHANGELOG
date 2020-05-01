@@ -179,3 +179,7 @@
 [1.12.1]
 * Fix Shared link has undefined userId #96
 
+[1.13.0]
+* Update to Cloudron base image v2
+* Remove broken mailbox handling
+* Fix node module security issues
