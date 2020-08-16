@@ -1,4 +1,4 @@
-This app packages Meemo <upstream>1.13.0</upstream>.
+This app packages Meemo <upstream>1.13.1</upstream>.
 
 ### Overview
 
