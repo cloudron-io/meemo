@@ -34,11 +34,25 @@ UserError.NOT_FOUND = 'not found';
 UserError.NOT_AUTHORIZED = 'not authorized';
 UserError.INTERNAL_ERROR = 'internal error';
 
+// https://tools.ietf.org/search/rfc4515#section-3
+var sanitizeInput = function (username) {
+  return username
+    .replace(/\*/g, '\\2a')
+    .replace(/\(/g, '\\28')
+    .replace(/\)/g, '\\29')
+    .replace(/\\/g, '\\5c')
+    .replace(/\0/g, '\\00')
+    .replace(/\//g, '\\2f');
+};
+
 function verify(username, password, callback) {
+
     profile(username, true, function (error, result) {
         if (error) return callback(error);
 
         if (process.env.CLOUDRON_LDAP_URL) {
+            username = sanitizeInput(username);
+
             var ldapClient = ldapjs.createClient({ url: process.env.CLOUDRON_LDAP_URL });
             ldapClient.on('error', function (error) {
                 console.error('LDAP error', error);
@@ -73,6 +87,8 @@ function profile(identifier, full, callback) {
     assert.strictEqual(typeof callback, 'function');
 
     if (process.env.CLOUDRON_LDAP_URL) {
+        identifier = sanitizeInput(identifier);
+
         var ldapClient = ldapjs.createClient({ url: process.env.CLOUDRON_LDAP_URL });
         ldapClient.on('error', function (error) {
             console.error('LDAP error', error);
