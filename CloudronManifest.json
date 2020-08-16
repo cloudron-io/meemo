@@ -15,16 +15,17 @@
     "localstorage": {}
   },
   "tags": ["notes", "bookmarks", "todo", "ideas", "feed", "markdown"],
-  "minBoxVersion": "4.1.4",
   "manifestVersion": 2,
+  "minBoxVersion": "5.3.0",
+  "forumUrl": "https://forum.cloudron.io/category/30/wekan",
   "website": "https://meemo.minimal-space.de/",
   "documentationUrl": "https://cloudron.io/documentation/apps/meemo/",
   "contactEmail": "johannes@nebulon.de",
   "mediaLinks": [
-    "https://s3.amazonaws.com/cloudron-app-screenshots/de.nebulon.guacamoly/0a8d992c9297def66dc534ac2da8fdd29b8c43d6/screenshot0.png",
-    "https://s3.amazonaws.com/cloudron-app-screenshots/de.nebulon.guacamoly/0a8d992c9297def66dc534ac2da8fdd29b8c43d6/screenshot1.png",
-    "https://s3.amazonaws.com/cloudron-app-screenshots/de.nebulon.guacamoly/0a8d992c9297def66dc534ac2da8fdd29b8c43d6/screenshot2.png",
-    "https://s3.amazonaws.com/cloudron-app-screenshots/de.nebulon.guacamoly/0a8d992c9297def66dc534ac2da8fdd29b8c43d6/screenshot3.png",
-    "https://s3.amazonaws.com/cloudron-app-screenshots/de.nebulon.guacamoly/0a8d992c9297def66dc534ac2da8fdd29b8c43d6/screenshot4.png"
+    "https://screenshots.cloudron.io/de.nebulon.guacamoly/0a8d992c9297def66dc534ac2da8fdd29b8c43d6/screenshot0.png",
+    "https://screenshots.cloudron.io/de.nebulon.guacamoly/0a8d992c9297def66dc534ac2da8fdd29b8c43d6/screenshot1.png",
+    "https://screenshots.cloudron.io/de.nebulon.guacamoly/0a8d992c9297def66dc534ac2da8fdd29b8c43d6/screenshot2.png",
+    "https://screenshots.cloudron.io/de.nebulon.guacamoly/0a8d992c9297def66dc534ac2da8fdd29b8c43d6/screenshot3.png",
+    "https://screenshots.cloudron.io/de.nebulon.guacamoly/0a8d992c9297def66dc534ac2da8fdd29b8c43d6/screenshot4.png"
   ]
 }
