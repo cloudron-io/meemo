@@ -32,7 +32,7 @@
     "markdown-it-emoji": "^1.4.0",
     "markdown-it-hashtag": "^0.4.0",
     "mkdirp": "^0.5.1",
-    "mongodb": "^2.2.36",
+    "mongodb": "^3.1.13",
     "morgan": "^1.9.1",
     "multer": "^1.4.1",
     "rimraf": "^2.6.2",
