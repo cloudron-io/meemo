@@ -23,4 +23,4 @@ done
 export CLOUDRON_MONGODB_URL="mongodb://${MONGODB_IP}:27017/meemo"
 echo "export CLOUDRON_MONGODB_URL=\"mongodb://${MONGODB_IP}:27017/meemo\""
 
-node app.js
+node --trace-warnings app.js
