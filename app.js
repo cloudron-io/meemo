@@ -97,7 +97,7 @@ function exit(error) {
     process.exit(error ? 1 : 0);
 }
 
-MongoClient.connect(config.databaseUrl, function (error, db) {
+MongoClient.connect(config.databaseUrl, { useUnifiedTopology: true }, function (error, db) {
     if (error) exit(error);
 
     // stash for database code to be used
