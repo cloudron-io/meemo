@@ -187,3 +187,6 @@
 [1.13.1]
 * Sanitize username input to prevent LDAP DoS attack. Thanks to Alessio (d3lla) for reporting!
 * Add forum url
+
+[1.13.2]
+* Update base image to v3
