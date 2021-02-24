@@ -97,11 +97,11 @@ function exit(error) {
     process.exit(error ? 1 : 0);
 }
 
-MongoClient.connect(config.databaseUrl, { useUnifiedTopology: true }, function (error, db) {
+MongoClient.connect(config.databaseUrl, { useUnifiedTopology: true }, function (error, client) {
     if (error) exit(error);
 
     // stash for database code to be used
-    config.db = db;
+    config.db = client.db();
 
     var server = app.listen(PORT, BIND_ADDRESS, function () {
         var host = server.address().address;
