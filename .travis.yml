@@ -1,5 +1,5 @@
 language: node_js
 node_js:
-  - "8.11.2"
+  - "14.15.4"
 services:
   - mongodb
