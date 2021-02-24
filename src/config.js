@@ -13,9 +13,9 @@ exports = module.exports = {
 var MongoClient = require('mongodb').MongoClient;
 
 function clearDatabase(callback) {
-    MongoClient.connect(exports.databaseUrl, function (error, db) {
+    MongoClient.connect(exports.databaseUrl, { useUnifiedTopology: true }, function (error, client) {
         if (error) return callback(error);
 
-        db.dropDatabase(callback);
+        client.db().dropDatabase(callback);
     });
 }
