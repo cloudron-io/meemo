@@ -16,7 +16,7 @@ var express = require('express'),
     config = require('./src/config.js'),
     cors = require('cors'),
     session = require('express-session'),
-    MongoStore = require('connect-mongo')(session),
+    MongoStore = require('connect-mongo').default,
     multer  = require('multer'),
     routes = require('./src/routes.js'),
     lastmile = require('connect-lastmile'),
@@ -87,7 +87,7 @@ app.use(session({
     secret: 'guacamoly should be',
     saveUninitialized: false,
     resave: false,
-    store: new MongoStore({ url: config.databaseUrl })
+    store: MongoStore.create({ mongoUrl: config.databaseUrl })
 }));
 app.use(router);
 app.use(lastmile());
