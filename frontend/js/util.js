@@ -181,7 +181,7 @@ md.renderer.rules.emoji = function(token, idx) {
 Vue.filter('markdown', function (value) {
     if (!value) return '';
 
-    return md.render(value);
+    return HtmlSanitizer.SanitizeHtml(md.render(value));
 });
 
 Vue.filter('prettyDateOffset', function (time) {
