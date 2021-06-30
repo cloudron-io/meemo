@@ -8,7 +8,7 @@ var PORT = process.env.PORT || 3000;
 var BIND_ADDRESS = process.env.BIND_ADDRESS || '0.0.0.0';
 
 if (!process.env.CLOUDRON_APP_ORIGIN) {
-    console.log('No APP_ORIGIN env var set. Falling back to http://localhost');
+    console.log('No CLOUDRON_APP_ORIGIN env var set. Falling back to http://localhost');
 }
 
 var express = require('express'),

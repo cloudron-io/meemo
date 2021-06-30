@@ -20,7 +20,14 @@ done
 
 export MONGODB_IP=`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ${CONTAINER_NAME}`
 
+echo ""
+echo "Adding developer test user:"
+echo "username: test"
+echo "password: test"
+echo ""
+./admin user-add --username test --password test --display-name "Test User" || true
+
 export CLOUDRON_MONGODB_URL="mongodb://${MONGODB_IP}:27017/meemo"
-echo "export CLOUDRON_MONGODB_URL=\"mongodb://${MONGODB_IP}:27017/meemo\""
+export CLOUDRON_APP_ORIGIN="http://localhost:3000"
 
 node --trace-warnings app.js
