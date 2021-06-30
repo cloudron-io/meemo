@@ -51,7 +51,7 @@ function add(value, cloudronToken, userId, callback) {
     assert.strictEqual(typeof userId, 'string');
     assert.strictEqual(typeof callback, 'function');
 
-    getCollection().insert({ value: value, cloudronToken: cloudronToken, userId: userId }, function (error, result) {
+    getCollection().insertOne({ value: value, cloudronToken: cloudronToken, userId: userId }, function (error, result) {
         if (error) return callback(error);
         if (!result) return callback(new Error('no result returned'));
 

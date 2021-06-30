@@ -28,7 +28,7 @@ function put(userId, settings, callback) {
     assert.strictEqual(typeof settings, 'object');
     assert.strictEqual(typeof callback, 'function');
 
-    getCollection(userId).update({ type: 'frontend' }, { type: 'frontend', value: settings }, { upsert: true }, function (error) {
+    getCollection(userId).updateOne({ type: 'frontend' }, { $set: { type: 'frontend', value: settings }}, { upsert: true }, function (error) {
         if (error) return callback(error);
         callback(null);
     });
@@ -40,7 +40,7 @@ function get(userId, callback) {
 
     getCollection(userId).find({ type: 'frontend' }).toArray(function (error, result) {
         if (error) return callback(error);
-        callback(null, result[0] ? result[0].value : {
+        callback(null, (result[0] && typeof result[0].value === 'object') ? result[0].value : {
             title: 'Meemo'
         });
     });

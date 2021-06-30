@@ -120,7 +120,7 @@ function addFull(userId, content, tags, attachments, externalContent, createdAt,
         sticky: false
     };
 
-    getCollection(userId).insert(doc, function (error, result) {
+    getCollection(userId).insertOne(doc, function (error, result) {
         if (error) return callback(error);
         if (!result) return callback(new Error('no result returned'));
 
@@ -153,7 +153,7 @@ function put(userId, thingId, content, tags, attachments, externalContent, isPub
         sticky: isSticky
     };
 
-    getCollection(userId).update({_id: new ObjectId(thingId) }, { $set: data }, function (error) {
+    getCollection(userId).updateOne({ _id: new ObjectId(thingId) }, { $set: data }, function (error) {
         if (error) return callback(error);
 
         get(userId, thingId, callback);

@@ -40,7 +40,7 @@ function update(userId, name, callback) {
     assert.strictEqual(typeof name, 'string');
     assert.strictEqual(typeof callback, 'function');
 
-    getCollection(userId).update({ name: name }, {
+    getCollection(userId).updateOne({ name: name }, {
         $inc: { usage: 1 },
         $set: {
             name: name
