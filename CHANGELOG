@@ -193,3 +193,6 @@
 * Update all dependencies
 * Update base image to v3
 
+[1.14.0]
+* Update various dependencies
+* Fix potential XSS security issue
