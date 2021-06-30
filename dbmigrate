@@ -35,7 +35,7 @@ MongoClient.connect(process.env.CLOUDRON_MONGODB_URL || 'mongodb://127.0.0.1:270
                 users.push(entry.object);
             });
             result.on('error', function (error) {
-                exit(error)
+                exit(error);
             });
             result.on('end', function () {
                 async.eachSeries(collections, function (collection, callback) {
