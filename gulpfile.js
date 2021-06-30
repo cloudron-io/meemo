@@ -8,7 +8,7 @@ var autoprefixer = require('gulp-autoprefixer'),
     minifycss = require('gulp-cssnano'),
     rename = require('gulp-rename'),
     run = require('gulp-run'),
-    sass = require('gulp-sass'),
+    sass = require('gulp-sass')(require('sass')),
     sourcemaps = require('gulp-sourcemaps');
 
 if (argv.help || argv.h) {
