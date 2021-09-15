@@ -36,25 +36,25 @@ Possible env variables for configuration are:
 ```
 PORT=3000
 BIND_ADDRESS=0.0.0.0
-APP_ORIGIN="https://example.com"
-MONGODB_URL="mongodb://username:password@127.0.0.1:27017/meemo" # username and password are optional
+CLOUDRON_APP_ORIGIN="https://example.com"
+CLOUDRON_="mongodb://username:password@127.0.0.1:27017/meemo" # username and password are optional
 ATTACHMENT_DIR="./storage"
 
 # using LDAP user management
-LDAP_URL="ldap://my.ldap.server"
-LDAP_USERS_BASE_DN="ou=users,dc=example"
-LDAP_BIND_DN="cn=admin,ou=users,dc=example"
-LDAP_BIND_PASSWORD=""
+CLOUDRON_LDAP_URL="ldap://my.ldap.server"
+CLOUDRON_LDAP_USERS_BASE_DN="ou=users,dc=example"
+CLOUDRON_LDAP_BIND_DN="cn=admin,ou=users,dc=example"
+CLOUDRON_LDAP_BIND_PASSWORD=""
 
 # using local file user management via admin cli tool
 LOCAL_AUTH_FILE=".users.json"	# also pass this for the admin tool to find the correct file
 
 # to enable email receiving
-MAIL_IMAP_SERVER="my.mail.server"
-MAIL_IMAP_PORT=993
-MAIL_IMAP_USERNAME=""
-MAIL_IMAP_PASSWORD=""
-MAIL_DOMAIN="example.com"
+CLOUDRON_MAIL_IMAP_SERVER="my.mail.server"
+CLOUDRON_MAIL_IMAP_PORT=993
+CLOUDRON_MAIL_IMAP_USERNAME=""
+CLOUDRON_MAIL_IMAP_PASSWORD=""
+CLOUDRON_MAIL_DOMAIN="example.com"
 ```
 
 ## Building
@@ -78,7 +78,7 @@ cd meemo
 npm install
 
 # with LDAP
-LDAP_BIND_DN="cn=admin,ou=users,dc=example" LDAP_BIND_PASSWORD="password" LDAP_USERS_BASE_DN="ou=users,dc=example" LDAP_URL="ldap://localhost:3002" ./app.js
+CLOUDRON_LDAP_BIND_DN="cn=admin,ou=users,dc=example" CLOUDRON_LDAP_BIND_PASSWORD="password" CLOUDRON_LDAP_USERS_BASE_DN="ou=users,dc=example" CLOUDRON_LDAP_URL="ldap://localhost:3002" ./app.js
 
 # without LDAP
 ./admin user-add --username test --password test --display-name "Test User"
