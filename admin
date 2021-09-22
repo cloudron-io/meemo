@@ -16,10 +16,23 @@ var LOCAL_AUTH_FILE = path.resolve(process.env.LOCAL_AUTH_FILE || './.users.json
 
 console.log('Using local auth file: ', LOCAL_AUTH_FILE);
 
-function addUser(options) {
+function checkOptions(options) {
     if (!options.username) exit('missing --username');
-    if (!options.password) exit('missing --password');
+    if (!options.password) {
+        if (!options.passwordFile) {
+            exit('missing --password or --password-file');
+        }
+        var password = safe.require(path.resolve(options.passwordFile));
+        if (!password) {
+            exit('No password found or password file invalid');
+        }
+        options.password = password;
+    }
     if (!options.displayName) exit('missing --display-name');
+}
+
+function addUser(options) {
+    checkOptions(options);
 
     var users = safe.require(LOCAL_AUTH_FILE);
     if (!users) users = {};
@@ -39,9 +52,7 @@ function addUser(options) {
 }
 
 function editUser(options) {
-    if (!options.username) exit('missing --username');
-    if (!options.password) exit('missing --password');
-    if (!options.displayName) exit('missing --display-name');
+    checkOptions(options);
 
     var users = safe.require(LOCAL_AUTH_FILE);
     if (!users) users = {};
@@ -87,6 +98,7 @@ program.command('user-add')
     .description('Add local user')
     .option('-u --username <username>', 'New username')
     .option('-p --password <password>', 'New password')
+    .option('--password-file <fileName>', 'Password file containing new password in quotes')
     .option('--display-name <displayName>', 'New display name')
     .action(addUser);
 
@@ -94,6 +106,7 @@ program.command('user-edit')
     .description('Edit local user')
     .option('-u --username <username>', 'Username')
     .option('-p --password <password>', 'New password')
+    .option('--password-file <fileName>', 'Password file containing new password in quotes')
     .option('--display-name <displayName>', 'New display name')
     .action(editUser);
 
