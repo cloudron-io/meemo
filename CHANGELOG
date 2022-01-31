@@ -196,3 +196,7 @@
 [1.14.0]
 * Update various dependencies
 * Fix potential XSS security issue
+
+[1.15.0]
+* Update base image to 3.2.0
+
