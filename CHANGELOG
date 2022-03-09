@@ -200,3 +200,7 @@
 [1.15.0]
 * Update base image to 3.2.0
 
+[1.16.0]
+* Update dependencies
+* Fixup mongodb usage
+

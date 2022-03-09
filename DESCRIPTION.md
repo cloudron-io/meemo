@@ -1,5 +1,3 @@
-This app packages Meemo <upstream>1.14.0</upstream>.
-
 ### Overview
 
 Meemo is a personal data manager. It lets you simply input any kind of information like notes, thoughts, ideas as well as acts as a bookmarkmanager and todo list.
