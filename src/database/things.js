@@ -38,7 +38,7 @@ function getCollection(userId) {
     if (!g_collections[userId]) {
         console.log('Opening collection for', userId);
 
-        config.db.createCollection(userId + '_things');
+        config.db.createCollection(userId + '_things', function (error) { if (error && error.codeName !== 'NamespaceExists') console.error(error); });
         g_collections[userId] = config.db.collection(userId + '_things');
         g_collections[userId].createIndex({ content: 'text' }, { default_language: 'none' });
         g_collections[userId].createIndex({ sticky: 1 });
@@ -124,7 +124,7 @@ function addFull(userId, content, tags, attachments, externalContent, createdAt,
         if (error) return callback(error);
         if (!result) return callback(new Error('no result returned'));
 
-        get(userId, String(result.ops[0]._id), callback);
+        get(userId, result.insertedId.toString(), callback);
     });
 }
 

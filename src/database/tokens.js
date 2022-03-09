@@ -17,7 +17,7 @@ function getCollection() {
     if (!g_tokens) {
         console.log('Opening tokens collection');
 
-        config.db.createCollection('tokens');
+        config.db.createCollection('tokens', function (error) { if (error && error.codeName !== 'NamespaceExists') console.error(error); });
         g_tokens = config.db.collection('tokens');
     }
 

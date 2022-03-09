@@ -16,7 +16,7 @@ function getCollection(userId) {
     assert.strictEqual(typeof userId, 'string');
 
     if (!g_collections[userId]) {
-        config.db.createCollection(userId + '_settings');
+        config.db.createCollection(userId + '_settings', function (error) { if (error && error.codeName !== 'NamespaceExists') console.error(error); });
         g_collections[userId] = config.db.collection(userId + '_settings');
     }
 
