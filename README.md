@@ -49,6 +49,7 @@ CLOUDRON_LDAP_BIND_PASSWORD=""
 # using local file user management via admin cli tool
 LOCAL_AUTH_FILE=".users.json"	# also pass this for the admin tool to find the correct file
 
+# Email receiving is currently dropped and will be only added in future versions again
 # to enable email receiving
 CLOUDRON_MAIL_IMAP_SERVER="my.mail.server"
 CLOUDRON_MAIL_IMAP_PORT=993
