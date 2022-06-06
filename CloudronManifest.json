@@ -6,8 +6,8 @@
   "changelog": "file://CHANGELOG",
   "icon": "file://logo.png",
   "tagline": "Your personal notes",
-  "version": "1.16.0",
-  "upstreamVersion": "1.16.0",
+  "version": "1.16.1",
+  "upstreamVersion": "1.16.1",
   "healthCheckPath": "/api/healthcheck",
   "httpPort": 3000,
   "addons": {
