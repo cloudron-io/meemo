@@ -34,7 +34,6 @@ var assert = require('assert'),
     tags = require('./database/tags.js'),
     tar = require('tar-fs'),
     things = require('./database/things.js'),
-    rimraf = require('rimraf'),
     safe = require('safetydance'),
     superagent = require('superagent');
 
