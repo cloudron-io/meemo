@@ -2,7 +2,7 @@
 
 var autoprefixer = require('gulp-autoprefixer'),
     argv = require('yargs').argv,
-    del = require('del'),
+    fs = require('fs'),
     ejs = require('gulp-ejs'),
     gulp = require('gulp'),
     minifycss = require('gulp-cssnano'),
@@ -80,20 +80,19 @@ function buildImages() {
 }
 
 gulp.task('chrome_extension', function () {
-    return del(['webextension-chrome.zip'], function () {
-        return run('zip -r webextension-chrome.zip webextension/').exec();
-    });
+    fs.rmSync('webextension-chrome.zip', { force: true });
+
+    return run('zip -r webextension-chrome.zip webextension/').exec();
 });
 
 gulp.task('firefox_extension', function () {
-    // return del(['webextension-firefox.xpi'], function () {
-        console.log('---')
-        return run('zip -r ../webextension-firefox.xpi .', { cwd: process.cwd() + '/webextension' }).exec();
-    // });
+    fs.rmSync('webextension-firefox.xpi', { force: true });
+
+    return run('zip -r ../webextension-firefox.xpi .', { cwd: process.cwd() + '/webextension' }).exec();
 });
 
-gulp.task('clean', function () {
-    return del(['public/']);
+gulp.task('clean', async function () {
+    fs.rmSync('public/', { recursive: true, force: true });
 });
 
 gulp.task('extensions', gulp.series('chrome_extension', 'firefox_extension', function extensions(done) {
