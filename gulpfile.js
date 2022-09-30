@@ -53,7 +53,7 @@ function buildFavicon() {
 var build3rdParty = gulp.series(
     function build3rdPartyFromNodeModules() {
         return gulp.src([
-            'node_modules/superagent/dist/superagent.min.js',
+            'node_modules/superagent/dist/superagent.js',
             'node_modules/vue/dist/vue.min.js',
             'node_modules/markdown-it/dist/markdown-it.min.js',
             'node_modules/markdown-it-emoji/dist/markdown-it-emoji.min.js'
