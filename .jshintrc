@@ -2,6 +2,7 @@
 	"node": true,
 	"browser": true,
 	"unused": true,
-	"globalstrict": true,
-	"predef": [ "angular", "$" ]
+	"esversion": 6,
+	"globalstrict": false,
+	"predef": [ "angular", "$", "describe", "it", "before", "after" ]
 }
