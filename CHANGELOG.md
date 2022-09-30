@@ -206,3 +206,8 @@
 
 [1.16.1]
 * Update dependencies
+
+[1.16.2]
+* Update dependencies
+* Remove uuid and del node module dependency
+
