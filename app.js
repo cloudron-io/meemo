@@ -87,6 +87,7 @@ app.use(session({
     secret: 'guacamoly should be',
     saveUninitialized: false,
     resave: false,
+    cookie: { sameSite: 'strict' },
     store: MongoStore.create({ mongoUrl: config.databaseUrl })
 }));
 app.use(router);
