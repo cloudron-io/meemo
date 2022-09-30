@@ -47,7 +47,7 @@ var assert = require('assert'),
     tokens = require('./database/tokens.js'),
     users = require('./users.js'),
     UserError = users.UserError,
-    uuid = require('uuid'),
+    crypto = require('crypto'),
     HttpError = require('connect-lastmile').HttpError,
     HttpSuccess = require('connect-lastmile').HttpSuccess;
 
@@ -94,7 +94,7 @@ function login(req, res, next) {
 
         req.session.userId = result.user.username;
 
-        var token = uuid.v4();
+        var token = crypto.randomBytes(32).toString('hex');
         tokens.add(token, '', result.user.username, function (error) {
             if (error) return next(new HttpError(500, error));
             next(new HttpSuccess(201, { token: token, user: result.user }));

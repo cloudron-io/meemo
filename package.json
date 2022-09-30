@@ -41,8 +41,7 @@
     "superagent": "^8.0.1",
     "supererror": "^0.7.2",
     "tar-fs": "^2.1.1",
-    "twemoji": "^14.0.2",
-    "uuid": "^9.0.0"
+    "twemoji": "^14.0.2"
   },
   "devDependencies": {
     "expect.js": "^0.3.1",
