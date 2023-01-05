@@ -211,3 +211,6 @@
 * Update dependencies
 * Remove uuid and del node module dependency
 
+[1.17.0]
+* Update base image to 4.0.0
+

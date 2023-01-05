@@ -6,7 +6,7 @@
   "changelog": "file://CHANGELOG.md",
   "icon": "file://logo.png",
   "tagline": "Your personal notes",
-  "version": "1.16.2",
+  "version": "1.17.0",
   "upstreamVersion": "1.16.2",
   "healthCheckPath": "/api/healthcheck",
   "httpPort": 3000,
