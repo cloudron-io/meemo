@@ -37,7 +37,7 @@ function upsert(username, email, displayName) {
     assert.strictEqual(typeof email, 'string');
     assert.strictEqual(typeof displayName, 'string');
 
-    const users = safe.JSON.parse(safe.fs.readFileSync(USERS_FILEPATH));
+    const users = safe.JSON.parse(safe.fs.readFileSync(USERS_FILEPATH)) || {};
     users[username] = {
         username,
         displayName,

@@ -89,7 +89,7 @@ async function auth(req, res, next) {
             // keep it fresh
             await users.upsert(user.username, user.email, user.displayName);
         } catch (e) {
-            console.error('Failed to upsert user', req.user.oidc.user, e);
+            console.error('Failed to upsert user', req.oidc.user, e);
             return next(new HttpError(500, 'internal error'));
         }
 

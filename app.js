@@ -101,6 +101,7 @@ app.use(session({
 }));
 
 if (process.env.CLOUDRON_OIDC_ISSUER) {
+    console.log('Using Cloudron OpenID integration');
     app.use(oidc.auth({
         issuerBaseURL: process.env.CLOUDRON_OIDC_ISSUER,
         baseURL: APP_ORIGIN,
@@ -155,7 +156,6 @@ if (process.env.CLOUDRON_OIDC_ISSUER) {
     });
 
     app.use('/api/callback', (req, res) => {
-        console.log(req.query)
         req.session.username = req.query.username;
         res.redirect(`http://localhost:${PORT}/`);
     });
