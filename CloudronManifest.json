@@ -12,7 +12,9 @@
   "httpPort": 3000,
   "addons": {
     "mongodb": {},
-    "ldap": {},
+    "oidc": {
+      "loginRedirectUri": "/api/callback"
+    },
     "localstorage": {}
   },
   "tags": ["notes", "bookmarks", "todo", "ideas", "feed", "markdown"],

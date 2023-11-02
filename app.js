@@ -4,12 +4,14 @@
 
 require('supererror')({ splatchError: true });
 
-var PORT = process.env.PORT || 3000;
-var BIND_ADDRESS = process.env.BIND_ADDRESS || '0.0.0.0';
+const PORT = process.env.VITE_DEV_PORT || process.env.PORT || 3000;
+const BIND_ADDRESS = process.env.BIND_ADDRESS || '0.0.0.0';
 
 if (!process.env.CLOUDRON_APP_ORIGIN) {
     console.log('No CLOUDRON_APP_ORIGIN env var set. Falling back to http://localhost');
 }
+
+const APP_ORIGIN = process.env.CLOUDRON_APP_ORIGIN || `http://localhost:${PORT}`;
 
 var express = require('express'),
     json = require('body-parser').json,
@@ -18,6 +20,7 @@ var express = require('express'),
     session = require('express-session'),
     MongoStore = require('connect-mongo'),
     multer  = require('multer'),
+    oidc = require('express-openid-connect'),
     routes = require('./src/routes.js'),
     lastmile = require('connect-lastmile'),
     logic = require('./src/logic.js'),
@@ -35,6 +38,15 @@ var memoryUpload = multer({ storage: multer.memoryStorage({}) }).any();
 
 router.del = router.delete;
 
+router.get ('/api/login', function (req, res) {
+    res.oidc.login({
+        returnTo: '/',
+        authorizationParams: {
+            redirect_uri: `${APP_ORIGIN}/api/callback`,
+        }
+    });
+});
+
 router.post('/api/things', routes.auth, routes.add);
 router.get ('/api/things', routes.auth, routes.getAll);
 router.get ('/api/things/:id', routes.auth, routes.get);
@@ -51,9 +63,6 @@ router.get ('/api/settings', routes.auth, routes.settingsGet);
 
 router.get ('/api/export', routes.auth, routes.exportThings);
 router.post('/api/import', routes.auth, diskUpload, routes.importThings);
-
-router.post('/api/login', routes.login);
-router.get ('/api/logout', routes.auth, routes.logout);
 
 router.get ('/api/profile', routes.auth, routes.profile);
 
@@ -90,6 +99,73 @@ app.use(session({
     cookie: { sameSite: 'strict' },
     store: MongoStore.create({ mongoUrl: config.databaseUrl })
 }));
+
+if (process.env.CLOUDRON_OIDC_ISSUER) {
+    app.use(oidc.auth({
+        issuerBaseURL: process.env.CLOUDRON_OIDC_ISSUER,
+        baseURL: APP_ORIGIN,
+        clientID: process.env.CLOUDRON_OIDC_CLIENT_ID,
+        clientSecret: process.env.CLOUDRON_OIDC_CLIENT_SECRET,
+        secret: 'FIXME this secret',
+        authorizationParams: {
+            response_type: 'code',
+            scope: 'openid profile email'
+        },
+        authRequired: false,
+        routes: {
+            callback: '/api/callback',
+            login: false,
+            logout: '/api/logout'
+        }
+    }));
+} else {
+    // mock oidc
+    console.log('CLOUDRON_OIDC_ISSUER is not set, using mock OpenID for development');
+
+    app.use((req, res, next) => {
+        res.oidc = {
+            login(options) {
+                res.writeHead(200, { 'Content-Type': 'text/html' })
+                res.write(require('fs').readFileSync(__dirname + '/oidc_develop_user_select.html', 'utf8').replaceAll('REDIRECT_URI', options.authorizationParams.redirect_uri));
+                res.end()
+            }
+        };
+
+        req.oidc = {
+            user: {},
+            isAuthenticated() {
+                return !!req.session.username;
+            }
+        };
+
+        if (req.session.username) {
+            req.oidc.user = {
+                sub: req.session.username,
+                family_name: 'Cloudron',
+                given_name: req.session.username.toUpperCase(),
+                locale: 'en-US',
+                name: 'Cloudron ' + req.session.username.toUpperCase(),
+                preferred_username: req.session.username,
+                email: req.session.username + '@cloudron.local',
+                email_verified: true
+            };
+        }
+
+        next();
+    });
+
+    app.use('/api/callback', (req, res) => {
+        console.log(req.query)
+        req.session.username = req.query.username;
+        res.redirect(`http://localhost:${PORT}/`);
+    });
+
+    app.use('/api/logout', (req, res) => {
+        req.session.username = null;
+        res.status(200).send({});
+    });
+}
+
 app.use(router);
 app.use(lastmile());
 

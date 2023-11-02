@@ -3,23 +3,21 @@
 'use strict';
 
 exports = module.exports = {
-    auth: auth,
-    login: login,
-    logout: logout,
-    profile: profile,
-    getAll: getAll,
-    get: get,
-    add: add,
-    put: put,
-    del: del,
-    getTags: getTags,
-    settingsSave: settingsSave,
-    settingsGet: settingsGet,
-    exportThings: exportThings,
-    importThings: importThings,
-    healthcheck: healthcheck,
-    fileAdd: fileAdd,
-    fileGet: fileGet,
+    auth,
+    profile,
+    getAll,
+    get,
+    add,
+    put,
+    del,
+    getTags,
+    settingsSave,
+    settingsGet,
+    exportThings,
+    importThings,
+    healthcheck,
+    fileAdd,
+    fileGet,
 
     public: {
         users: publicUsers,
@@ -51,70 +49,58 @@ var assert = require('assert'),
     HttpError = require('connect-lastmile').HttpError,
     HttpSuccess = require('connect-lastmile').HttpSuccess;
 
-
 function healthcheck(req, res, next) {
     next(new HttpSuccess(200, {}));
 }
 
-function auth(req, res, next) {
-    // first try session
-    if (req.session.userId) {
-        req.userId = req.session.userId;
-        return next();
-    }
+async function auth(req, res, next) {
+    if (!req.oidc.isAuthenticated() && !req.query.token) return next(new HttpError(401, 'Unauthorized'));
 
+    if (req.query.token) {
+        tokens.get(req.query.token, function (error, result) {
+            if (error) return next(new HttpError(401, 'invalid credentials'));
 
-    if (!req.query.token) return next(new HttpError(401, 'missing token'));
+            // make old versions relogin and invalidate token
+            if (!result.userId) {
+                next(new HttpError(401, 'old token'));
 
-    tokens.get(req.query.token, function (error, result) {
-        if (error) return next(new HttpError(401, 'invalid credentials'));
+                return tokens.del(req.query.token, function () {});
+            }
 
-        // make old versions relogin and invalidate token
-        if (!result.userId) {
-            next(new HttpError(401, 'old token'));
+            req.token = req.query.token;
+            req.user = {
+                id: result.userId,
+                username: result.userId,
+                email: 'unset for tokens',
+                displayName: 'unset for tokens'
+            };
 
-            return tokens.del(req.query.token, function () {});
+            next();
+        });
+    } else {
+        let user;
+        try {
+            user = {
+                id: req.oidc.user.sub, // maybe get rid of this later
+                username: req.oidc.user.sub,
+                email: req.oidc.user.email,
+                displayName: req.oidc.user.name
+            };
+            // keep it fresh
+            await users.upsert(user.username, user.email, user.displayName);
+        } catch (e) {
+            console.error('Failed to upsert user', req.user.oidc.user, e);
+            return next(new HttpError(500, 'internal error'));
         }
 
-        req.token = req.query.token;
-        req.userId = result.userId;
+        req.user = user;
 
         next();
-    });
-}
-
-function login(req, res, next) {
-    if (typeof req.body.username !== 'string' || !req.body.username) return next(new HttpError(400, 'missing username'));
-    if (typeof req.body.password !== 'string' || !req.body.password) return next(new HttpError(400, 'missing password'));
-
-    users.verify(req.body.username, req.body.password, function (error, result) {
-        if (error && error.code === UserError.NOT_FOUND) return next(new HttpError(401, 'invalid credentials'));
-        if (error && error.code === UserError.NOT_AUTHORIZED) return next(new HttpError(401, 'invalid credentials'));
-        if (error) return next(new HttpError(500, error));
-
-        req.session.userId = result.user.username;
-
-        var token = crypto.randomBytes(32).toString('hex');
-        tokens.add(token, '', result.user.username, function (error) {
-            if (error) return next(new HttpError(500, error));
-            next(new HttpSuccess(201, { token: token, user: result.user }));
-        });
-    });
-}
-
-function logout(req, res, next) {
-    delete req.session.userId;
-
-    if (!req.token) return next(new HttpSuccess(200, {}));
-
-    tokens.del(req.token, function (error) {
-        if (error) return next(new HttpError(500, error));
-        next(new HttpSuccess(200, {}));
-    });
+    }
 }
 
 function profile(req, res, next) {
-    users.profile(req.userId, false, function (error, result) {
+    users.profile(req.user.id, false, function (error, result) {
         if (error && error.code === UserError.NOT_FOUND) return next(new HttpError(404, error.message));
         if (error) return next(new HttpError(500, error));
 
@@ -159,14 +145,14 @@ function getAll(req, res, next) {
     var skip = isNaN(parseInt(req.query.skip)) ? 0 : parseInt(req.query.skip);
     var limit = isNaN(parseInt(req.query.limit)) ? 10 : parseInt(req.query.limit);
 
-    logic.getAll(req.userId, endQuery, skip, limit, function (error, result) {
+    logic.getAll(req.user.id, endQuery, skip, limit, function (error, result) {
         if (error) return next(new HttpError(500, error));
         next(new HttpSuccess(200, { things: result }));
     });
 }
 
 function get(req, res, next) {
-    logic.get(req.userId, req.params.id, function (error, result) {
+    logic.get(req.user.id, req.params.id, function (error, result) {
         if (error) return next(new HttpError(500, error));
         next(new HttpSuccess(200, { thing: result }));
     });
@@ -178,7 +164,7 @@ function add(req, res, next) {
 
     if (!req.body.attachments) req.body.attachments = [];
 
-    logic.add(req.userId, req.body.content, req.body.attachments, function (error, result) {
+    logic.add(req.user.id, req.body.content, req.body.attachments, function (error, result) {
         if (error) return next(new HttpError(500, error));
         next(new HttpSuccess(201, { thing: result }));
     });
@@ -199,35 +185,35 @@ function put(req, res, next) {
     req.body.archived = !!req.body.archived;
     req.body.sticky = !!req.body.sticky;
 
-    logic.put(req.userId, req.params.id, req.body.content, req.body.attachments, req.body.public, req.body.shared, req.body.archived, req.body.sticky, function (error, result) {
+    logic.put(req.user.id, req.params.id, req.body.content, req.body.attachments, req.body.public, req.body.shared, req.body.archived, req.body.sticky, function (error, result) {
         if (error) return next(new HttpError(500, error));
         next(new HttpSuccess(201, { thing: result }));
     });
 }
 
 function del(req, res, next) {
-    logic.del(req.userId, req.params.id, function (error) {
+    logic.del(req.user.id, req.params.id, function (error) {
         if (error) return next(new HttpError(500, error));
         next(new HttpSuccess(200, {}));
     });
 }
 
 function getTags(req, res, next) {
-    tags.get(req.userId, function (error, result) {
+    tags.get(req.user.id, function (error, result) {
         if (error) return next(new HttpError(500, error));
         next(new HttpSuccess(200, { tags: result }));
     });
 }
 
 function settingsSave(req, res, next) {
-    settings.put(req.userId, req.body.settings, function (error) {
+    settings.put(req.user.id, req.body.settings, function (error) {
         if (error) return next(new HttpError(500, error));
         next(new HttpSuccess(202, {}));
     });
 }
 
 function settingsGet(req, res, next) {
-    settings.get(req.userId, function (error, result) {
+    settings.get(req.user.id, function (error, result) {
         if (error) return next(new HttpError(500, error));
         next(new HttpSuccess(200, { settings: result }));
     });
@@ -235,10 +221,10 @@ function settingsGet(req, res, next) {
 
 function exportThings(req, res, next) {
     // Just to make sure the folder exists in case a user has never uploaded an attachment
-    var attachmentFolder = path.join(config.attachmentDir, req.userId);
+    var attachmentFolder = path.join(config.attachmentDir, req.user.id);
     mkdirp.sync(attachmentFolder);
 
-    logic.exp(req.userId, function (error, result) {
+    logic.exp(req.user.id, function (error, result) {
         if (error) return next(new HttpError(500, error));
 
         var out = tar.pack(attachmentFolder, {
@@ -259,7 +245,7 @@ function exportThings(req, res, next) {
 function importThings(req, res, next) {
     if (!req.files || !req.files[0]) return next(new HttpError('400', 'missing file'));
 
-    logic.importThings(req.userId, req.files[0].path, function (error) {
+    logic.importThings(req.user.id, req.files[0].path, function (error) {
         if (error) return next(new HttpError(400, error));
 
         next(new HttpSuccess(200, {}));
@@ -271,7 +257,7 @@ function fileAdd(req, res, next) {
 
     var file = req.files[0];
     var fileName = checksum(file.buffer) + path.extname(file.originalname);
-    var attachmentFolder = path.join(config.attachmentDir, req.userId);
+    var attachmentFolder = path.join(config.attachmentDir, req.user.id);
 
     // ensure the directory exists
     mkdirp.sync(attachmentFolder);

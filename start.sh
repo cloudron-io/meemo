@@ -4,6 +4,7 @@ set -eu
 
 export NODE_ENV=production
 export ATTACHMENT_DIR=/app/data/storage
+export CLOUDRON_USERS_FILEPATH=/app/data/.users.json
 
 mkdir -p "$ATTACHMENT_DIR"
 

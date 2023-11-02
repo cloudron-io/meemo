@@ -8,7 +8,7 @@ CONTAINER_NAME="mongo-server-meemo"
 OUT=`docker inspect ${CONTAINER_NAME}` || true
 if [[ "${OUT}" = "[]" ]]; then
     echo "Starting ${CONTAINER_NAME}..."
-    docker run --name ${CONTAINER_NAME} -d mongo:4.2.12-bionic
+    docker run --name ${CONTAINER_NAME} -d mongo:5.0.20
 else
     echo "${CONTAINER_NAME} already running. If you want to start fresh, run 'docker rm --force ${CONTAINER_NAME}'"
 fi
@@ -19,13 +19,6 @@ while ! docker exec -it ${CONTAINER_NAME} mongo --eval "print(\"waited for conne
 done
 
 export MONGODB_IP=`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ${CONTAINER_NAME}`
-
-echo ""
-echo "Adding developer test user:"
-echo "username: test"
-echo "password: test"
-echo ""
-./admin user-add --username test --password test --display-name "Test User" || true
 
 export CLOUDRON_MONGODB_URL="mongodb://${MONGODB_IP}:27017/meemo"
 export CLOUDRON_APP_ORIGIN="http://localhost:3000"
