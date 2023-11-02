@@ -28,7 +28,7 @@ cloudron install
 
 ## Development
 
-The app can also be run locally for development. It depends on a locally running mongodb and optionally on an instance of the [ldap test server](https://github.com/nebulade/ldapjstestserver).
+The app can also be run locally for development.
 
 ```
 cd meemo
