@@ -75,6 +75,7 @@ var build3rdParty = gulp.series(
 
 function buildImages() {
     return gulp.src([
+        'logo.svg',
         'frontend/img/*',
     ]).pipe(gulp.dest('public/img/'));
 }
