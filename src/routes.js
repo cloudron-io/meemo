@@ -272,7 +272,7 @@ function fileAdd(req, res, next) {
 }
 
 function fileGet(req, res, next) {
-    if (req.session.userId) return res.sendFile(req.params.identifier, { root: path.join(config.attachmentDir, req.session.userId) });
+    if (req.oidc.isAuthenticated()) return res.sendFile(req.params.identifier, { root: path.join(config.attachmentDir, req.oidc.user.sub) });
 
     logic.getPublic(req.params.userId, req.params.thingId, function (error) {
         if (error === 'not allowed') return next(new HttpError(403, 'not allowed'));
