@@ -19,7 +19,7 @@
   },
   "tags": ["notes", "bookmarks", "todo", "ideas", "feed", "markdown"],
   "manifestVersion": 2,
-  "minBoxVersion": "7.1.2",
+  "minBoxVersion": "7.5.0",
   "forumUrl": "https://forum.cloudron.io/category/35/meemo",
   "website": "https://meemo.minimal-space.de/",
   "documentationUrl": "https://cloudron.io/documentation/apps/meemo/",
