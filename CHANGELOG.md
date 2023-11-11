@@ -214,3 +214,7 @@
 [1.17.0]
 * Update base image to 4.0.0
 
+[1.18.0]
+* Use OpenID instead of LDAP for user integration
+* Fix public and shared notes pages
+
