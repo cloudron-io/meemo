@@ -117,6 +117,11 @@ if (process.env.CLOUDRON_OIDC_ISSUER) {
             callback: '/api/callback',
             login: false,
             logout: '/api/logout'
+        },
+        session: {
+            name: 'MeemoSession',
+            rolling: true,
+            rollingDuration: 24 * 60 * 60 * 4 // max 4 days idling
         }
     }));
 } else {
