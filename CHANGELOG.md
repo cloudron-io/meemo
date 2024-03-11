@@ -218,3 +218,7 @@
 * Use OpenID instead of LDAP for user integration
 * Fix public and shared notes pages
 
+[1.18.1]
+* Increase OpenID session timeout to a rolling 4 days
+* Update dependencies
+
