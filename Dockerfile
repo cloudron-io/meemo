@@ -1,4 +1,4 @@
-FROM cloudron/base:4.2.0@sha256:46da2fffb36353ef714f97ae8e962bd2c212ca091108d768ba473078319a47f4
+FROM cloudron/base:5.0.0@sha256:04fd70dbd8ad6149c19de39e35718e024417c3e01dc9c6637eaf4a41ec4e596c
 
 RUN mkdir -p /app/code
 WORKDIR /app/code
@@ -9,6 +9,8 @@ ADD src/ /app/code/src/
 ADD frontend/ /app/code/frontend/
 ADD gulpfile.js package.json package-lock.json app.js start.sh things.json logo.png logo.svg /app/code/
 
-RUN npm install && npm install -g gulp-cli && gulp default --revision ${VERSION}
+RUN npm install --no-update-notifier && \
+    npm install -g gulp-cli && \
+    gulp default --revision ${VERSION}
 
 CMD [ "/app/code/start.sh" ]
