@@ -1,3 +1,5 @@
+**Development has moved to : https://git.cloudron.io/packages/meemo-app**
+
 # Meemo
 
 Meemo is a personal data manager. It lets you simply input any kind of information like notes, thoughts, ideas as well as acts as a bookmarkmanager and todo list.
